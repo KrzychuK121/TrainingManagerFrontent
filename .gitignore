@@ -3,6 +3,9 @@
 # visual studio
 /.vs
 
+# idea webstorm
+/.idea
+
 # dependencies
 /node_modules
 /.pnp

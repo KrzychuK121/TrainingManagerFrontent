@@ -1,15 +1,23 @@
 ﻿import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import App from './components/App';
-import Welcome from './components/Welcome';
+import Default from './routes/Default';
+import Welcome from './routes/Welcome';
+import MainPage from './routes/MainPage';
 
 export const router = createBrowserRouter(
     [
         {
-            path: '/', element: <App />
-        },
-        {
-            path: '/welcome', element: <Welcome />
+            path: '/', element: <Default />, children: [
+                {
+                    path: '/',
+                    index: true,
+                    element: <Welcome />
+                },
+                {
+                    path: '/glowna',
+                    element: <MainPage />
+                }
+            ]
         }
     ]
 );
