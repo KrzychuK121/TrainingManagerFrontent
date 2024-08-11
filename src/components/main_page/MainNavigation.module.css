@@ -1,0 +1,26 @@
+/*nagłówek menu*/
+#menuContainer {
+    background-color: #111823;
+    padding: 15px;
+    font-family: Tungsten-Bold,arial,georgia, sans-serif;
+}
+
+.menuLink, #menuLinkDropdown {
+    color: white;
+}
+
+.menuLink:hover, .menuLink:focus, #menuLinkDropdown:hover, #menuLinkDropdown:focus {
+    color: #FF4655;
+}
+
+/*nagłówek strony*/
+#brandDesc {
+    color: #FF4655;
+    padding-right: 40px;
+    border-right: 5px dotted grey;
+}
+
+.menuContainerComponent{
+    font-weight: 700;
+    font-size: 30px;
+}

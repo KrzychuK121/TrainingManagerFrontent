@@ -1,0 +1,19 @@
+#welcomeContainer {
+    font-weight: 700;
+    font-family: Tungsten-Bold,arial,georgia, sans-serif;
+}
+
+#nag {
+    font-size: 60px;
+    text-align: center;
+    color: white;
+}
+
+#welcomeDesc {
+    padding: 20px;
+    font-size: 30px;
+    text-align: justify;
+    color: white;
+    background-color: rgba(40, 75, 99, 0.6);
+    border-radius: 25px;
+}
