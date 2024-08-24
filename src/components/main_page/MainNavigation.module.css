@@ -20,7 +20,12 @@
     border-right: 5px dotted grey;
 }
 
-.menuContainerComponent{
+.menuContainerComponent {
     font-weight: 700;
     font-size: 30px;
+}
+
+.menuContainerComponent > * {
+    padding: 20px !important;
+    align-self: center;
 }

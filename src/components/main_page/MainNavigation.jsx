@@ -6,7 +6,7 @@ import AuthNavigations from './AuthNavigations';
 import NonAuthNavigations from './NonAuthNavigations';
 
 function MainNavigation() {
-    const [authorized, setAuthorized] = useState(true);
+    const [authorized, setAuthorized] = useState(false);
 
     return (
         <Container as='header' fluid id={classes.menuContainer}>
@@ -19,15 +19,18 @@ function MainNavigation() {
                         </article>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls='navbar-links'/>
-                    <Navbar.Collapse id='navbar-links'>
-                        <Nav className={'me-auto justify-content-center ' + classes.menuContainerComponent}>
+                    <Navbar.Collapse
+                        id='navbar-links'
+                        className='justify-content-center'
+                    >
+                        <Nav className={classes.menuContainerComponent}>
                             <Nav.Link href='/training' className={classes.menuLink}>
                                 Zacznij trening!
                             </Nav.Link>
                             <NavDropdown
-                                title='Zarządzaj zestawami'
-                                menuVariant='dark'
-                                id={classes.menuLinkDropdown}
+                              title='Zarządzaj zestawami'
+                              menuVariant='dark'
+                              id={classes.menuLinkDropdown}
                             >
                                 <NavDropdown.ItemText>Treningi</NavDropdown.ItemText>
                                 <NavDropdown.Item href='@{/training}'>Wyświetl</NavDropdown.Item>
