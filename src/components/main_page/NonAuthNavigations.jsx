@@ -1,19 +1,21 @@
-function NonAuthNavigations({classes}){
+import {Nav} from "react-bootstrap";
 
-    {/*<div className="nav-item" sec: authorize="!isAuthenticated()">*/}
-    {/*    <Nav.Link*/}
-    {/*        href="@{/login}"*/}
-    {/*    >*/}
-    {/*        Zaloguj się*/}
-    {/*    </Nav.Link>*/}
-    {/*    <Nav.Link*/}
-    {/*        href="@{/register}"*/}
-    {/*    >*/}
-    {/*        Rejestracja*/}
-    {/*    </Nav.Link>*/}
-    {/*</div>*/}
+function NonAuthNavigations({classes}){
     return (
-      <></>
+      <>
+          <Nav.Link
+              href="@{/login}"
+              className={classes.menuLink}
+          >
+              Zaloguj się
+          </Nav.Link>
+          <Nav.Link
+              href="@{/register}"
+              className={classes.menuLink}
+          >
+              Rejestracja
+          </Nav.Link>
+      </>
     );
 }
 
