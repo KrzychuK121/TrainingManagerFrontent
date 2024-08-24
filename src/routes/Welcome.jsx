@@ -19,8 +19,9 @@ function Welcome() {
                     <div id={classes.welcomeDesc}>
                         <p>
                             Dzięki tej aplikacji możesz stworzyć swój wymarzony trening oraz kontrolować jego przebieg.
-                            <br />
-                                Kliknij <a href="/glowna">tutaj</a> aby przejść do strony głównej.
+                        </p>
+                        <p>
+                            Kliknij <a href="/glowna">tutaj</a> aby przejść do strony głównej.
                         </p>
                     </div>
                 </Col>
