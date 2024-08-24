@@ -4,13 +4,13 @@ function NonAuthNavigations({classes}){
     return (
       <>
           <Nav.Link
-              href="@{/login}"
+              href="/main/login"
               className={classes.menuLink}
           >
               Zaloguj się
           </Nav.Link>
           <Nav.Link
-              href="@{/register}"
+              href="/main/register"
               className={classes.menuLink}
           >
               Rejestracja

@@ -1,4 +1,4 @@
-import './Default.css';
+import './Default.module.css';
 import { Outlet } from "react-router-dom";
 
 function Default() {

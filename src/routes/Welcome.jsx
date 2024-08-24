@@ -21,7 +21,7 @@ function Welcome() {
                             Dzięki tej aplikacji możesz stworzyć swój wymarzony trening oraz kontrolować jego przebieg.
                         </p>
                         <p>
-                            Kliknij <a href='/glowna'>tutaj</a> aby przejść do strony głównej.
+                            Kliknij <a href='/main'>tutaj</a> aby przejść do strony głównej.
                         </p>
                     </div>
                 </Col>
