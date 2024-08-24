@@ -1,0 +1,15 @@
+body {
+    color: #0f1923;
+    background-image: url("../../public/img/index/background.jpg");
+    background-attachment: fixed;
+}
+
+.authForms {
+    font-size: 20px;
+    font-family: Tungsten-Bold,arial,georgia, sans-serif;
+    font-weight: bold;
+}
+
+.authForms > * {
+    margin-bottom: 20px;
+}
