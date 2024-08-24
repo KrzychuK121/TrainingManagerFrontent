@@ -5,7 +5,7 @@ import Welcome from './routes/Welcome';
 import MainPage from './routes/main/MainPage';
 import NonAuthWelcome from "./routes/main/NonAuthWelcome";
 import LoginPage from './routes/navigations/authentication/Login';
-import RegisterPage, { action as registerAction } from './routes/navigations/authentication/Register/Register';
+import RegisterPage, { action as registerAction } from './routes/navigations/authentication/Register';
 import LogoutPage from './routes/navigations/authentication/Logout';
 
 export const router = createBrowserRouter(
