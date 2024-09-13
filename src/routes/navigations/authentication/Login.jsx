@@ -1,12 +1,23 @@
-import { Button, Col, Form, Row } from 'react-bootstrap';
-import { Form as RouterForm, redirect } from 'react-router-dom';
+import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
+import { Form as RouterForm, redirect, useActionData } from 'react-router-dom';
 import { login } from '../../../utils/AuthUtils';
 import defaultClasses from '../../Default.module.css';
 
+function getValidationErrComp({error}) {
+    return (
+        <Alert variant="danger">
+            <span style={{fontWeight: 'bold'}}>{error}</span>
+        </Alert>
+    );
+}
+
 function LoginPage() {
+    const data = useActionData();
+
     return (
         <Row className="justify-content-center">
             <Col sm={5}>
+                {data && getValidationErrComp(data)}
                 <RouterForm method="POST">
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Logowanie</legend>
@@ -64,7 +75,10 @@ export async function action({request}) {
         'username': formData.get('username'),
         'password': formData.get('password')
     };
-    await login(userCredentials);
 
-    return redirect('/main');
+    const loginResponse = await login(userCredentials);
+
+    return loginResponse !== null
+        ? loginResponse
+        : redirect('/main?login-success');
 }
