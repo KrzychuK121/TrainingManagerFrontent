@@ -1,6 +1,7 @@
-import classes from "./NonAuthWelcome.module.css";
+import './MainWelcome.module.css';
 
-function NonAuthWelcome(){
+function MainWelcome() {
+    // TODO: Maybe change content depending on auth status
     return (
         <>
             <div>
@@ -13,4 +14,4 @@ function NonAuthWelcome(){
     );
 }
 
-export default NonAuthWelcome;
+export default MainWelcome;
