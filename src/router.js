@@ -1,17 +1,22 @@
 ﻿import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import Default from './routes/Default';
-import Welcome from './routes/Welcome';
 import MainPage from './routes/main/MainPage';
-import MainWelcome from "./routes/main/MainWelcome";
+import MainWelcome from './routes/main/MainWelcome';
 import LoginPage, { action as loginAction } from './routes/navigations/authentication/Login';
+import LogoutPage, { action as logoutAction } from './routes/navigations/authentication/Logout';
 import RegisterPage, { action as registerAction } from './routes/navigations/authentication/Register';
-import LogoutPage from './routes/navigations/authentication/Logout';
+import Welcome from './routes/Welcome';
+import { authenticatedLoader, isAuthenticated as isAuthLoader } from './utils/AuthUtils';
 
 export const router = createBrowserRouter(
     [
         {
-            path: '/', element: <Default/>, children: [
+            id: 'root',
+            path: '/',
+            element: <Default/>,
+            loader: isAuthLoader,
+            children: [
                 {
                     path: '/',
                     index: true,
@@ -28,16 +33,19 @@ export const router = createBrowserRouter(
                         {
                             path: 'login',
                             element: <LoginPage/>,
-                            action: loginAction
+                            action: loginAction,
+                            loader: authenticatedLoader
                         },
                         {
                             path: 'register',
                             element: <RegisterPage/>,
-                            action: registerAction
+                            action: registerAction,
+                            loader: authenticatedLoader
                         },
                         {
                             path: 'logout',
-                            element: <LogoutPage/>
+                            element: <LogoutPage/>,
+                            action: logoutAction
                         }
                     ]
                 }
