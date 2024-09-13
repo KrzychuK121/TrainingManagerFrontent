@@ -1,14 +1,14 @@
+import { useState } from 'react';
 import { Form } from 'react-bootstrap';
 import ValidationErrorMess from './Validation';
-import { useState } from 'react';
 
-function getValidationProp(isValid){
-    if(isValid === undefined)
+function getValidationProp(isValid) {
+    if (isValid === undefined)
         return {};
-    if(isValid)
-        return { isValid: true };
+    if (isValid)
+        return {isValid: true};
     else
-        return { isInvalid: true };
+        return {isInvalid: true};
 }
 
 function InputField(
@@ -18,18 +18,16 @@ function InputField(
         name,
         type = 'text'
     }
-){
+) {
     const [isValid, setIsValid] = useState(undefined);
 
     const validationProps = getValidationProp(isValid);
 
-    console.log(isValid);
-
     return (
         <Form.Group hasValidation>
-            <Form.Label className='form-label' htmlFor={name}>{label}:</Form.Label>
+            <Form.Label className="form-label" htmlFor={name}>{label}:</Form.Label>
             <Form.Control
-                className='form-control'
+                className="form-control"
                 id={name}
                 name={name}
                 type={type}
