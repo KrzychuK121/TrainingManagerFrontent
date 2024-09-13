@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { Form } from 'react-bootstrap';
-import ValidationErrorMess from './Validation';
 
 function getValidationProp(isValid) {
     if (isValid === undefined)
@@ -11,6 +9,32 @@ function getValidationProp(isValid) {
         return {isInvalid: true};
 }
 
+function isValid(status) {
+    if (status === undefined)
+        return undefined;
+
+    return status === null;
+}
+
+function getValidationErrorMess(status) {
+    const isStatusValid = isValid(status);
+    if (isStatusValid === undefined)
+        return <></>;
+
+    let message = isStatusValid
+        ? ''
+        : status;
+    let type = isStatusValid
+        ? 'valid'
+        : 'invalid';
+
+    return (
+        <Form.Control.Feedback type={type}>
+            {message}
+        </Form.Control.Feedback>
+    );
+}
+
 function InputField(
     {
         label,
@@ -19,25 +43,20 @@ function InputField(
         type = 'text'
     }
 ) {
-    const [isValid, setIsValid] = useState(undefined);
-
-    const validationProps = getValidationProp(isValid);
+    const validationProps = getValidationProp(isValid(status));
 
     return (
-        <Form.Group hasValidation>
-            <Form.Label className="form-label" htmlFor={name}>{label}:</Form.Label>
+        <Form.Group>
+            <Form.Label className='form-label' htmlFor={name}>{label}:</Form.Label>
             <Form.Control
-                className="form-control"
+                className='form-control'
                 id={name}
                 name={name}
                 type={type}
                 isValid={validationProps.isValid}
                 isInvalid={validationProps.isInvalid}
             />
-            <ValidationErrorMess
-                status={status}
-                setIsValid={setIsValid}
-            />
+            {getValidationErrorMess(status)}
         </Form.Group>
     );
 }
