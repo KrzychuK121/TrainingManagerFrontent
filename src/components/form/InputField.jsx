@@ -21,17 +21,22 @@ function getValidationErrorMess(status) {
     if (isStatusValid === undefined)
         return <></>;
 
-    let message = isStatusValid
+    let messages = isStatusValid
         ? ''
         : status;
     let type = isStatusValid
         ? 'valid'
         : 'invalid';
 
-    return (
-        <Form.Control.Feedback type={type}>
-            {message}
-        </Form.Control.Feedback>
+    return messages.map(
+        message => (
+            <Form.Control.Feedback
+                key={message}
+                type={type}
+            >
+                {message}
+            </Form.Control.Feedback>
+        )
     );
 }
 
