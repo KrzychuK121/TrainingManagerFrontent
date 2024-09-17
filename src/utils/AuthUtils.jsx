@@ -28,8 +28,14 @@ export function isAuthenticated() {
  * (e.g.login page).
  */
 export function authenticatedLoader() {
-    return isAuthenticated() ?
-        redirect('/main')
+    return isAuthenticated()
+        ? redirect('/main')
+        : null;
+}
+
+export function nonAuthenticatedLoader() {
+    return !isAuthenticated()
+        ? redirect('/main/login')
         : null;
 }
 
