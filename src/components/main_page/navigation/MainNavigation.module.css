@@ -2,19 +2,23 @@
 #menuContainer {
     background-color: #111823;
     padding: 15px;
-    font-family: Tungsten-Bold,arial,georgia, sans-serif;
+    font-family: Tungsten-Bold, arial, georgia, sans-serif;
 }
 
-.menuLink, #menuLinkDropdown {
+.menuLinkDropdown {
+    align-self: center;
+}
+
+.menuLink, .menuLinkDropdown > a {
     color: white;
 }
 
-.menuLink:hover, .menuLink:focus, #menuLinkDropdown:hover, #menuLinkDropdown:focus {
+.menuLink:hover, .menuLink:focus, .menuLinkDropdown:hover > a, .menuLinkDropdown:focus > a {
     color: #FF4655;
 }
 
 /*nagłówek strony*/
-#brandDesc {
+.brandDesc {
     color: #FF4655;
     padding-right: 40px;
     border-right: 5px dotted grey;
@@ -25,7 +29,7 @@
     font-size: 30px;
 }
 
-.menuContainerComponent > * {
+.menuContainerComponent .menuLink {
     padding-left: 20px !important;
     padding-right: 20px !important;
     align-self: center;
