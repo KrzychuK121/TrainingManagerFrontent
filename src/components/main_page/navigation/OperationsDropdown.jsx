@@ -14,7 +14,7 @@ function OperationsDropdown() {
             <NavDropdown.Divider/>
             <NavDropdown.ItemText>Ćwiczenia</NavDropdown.ItemText>
             <NavDropdown.Item href='/main/exercise'>Wyświetl</NavDropdown.Item>
-            <NavDropdown.Item href='@{/exercise/create}'>Stwórz</NavDropdown.Item>
+            <NavDropdown.Item href='/main/exercise/create'>Stwórz</NavDropdown.Item>
             <NavDropdown.Divider/>
             <NavDropdown.ItemText>Plany treningowe</NavDropdown.ItemText>
             <NavDropdown.Item href='@{/plans}'>Wyświetl wszystkie</NavDropdown.Item>
