@@ -1,33 +1,29 @@
-import { Alert, Button, Col, Form, Row, Spinner } from 'react-bootstrap';
-import { Form as RouterForm, redirect, useActionData, useNavigation, useSearchParams } from 'react-router-dom';
+import { Col, Form, Row } from 'react-bootstrap';
+import { Form as RouterForm, redirect, useActionData, useSearchParams } from 'react-router-dom';
+import AlertComponent from '../../../components/alerts/AlertComponent';
+import SubmitButton from '../../../components/form/SubmitButton';
 import { login } from '../../../utils/AuthUtils';
 import defaultClasses from '../../Default.module.css';
 
-function getValidationErrComp({error}) {
-    return (
-        <Alert variant='danger'>
-            <span style={{fontWeight: 'bold'}}>{error}</span>
-        </Alert>
-    );
-}
-
 function LoginPage() {
     const data = useActionData();
-    const navigation = useNavigation();
     const [searchParams] = useSearchParams();
     const registerSuccess = searchParams.get('register-success');
 
     return (
         <Row className='justify-content-center'>
             <Col sm={5}>
-                {data && getValidationErrComp(data)}
-                {
-                    registerSuccess !== null && (
-                        <Alert variant='success' dismissible>
-                            <span style={{fontWeight: 'bold'}}>Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.</span>
-                        </Alert>
-                    )
-                }
+                <AlertComponent
+                    message={data}
+                    messageProperty='error'
+                    variant={'danger'}
+                    displayCondition={data !== undefined}
+                />
+                <AlertComponent
+                    message='Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.'
+                    displayCondition={registerSuccess !== null}
+                    autoClose={false}
+                />
                 <RouterForm method='POST'>
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Logowanie</legend>
@@ -61,16 +57,10 @@ function LoginPage() {
                                 id='password'
                             />
                         </Form.Group>
-                        {
-                            navigation.state !== 'submitting'
-                                ? <Button variant='primary' type='submit'>
-                                    Zaloguj
-                                </Button>
-                                : <Button variant='primary' type='submit' disabled>
-                                    Loguję.. {' '}
-                                    <Spinner animation='grow' size='sm'/>
-                                </Button>
-                        }
+                        <SubmitButton
+                            display='Zaloguj'
+                            submittingDisplay='Loguję'
+                        />
                         <Form.Check
                             id='remember-me'
                             name='remember-me'
