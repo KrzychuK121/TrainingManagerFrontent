@@ -1,5 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import classes from './Welcome.module.css';
 
 function Welcome() {
@@ -10,7 +9,7 @@ function Welcome() {
                     id={classes.nag}
                     md={6}
                 >
-                    Witaj w aplikacji<br />
+                    Witaj w aplikacji<br/>
                     TrainingManager
                 </Col>
             </header>
@@ -27,7 +26,7 @@ function Welcome() {
                 </Col>
             </Row>
         </Container>
-    )
+    );
 }
 
 export default Welcome;
