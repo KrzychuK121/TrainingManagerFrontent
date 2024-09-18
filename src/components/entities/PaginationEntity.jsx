@@ -11,8 +11,7 @@ function PaginationEntity({pages}) {
     const lastPageIndex = pages.totalPages - 1;
 
     function validatePage(page) {
-        // TODO: Handle text in input
-        if (page < 0)
+        if (isNaN(page) || page < 0)
             return 0;
         if (page > lastPageIndex)
             return lastPageIndex;
@@ -51,6 +50,7 @@ function PaginationEntity({pages}) {
                             id='page'
                             name='page'
                             className={classes.searchPage}
+                            placeholder='Strona..'
                             onKeyDown={submittedPageHandler}
                         />
                         <Pagination.Next
