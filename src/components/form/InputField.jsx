@@ -1,4 +1,5 @@
 import { Form } from 'react-bootstrap';
+import classes from './InputField.module.css';
 
 function getValidationProp(isValid) {
     if (isValid === undefined)
@@ -45,14 +46,15 @@ function InputField(
         label,
         status,
         name,
-        type = 'text'
+        type = 'text',
+        helperText = null
     }
 ) {
     const validationProps = getValidationProp(isValid(status));
 
     return (
         <Form.Group>
-            <Form.Label className='form-label' htmlFor={name}>{label}:</Form.Label>
+            <Form.Label className='form-label' htmlFor={name} column={true}>{label}:</Form.Label>
             <Form.Control
                 className='form-control'
                 id={name}
@@ -62,6 +64,13 @@ function InputField(
                 isInvalid={validationProps.isInvalid}
             />
             {getValidationErrorMess(status)}
+            {
+                helperText && (
+                    <Form.Text className={classes.helperText}>
+                        {helperText}
+                    </Form.Text>
+                )
+            }
         </Form.Group>
     );
 }
