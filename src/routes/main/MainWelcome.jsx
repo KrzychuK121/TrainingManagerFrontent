@@ -1,6 +1,10 @@
 import './MainWelcome.module.css';
-import { Alert } from 'react-bootstrap';
 import { useSearchParams } from 'react-router-dom';
+import AlertComponent from '../../components/alerts/AlertComponent';
+
+function loginSuccessPresent(loginSuccess) {
+    return loginSuccess !== null;
+}
 
 function MainWelcome() {
     // TODO: Maybe change content depending on auth status
@@ -10,13 +14,11 @@ function MainWelcome() {
     return (
         <>
             <div>
-                {
-                    loginSuccess !== null && (
-                        <Alert variant="success">
-                            Logowanie ukończone pomyślnie.
-                        </Alert>
-                    )
-                }
+                <AlertComponent
+                    message='Logowanie ukończone pomyślnie.'
+                    displayCondition={loginSuccessPresent(loginSuccess)}
+                    autoClose={false}
+                />
                 <h1>Witaj w aplikacji!</h1>
                 <p style={{fontSize: '20px'}}>
                     Cieszę się, że zdecydowałeś/aś się skorzystać z aplikacji.
