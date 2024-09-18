@@ -1,12 +1,11 @@
-import { Alert, Button, Col, Row, Spinner } from 'react-bootstrap';
-import { Form as RouterForm, redirect, useActionData, useNavigation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Col, Row } from 'react-bootstrap';
+import { Form as RouterForm, redirect, useActionData } from 'react-router-dom';
+import AlertComponent from '../../../components/alerts/AlertComponent';
 import InputField from '../../../components/form/InputField';
+import SubmitButton from '../../../components/form/SubmitButton';
 
 import defaultClasses from '../../Default.module.css';
-
-function getErrorAlert(message) {
-    return <Alert key={message} variant='danger'>{message}</Alert>;
-}
 
 function getValidations(actionData) {
     if (actionData === undefined)
@@ -17,23 +16,24 @@ function getValidations(actionData) {
         : actionData;
 }
 
-function getGlobalError(actionData) {
+function setGlobalError(actionData, message, setMessage) {
     if (actionData === undefined)
-        return undefined;
-
-    if (actionData.hasOwnProperty('status') && actionData.status === 500)
-        return getErrorAlert('Wystąpił błąd serwera.');
-
-    return actionData.hasOwnProperty('error')
-        ? getErrorAlert('Użytkownik już istnieje. Może to Ty?')
-        : null;
+        setMessage(null);
+    else if (actionData.hasOwnProperty('status') && actionData.status === 500)
+        setMessage('Wystąpił błąd serwera.');
+    else if (actionData.hasOwnProperty('error'))
+        setMessage('Użytkownik już istnieje. Może to Ty?');
 }
 
 function Register() {
-    const navigation = useNavigation();
     const actionData = useActionData();
+    const [errorMessage, setErrorMessage] = useState(null);
     const validations = getValidations(actionData);
-    const globalError = getGlobalError(actionData);
+
+    useEffect(
+        () => setGlobalError(actionData, errorMessage, setErrorMessage),
+        [actionData]
+    );
 
     function getValidation(valProp) {
         if (validations === null || validations === undefined)
@@ -47,7 +47,12 @@ function Register() {
     return (
         <Row className='justify-content-center'>
             <Col sm={5}>
-                {globalError}
+                <AlertComponent
+                    message={errorMessage}
+                    variant='danger'
+                    displayCondition={errorMessage !== null}
+                    closeDelay={5000}
+                />
                 <RouterForm noValidate validated='true' method='POST'>
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Rejestracja</legend>
@@ -82,15 +87,11 @@ function Register() {
                             status={getValidation('lastName')}
                             name='lastName'
                         />
-                        {
-                            navigation.state !== 'submitting'
-                                ? <Button type='submit'>Zarejestruj się</Button>
-                                : <Button type='submit' disabled>
-                                    Rejestruję.. {' '}
-                                    <Spinner animation='grow' size='sm'/>
-                                </Button>
-                        }
 
+                        <SubmitButton
+                            display='Zarejestruj się'
+                            submittingDisplay='Rejestruję'
+                        />
                     </fieldset>
                 </RouterForm>
             </Col>
