@@ -1,14 +1,44 @@
-import { Form as RouterForm, useLoaderData } from 'react-router-dom';
+import { Form as RouterForm, Link, useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import InputField from '../../../components/form/InputField';
+import FormField from '../../../components/form/FormField';
+import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
+import { injectToken } from '../../../utils/AuthUtils';
 import defaultClasses from '../../Default.module.css';
+
 
 function ExerciseForm() {
     const loaderData = useLoaderData();
-    const message = loaderData && loaderData.message !== null
+    const {exercise, allTrainings} = loaderData;
+    const bodyParts = loaderData.bodyParts.bodyParts;
+    const difficulties = loaderData.difficulties.difficulties;
+    const selectTrainings = allTrainings.map(
+        training => ({
+            value: training.id,
+            description: training.title
+        })
+    );
+
+    const message = loaderData && loaderData.message
         ? loaderData.message
         : null;
+
+    function getExerciseParam(param) {
+        if (!exercise || !exercise.hasOwnProperty(param))
+            return '';
+        return exercise[param];
+    }
+
+    function getSelectedTrainings() {
+        const trainings = getExerciseParam('trainings');
+        if (trainings === '')
+            return null;
+
+        return trainings.map(
+            training => training.id
+        );
+    }
+
     return (
         <>
             <AlertComponent
@@ -21,102 +51,83 @@ function ExerciseForm() {
             >
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowe ćwiczenie</legend>
-                    <InputField
+                    <Link to='/main/exercise'>Powrót do ćwiczeń</Link>
+
+                    <FormField
                         label='Nazwa'
                         name='name'
+                        defaultValue={getExerciseParam('name')}
                     />
 
-                    <InputField
+                    <FormField
                         label='Opis'
                         name='description'
+                        defaultValue={getExerciseParam('description')}
                     />
 
-                    <InputField
-                        label='Trenowana część ciała'
-                        name='bodyPart'
-                    />
-                    {/*<select
-                        className='form-select form-select-lg'
-                        aria-label='label'
-                        id='bodyPart'
-                        th:field='*{bodyPart}'
-                    >
-                        <option value='' selected>---Wybierz część ciała---</option>
-                        <option
-                            th:each='bodyPart, i : ${bodyPartArray}'
-                            th:value='${bodyPart}'
-                            th:text='${T(springweb.training_manager.models.entities.BodyPart).getBodyDesc(bodyPart)}'
-                        ></option>
-                    </select>*/}
+                    <FormField label='Trenowana część ciała'>
+                        <SelectField
+                            title='Lista rozwijana wyboru trenowanej części ciała'
+                            name='bodyPart'
+                            options={bodyParts}
+                            firstElemDisplay='Wybierz część ciała'
+                            selectedValues={getExerciseParam('bodyPart')}
+                        />
+                    </FormField>
 
-                    <InputField
+                    <FormField
                         label='Serie'
                         name='rounds'
+                        defaultValue={getExerciseParam('rounds')}
                     />
 
-                    <InputField
+                    <FormField
                         label='Powtórzenia'
                         name='repetition'
+                        defaultValue={getExerciseParam('repetition')}
                         helperText='Jeśli ćwiczenie polegają długości wykonywania, zostaw puste pole
                         lub wpisz 0'
                     />
 
-                    <InputField
+                    <FormField
                         label='Czas wykonania'
                         name='time'
+                        defaultValue={getExerciseParam('time')}
                         helperText='Jeśli ćwiczenia polegają na ilości powtórzeń, możesz zostawić
                         to pole puste (lub wpisz przewidywaną długość treningu)'
                     />
 
-                    <InputField
+                    <FormField
                         label='Obciążenie'
                         name='weights'
+                        defaultValue={getExerciseParam('weights')}
                     />
 
-                    <InputField
-                        label='Poziom trudności'
-                        name='difficulty'
-                    />
-                    {/*<select
-                        className='form-select form-select-lg'
-                        aria-label='label'
-                        id='difficulty'
-                        th:field='*{difficulty}'
-                    >
-                        <option value='' selected>---Wybierz poziom trudności---</option>
-                        <option
-                            th:each='difficulty, i : ${difficultyArray}'
-                            th:value='${difficulty}'
-                            th:text='${difficultyDescArray.get(__${i.index}__)}'
-                        ></option>
-                    </select>*/}
+                    <FormField label='Poziom trudności'>
+                        <SelectField
+                            title='Lista rozwijana wyboru poziomu trudności'
+                            name='difficulty'
+                            options={difficulties}
+                            firstElemDisplay='Wybierz poziom trudności'
+                            selectedValues={getExerciseParam('difficulty')}
+                        />
+                    </FormField>
 
-                    <InputField
-                        label='Lista treningów do przypisania'
-                        name='trainings'
-                    />
-                    {/*<select
-                        className='form-select form-select-lg'
-                        aria-label='label'
-                        id='trainings'
-                        th:if='${allTrainings != null and !allTrainings.isEmpty()}'
-                        name='trainingIds'
-                        multiple
-                    >
-                        <option value='' selected>---Wybierz treningi---</option>
-                        <option
-                            th:each='training, i : ${allTrainings}'
-                            th:value='${training.id}'
-                            th:text='${training.title}'
-                            th:selected='${selected != null and selected.contains(training.id)}'
-                        >
-                        </option>
-                    </select>*/}
+                    <FormField label='Lista treningów do przypisania'>
+                        <SelectField
+                            title='Lista rozwijana wyboru treningu'
+                            name='trainings'
+                            options={selectTrainings}
+                            multiple={true}
+                            selectedValues={getSelectedTrainings()}
+                        />
+                    </FormField>
 
                     <SubmitButton
                         display='Zapisz'
                         submittingDisplay='Zapisuję'
                     />
+                    <Link to='/main/exercise'>Powrót do ćwiczeń</Link>
                 </fieldset>
             </RouterForm>
         </>
@@ -125,7 +136,26 @@ function ExerciseForm() {
 
 export default ExerciseForm;
 
+export async function loader({params}) {
+    const exerciseId = params.id
+        ? `/${params.id}`
+        : '';
+
+    const response = await fetch(
+        `http://localhost:8080/api/exercise/createModel${exerciseId}`,
+        {
+            headers: injectToken({
+                'Content-Type': 'application/json'
+            })
+        }
+    );
+    return await response.json();
+}
+
 export async function action({request}) {
+    const data = await request.formData();
+    console.log('data:');
+    console.log(data);
     const normalizedMethod = request.method.toLowerCase();
     switch (normalizedMethod) {
         case 'post':
