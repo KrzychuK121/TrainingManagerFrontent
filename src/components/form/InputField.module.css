@@ -1,5 +1,11 @@
+.helperBox {
+    background-color: black;
+    padding: 15px;
+    margin: 5px;
+}
+
 .helperText {
-    color: wheat;
+    color: #989898;
     font-style: italic;
     font-size: 0.8em;
 }
