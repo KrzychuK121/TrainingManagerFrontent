@@ -1,5 +1,5 @@
 import { Form } from 'react-bootstrap';
-import classes from './InputField.module.css';
+import classes from './FormField.module.css';
 
 function getValidationProp(isValid) {
     if (isValid === undefined)
@@ -41,12 +41,14 @@ function getValidationErrorMess(status) {
     );
 }
 
-function InputField(
+function FormField(
     {
         label,
         status,
         name,
         type = 'text',
+        defaultValue = null,
+        children = undefined,
         helperText = null
     }
 ) {
@@ -55,24 +57,33 @@ function InputField(
     return (
         <Form.Group>
             <Form.Label className='form-label' htmlFor={name} column={true}>{label}:</Form.Label>
-            <Form.Control
-                className='form-control'
-                id={name}
-                name={name}
-                type={type}
-                isValid={validationProps.isValid}
-                isInvalid={validationProps.isInvalid}
-            />
+            {
+                children
+                    ? children
+                    : (
+                        <Form.Control
+                            className='form-control'
+                            id={name}
+                            name={name}
+                            type={type}
+                            defaultValue={defaultValue}
+                            isValid={validationProps.isValid}
+                            isInvalid={validationProps.isInvalid}
+                        />
+                    )
+            }
             {getValidationErrorMess(status)}
             {
                 helperText && (
-                    <Form.Text className={classes.helperText}>
-                        {helperText}
-                    </Form.Text>
+                    <div className={classes.helperBox}>
+                        <Form.Text className={classes.helperText}>
+                            {helperText}
+                        </Form.Text>
+                    </div>
                 )
             }
         </Form.Group>
     );
 }
 
-export default InputField;
+export default FormField;
