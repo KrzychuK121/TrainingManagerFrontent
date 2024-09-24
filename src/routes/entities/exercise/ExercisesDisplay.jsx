@@ -1,5 +1,5 @@
-import { Table } from 'react-bootstrap';
-import { useLoaderData } from 'react-router-dom';
+import { Button, Table } from 'react-bootstrap';
+import { Link, useLoaderData } from 'react-router-dom';
 import DeleteModal from '../../../components/entities/DeleteModal';
 import PaginationEntity from '../../../components/entities/PaginationEntity';
 import SortAnchor from '../../../components/entities/SortAnchor';
@@ -38,22 +38,15 @@ function getExerciseList(exercises) {
                     }
                 </td>
                 <td>
-                    <fieldset>
-                        {/*TODO: Change this to link instead of form.*/}
-                        <form
-                            method='get'
-                            action='#'
-                            //'@{/exercise/edit/{id}(id=${exercise.id})}'
+                    <Link to={`/main/exercise/edit/${id}`}>
+                        <Button
+                            type='submit'
+                            variant='primary'
                         >
-                            <button
-                                type='submit'
-                                className='btn btn-primary'
-                            >
-                                Edytuj
-                            </button>
-                        </form>
-                        <DeleteModal/>
-                    </fieldset>
+                            Edytuj
+                        </Button>
+                    </Link>
+                    <DeleteModal/>
                 </td>
             </tr>
         )
@@ -156,7 +149,6 @@ export async function loader({request}) {
     const url = new URL(request.url);
     const searchParams = url.searchParams;
     const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
-    console.log(filteredQueryString);
 
     const response = await fetch(
         `http://localhost:8080/api/exercise${filteredQueryString}`,
@@ -167,9 +159,5 @@ export async function loader({request}) {
         }
     );
 
-    // TODO: Add sorting and pagination handler
-    const data = await response.json();
-    console.log(data);
-
-    return data;
+    return await response.json();
 }
