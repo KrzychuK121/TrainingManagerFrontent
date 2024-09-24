@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Form as RouterForm, redirect, useActionData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import InputField from '../../../components/form/InputField';
+import FormField from '../../../components/form/FormField';
 import SubmitButton from '../../../components/form/SubmitButton';
 
 import defaultClasses from '../../Default.module.css';
@@ -56,33 +56,33 @@ function Register() {
                 <RouterForm noValidate validated='true' method='POST'>
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Rejestracja</legend>
-                        <InputField
+                        <FormField
                             label='Login'
                             status={getValidation('username')}
                             name='username'
                         />
 
-                        <InputField
+                        <FormField
                             label='Hasło'
                             status={getValidation('password')}
                             name='password'
                             type='password'
                         />
 
-                        <InputField
+                        <FormField
                             label='Powtórz hasło'
                             status={getValidation('passwordRepeat')}
                             name='passwordRepeat'
                             type='password'
                         />
 
-                        <InputField
+                        <FormField
                             label='Imię'
                             status={getValidation('firstName')}
                             name='firstName'
                         />
 
-                        <InputField
+                        <FormField
                             label='Nazwisko'
                             status={getValidation('lastName')}
                             name='lastName'
