@@ -9,21 +9,21 @@ function LoginPage() {
     const data = useActionData();
     const [searchParams] = useSearchParams();
     const registerSuccess = searchParams.get('register-success');
+    const registerSuccessMessage = registerSuccess !== null
+        ? 'Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.'
+        : '';
 
     return (
         <Row className='justify-content-center'>
             <Col sm={5}>
                 <AlertComponent
                     message={data}
+                    showTrigger={data}
                     messageProperty='error'
                     variant={'danger'}
-                    displayCondition={data !== undefined}
+                    closeDelay={3000}
                 />
-                <AlertComponent
-                    message='Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.'
-                    displayCondition={registerSuccess !== null}
-                    autoClose={false}
-                />
+                <AlertComponent message={registerSuccessMessage} showTrigger={null}/>
                 <RouterForm method='POST'>
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Logowanie</legend>
