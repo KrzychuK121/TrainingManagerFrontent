@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Alert, Fade } from 'react-bootstrap';
 
-// FIXME
-
 function getMessage(message, messageProperty) {
     if (!(message instanceof Object))
         return message;
@@ -12,59 +10,83 @@ function getMessage(message, messageProperty) {
     return message[messageProperty];
 }
 
+/**
+ * This component renders alert with `message` every time `showTrigger` changes its value.
+ * If the `message` is an object, and it contains display message under `messageProperty` then it will be displayed.
+ * If `closeDelay` is provided then alert will disappear itself. Otherwise, it will wait until user closes it.
+ *
+ * @param message string message itself or object with message under `messageProperty` key.
+ * @param showTrigger if this value changes, the component will show alert again. Can be null if it should be
+ *                    displayed once
+ * @param messageProperty property of `message` object that contains alert message to display
+ * @param variant styles of alert
+ * @param closeDelay if null then alert can be dismissible. Otherwise, alert will hide after time provided here in ms
+ * @param rest the rest of `Alert` attributes
+ *
+ * @returns {JSX.Element} Alert component which will close automatically or can be closed manually.
+ * @constructor
+ */
 function AlertComponent(
     {
         message,
+        showTrigger,
         messageProperty = null,
         variant = 'success',
-        displayCondition = true,
-        autoClose = true,
-        closeDelay = 3000
+        closeDelay = null,
+        ...rest
     }
 ) {
-    let [show, setShow] = useState(displayCondition);
+    const [show, setShow] = useState(
+        Boolean(getMessage(message, messageProperty))
+    );
+    const [displayMessage, setDisplayMessage] = useState(getMessage(message, messageProperty));
     const [timeoutId, setTimeoutId] = useState(null);
+
+    useEffect(() => {
+        setDisplayMessage(getMessage(message, messageProperty));
+    }, [showTrigger, message, messageProperty]);
 
     useEffect(
         () => {
-            setShow(displayCondition);
-        },
-        [displayCondition, message]
+            setShow(Boolean(displayMessage));
+        }, [displayMessage]
     );
 
     useEffect(() => {
-        if (!autoClose)
+        if (!closeDelay)
             return;
+
         let timeoutId = null;
-        if (displayCondition) {
+        if (show) {
             timeoutId = setTimeout(
-                () => setShow(false),
+                () => {
+                    setDisplayMessage(null);
+                },
                 closeDelay
             );
             setTimeoutId(timeoutId);
         }
 
         return () => timeoutId && clearTimeout(timeoutId);
-    }, [displayCondition, message, autoClose, closeDelay]);
+    }, [show, closeDelay]);
 
     function onCloseHandler() {
         if (timeoutId)
             clearTimeout(timeoutId);
-        setShow(false);
+        setDisplayMessage(null);
     }
 
     return (
-        displayCondition && (
-            <Alert
-                variant={variant}
-                show={show}
-                dismissible={!autoClose}
-                onClose={onCloseHandler}
-                transition={Fade}
-            >
-                {getMessage(message, messageProperty)}
-            </Alert>
-        )
+        <Alert
+            variant={variant}
+            show={show}
+            dismissible={!closeDelay}
+            onClose={onCloseHandler}
+            transition={Fade}
+            {...rest}
+        >
+            {displayMessage}
+        </Alert>
     );
 }
 
