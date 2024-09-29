@@ -29,7 +29,6 @@ function getExerciseList(exercises) {
                 <td>{time}</td>
                 <td>{bodyPartDesc}</td>
                 <td>{difficultyDesc}</td>
-                {/*TODO: Change this to use polish desc*/}
                 <td>
                     {
                         weights === 0
