@@ -1,9 +1,11 @@
 import { Form as RouterForm, Link, useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
+import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
 import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import { injectToken } from '../../../utils/AuthUtils';
+import { createObjFromEntries } from '../../../utils/EntitiesUtils';
 import defaultClasses from '../../Default.module.css';
 
 
@@ -43,7 +45,8 @@ function ExerciseForm() {
         <>
             <AlertComponent
                 message={message}
-                displayCondition={message !== null}
+                showTrigger={loaderData}
+                closeDelay={3000}
             />
             <RouterForm
                 action='#'
@@ -53,13 +56,13 @@ function ExerciseForm() {
                     <legend>Stwórz nowe ćwiczenie</legend>
                     <Link to='/main/exercise'>Powrót do ćwiczeń</Link>
 
-                    <FormField
+                    <DefaultFormField
                         label='Nazwa'
                         name='name'
                         defaultValue={getExerciseParam('name')}
                     />
 
-                    <FormField
+                    <DefaultFormField
                         label='Opis'
                         name='description'
                         defaultValue={getExerciseParam('description')}
@@ -75,13 +78,13 @@ function ExerciseForm() {
                         />
                     </FormField>
 
-                    <FormField
+                    <DefaultFormField
                         label='Serie'
                         name='rounds'
                         defaultValue={getExerciseParam('rounds')}
                     />
 
-                    <FormField
+                    <DefaultFormField
                         label='Powtórzenia'
                         name='repetition'
                         defaultValue={getExerciseParam('repetition')}
@@ -89,7 +92,7 @@ function ExerciseForm() {
                         lub wpisz 0'
                     />
 
-                    <FormField
+                    <DefaultFormField
                         label='Czas wykonania'
                         name='time'
                         defaultValue={getExerciseParam('time')}
@@ -97,7 +100,7 @@ function ExerciseForm() {
                         to pole puste (lub wpisz przewidywaną długość treningu)'
                     />
 
-                    <FormField
+                    <DefaultFormField
                         label='Obciążenie'
                         name='weights'
                         defaultValue={getExerciseParam('weights')}
@@ -154,13 +157,16 @@ export async function loader({params}) {
 
 export async function action({request}) {
     const data = await request.formData();
-    console.log('data:');
-    console.log(data);
-    const normalizedMethod = request.method.toLowerCase();
-    switch (normalizedMethod) {
-        case 'post':
-            break;
-        case 'put':
-            break;
-    }
+    const toSave = createObjFromEntries(data);
+
+    const response = await fetch(
+        'http://localhost:8080/api/execrise/',
+        {
+            method: request.method,
+            headers: injectToken({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(toSave)
+        }
+    );
 }
