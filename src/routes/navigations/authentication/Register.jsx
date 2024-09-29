@@ -1,90 +1,75 @@
-import { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Form as RouterForm, redirect, useActionData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import FormField from '../../../components/form/FormField';
+import DefaultFormField from '../../../components/form/DefaultFormField';
 import SubmitButton from '../../../components/form/SubmitButton';
+import useFormValidation from '../../../hooks/UseFormValidation';
+import { createObjFromEntries } from '../../../utils/EntitiesUtils';
 
 import defaultClasses from '../../Default.module.css';
 
-function getValidations(actionData) {
-    if (actionData === undefined)
-        return undefined;
-
-    return actionData.hasOwnProperty('error')
-        ? undefined
-        : actionData;
-}
-
-function setGlobalError(actionData, message, setMessage) {
-    if (actionData === undefined)
-        setMessage(null);
-    else if (actionData.hasOwnProperty('status') && actionData.status === 500)
-        setMessage('Wystąpił błąd serwera.');
-    else if (actionData.hasOwnProperty('error'))
-        setMessage('Użytkownik już istnieje. Może to Ty?');
-}
-
 function Register() {
     const actionData = useActionData();
-    const [errorMessage, setErrorMessage] = useState(null);
-    const validations = getValidations(actionData);
 
-    useEffect(
-        () => setGlobalError(actionData, errorMessage, setErrorMessage),
-        [actionData]
+    const {
+        globalMessage,
+        getValidationProp,
+        getValidationMessages
+    } = useFormValidation(
+        actionData,
+        errors => {
+            if (errors.hasOwnProperty('error'))
+                return 'Użytkownik już istnieje. Może to Ty?';
+            return null;
+        }
     );
-
-    function getValidation(valProp) {
-        if (validations === null || validations === undefined)
-            return undefined;
-
-        return validations.hasOwnProperty(valProp)
-            ? validations[valProp]
-            : null;
-    }
 
     return (
         <Row className='justify-content-center'>
             <Col sm={5}>
                 <AlertComponent
-                    message={errorMessage}
+                    message={globalMessage}
+                    showTrigger={actionData}
                     variant='danger'
-                    displayCondition={errorMessage !== null}
                     closeDelay={5000}
                 />
                 <RouterForm noValidate validated='true' method='POST'>
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Rejestracja</legend>
-                        <FormField
+                        <DefaultFormField
                             label='Login'
-                            status={getValidation('username')}
+                            errorMessages={getValidationMessages('username')}
+                            isValidProp={getValidationProp('username')}
                             name='username'
                         />
 
-                        <FormField
+                        <DefaultFormField
                             label='Hasło'
-                            status={getValidation('password')}
+                            errorMessages={getValidationMessages('password')}
+                            isValidProp={getValidationProp('password')}
                             name='password'
                             type='password'
                         />
 
-                        <FormField
+                        <DefaultFormField
                             label='Powtórz hasło'
-                            status={getValidation('passwordRepeat')}
+                            errorMessages={getValidationMessages('passwordRepeat')}
+                            isValidProp={getValidationProp('passwordRepeat')}
                             name='passwordRepeat'
                             type='password'
                         />
 
-                        <FormField
+                        <DefaultFormField
                             label='Imię'
-                            status={getValidation('firstName')}
+                            errorMessages={getValidationMessages('firstName')}
+                            isValidProp={getValidationProp('firstName')}
                             name='firstName'
                         />
 
-                        <FormField
+                        <DefaultFormField
                             label='Nazwisko'
-                            status={getValidation('lastName')}
+                            errorMessages={getValidationMessages('lastName')}
+                            isValidProp={getValidationProp('lastName')}
                             name='lastName'
                         />
 
@@ -104,13 +89,7 @@ export default Register;
 export async function action({request}) {
     const data = await request.formData();
 
-    const userToCreate = {
-        username: data.get('username'),
-        password: data.get('password'),
-        passwordRepeat: data.get('passwordRepeat'),
-        firstName: data.get('firstName'),
-        lastName: data.get('lastName')
-    };
+    const userToCreate = createObjFromEntries(data);
 
     const response = await fetch(
         'http://localhost:8080/api/auth/register',
