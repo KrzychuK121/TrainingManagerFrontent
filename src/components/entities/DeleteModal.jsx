@@ -3,7 +3,24 @@ import { Button, Modal } from 'react-bootstrap';
 import { Form as RouterForm } from 'react-router-dom';
 import classes from './DeleteModal.module.css';
 
-function DeleteModal() {
+/**
+ * This modal will ask user to confirm delete operation.
+ *
+ * @param action witch action should be triggered when submitting the delete form
+ * @param deleteEntityName name of entity to delete. Default "element"
+ * @param children element or string that will provide more information about entity to delete
+ *
+ * @returns {JSX.Element} Delete confirmation modal that invokes provided `action` and provided
+ *                        information about deleted entity.
+ * @constructor
+ */
+function DeleteModal(
+    {
+        action,
+        deleteEntityName = 'element',
+        children = null
+    }
+) {
     const [show, setShow] = useState(false);
 
     function closeHandler() {
@@ -16,35 +33,36 @@ function DeleteModal() {
 
     return (
         <>
-            <RouterForm
-                method='get'
-                action='#'
-                // sec:authorize="hasRole('ROLE_ADMIN')"
-                // th:action='@{/exercise/delete/{id}(id=${exercise.id})}'
+            <Modal
+                className={classes.deleteModal}
+                show={show}
+                onHide={closeHandler}
+                centered
             >
-                <Modal
-                    className={classes.deleteModal}
-                    show={show}
-                    onHide={closeHandler}
-                    centered
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Potwierdź usuwanie</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Czy na pewno chcesz usunąć ten element?</Modal.Body>
-                    <Modal.Footer>
-                        <Button variant='secondary' onClick={closeHandler}>
-                            Anuluj
-                        </Button>
+                <Modal.Header closeButton>
+                    <Modal.Title>Potwierdź usuwanie</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Czy na pewno chcesz usunąć {deleteEntityName}?
+                    {children}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='secondary' onClick={closeHandler}>
+                        Anuluj
+                    </Button>
+                    <RouterForm
+                        method='delete'
+                        action={action}
+                    >
                         <Button
                             type='submit'
                             variant='danger'
                         >
                             Usuń
                         </Button>
-                    </Modal.Footer>
-                </Modal>
-            </RouterForm>
+                    </RouterForm>
+                </Modal.Footer>
+            </Modal>
             <Button variant='primary' onClick={onDeleteHandler}>
                 Usuń
             </Button>
