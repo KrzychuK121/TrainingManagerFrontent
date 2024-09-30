@@ -3,7 +3,10 @@ import ExerciseForm, {
     action as exerciseSaveAction,
     loader as exerciseFormLoader
 } from '../routes/entities/exercise/ExerciseForm';
-import ExercisesDisplay, { loader as exercisesLoader } from '../routes/entities/exercise/ExercisesDisplay';
+import ExercisesDisplay, {
+    deleteAction as exerciseDeleteAction,
+    loader as exercisesLoader
+} from '../routes/entities/exercise/ExercisesDisplay';
 import { nonAuthenticatedLoader } from '../utils/AuthUtils';
 
 const AuthorizedPaths = {
@@ -26,9 +29,13 @@ const AuthorizedPaths = {
                 },
                 {
                     path: 'edit/:id',
-                    element: <ExerciseForm/>,
+                    element: <ExerciseForm method='put'/>,
                     loader: exerciseFormLoader,
                     action: exerciseSaveAction
+                },
+                {
+                    path: 'delete/:id',
+                    action: exerciseDeleteAction
                 }
             ]
         }
