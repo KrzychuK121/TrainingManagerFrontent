@@ -1,4 +1,5 @@
 import { json, redirect } from 'react-router-dom';
+import { defaultHeaders } from './FetchUtils';
 
 const TOKEN_KEY = 'token';
 
@@ -76,9 +77,7 @@ export async function logout() {
         'http://localhost:8080/api/auth/logout',
         {
             method: 'POST',
-            headers: injectToken({
-                'Content-Type': 'application/json'
-            })
+            headers: defaultHeaders()
         }
     );
 
