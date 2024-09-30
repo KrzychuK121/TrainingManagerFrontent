@@ -1,17 +1,18 @@
 import { Col, Form, Row } from 'react-bootstrap';
-import { Form as RouterForm, redirect, useActionData, useSearchParams } from 'react-router-dom';
+import { Form as RouterForm, redirect, useActionData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import SubmitButton from '../../../components/form/SubmitButton';
+import useMessageParam from '../../../hooks/UseMessageParam';
 import { login } from '../../../utils/AuthUtils';
 import defaultClasses from '../../Default.module.css';
+import { REGISTER_SUCCESS } from './Register';
 
 function LoginPage() {
     const data = useActionData();
-    const [searchParams] = useSearchParams();
-    const registerSuccess = searchParams.get('register-success');
-    const registerSuccessMessage = registerSuccess !== null
-        ? 'Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.'
-        : '';
+    const {message: registerSuccessMessage} = useMessageParam(
+        REGISTER_SUCCESS,
+        'Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.'
+    );
 
     return (
         <Row className='justify-content-center'>
@@ -75,6 +76,8 @@ function LoginPage() {
 
 export default LoginPage;
 
+export const LOGIN_SUCCESS = 'login-success';
+
 export async function action({request}) {
     const formData = await request.formData();
 
@@ -87,5 +90,5 @@ export async function action({request}) {
 
     return loginResponse !== null
         ? loginResponse
-        : redirect('/main?login-success');
+        : redirect(`/main?${LOGIN_SUCCESS}`);
 }

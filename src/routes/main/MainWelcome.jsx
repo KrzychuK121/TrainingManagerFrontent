@@ -1,14 +1,14 @@
 import './MainWelcome.module.css';
-import { useSearchParams } from 'react-router-dom';
 import AlertComponent from '../../components/alerts/AlertComponent';
+import useMessageParam from '../../hooks/UseMessageParam';
+import { LOGIN_SUCCESS } from '../navigations/authentication/Login';
 
 function MainWelcome() {
     // TODO: Maybe change content depending on auth status
-    const [searchParams] = useSearchParams();
-    const loginSuccess = searchParams.get('login-success');
-    const message = loginSuccess !== null
-        ? 'Logowanie ukończone pomyślnie.'
-        : '';
+    const {message} = useMessageParam(
+        LOGIN_SUCCESS,
+        'Logowanie ukończone pomyślnie.'
+    );
 
     return (
         <>

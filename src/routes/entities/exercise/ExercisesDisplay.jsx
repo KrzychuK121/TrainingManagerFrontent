@@ -1,10 +1,13 @@
 import { Button, Table } from 'react-bootstrap';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, redirect, useLoaderData } from 'react-router-dom';
+import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/DeleteModal';
 import PaginationEntity from '../../../components/entities/PaginationEntity';
 import SortAnchor from '../../../components/entities/SortAnchor';
-import { injectToken } from '../../../utils/AuthUtils';
+import { useMessageParams } from '../../../hooks/UseMessageParam';
+import { defaultHeaders } from '../../../utils/FetchUtils';
 import { getFilteredQueryString } from '../../../utils/URLUtils';
+import { EDIT_SUCCESS } from './ExerciseForm';
 
 function getExerciseList(exercises) {
     return exercises.map(
@@ -55,12 +58,36 @@ function getExerciseList(exercises) {
 function ExercisesDisplay() {
     const loadedData = useLoaderData();
     const exercises = loadedData.content;
+    const {messages: successMessages} = useMessageParams(
+        [
+            {
+                messageParam: EDIT_SUCCESS,
+                displayIfSuccess: 'Ćwiczenie zostało edytowane pomyślnie.'
+            },
+            {
+                messageParam: DELETE_SUCCESS,
+                displayIfSuccess: 'Ćwiczenie zostało usunięte pomyślnie.'
+            }
+        ]
+    );
 
     if (exercises && exercises.length === 0)
         return <div>Brak ćwiczeń do wyświetlenia</div>;
 
     return (
         <>
+            {
+                successMessages && successMessages.map(
+                    message => (
+                        <AlertComponent
+                            key={message}
+                            message={message}
+                            showTrigger={null}
+                            closeDelay={4000}
+                        />
+                    )
+                )
+            }
             {/*ALERT IF ERROR*/}
             {/*<div
                 th:fragment="alert"
@@ -112,6 +139,12 @@ function ExercisesDisplay() {
                     </th>
                     <th>
                         <SortAnchor
+                            display='Obciążenie'
+                            field='weights'
+                        />
+                    </th>
+                    <th>
+                        <SortAnchor
                             display='Część ciała'
                             field='bodyPart'
                         />
@@ -120,12 +153,6 @@ function ExercisesDisplay() {
                         <SortAnchor
                             display='Trudność'
                             field='difficulty'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Obciążenie'
-                            field='weights'
                         />
                     </th>
                     <th>
@@ -143,6 +170,8 @@ function ExercisesDisplay() {
 }
 
 export default ExercisesDisplay;
+
+const DELETE_SUCCESS = 'delete-success';
 
 export async function loader({request}) {
     const url = new URL(request.url);

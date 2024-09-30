@@ -86,6 +86,8 @@ function Register() {
 
 export default Register;
 
+export const REGISTER_SUCCESS = 'register-success';
+
 export async function action({request}) {
     const data = await request.formData();
 
@@ -105,5 +107,5 @@ export async function action({request}) {
     if (response.status !== 204)
         return await response.json();
 
-    return redirect('/main/login?register-success');
+    return redirect(`/main/login?${REGISTER_SUCCESS}`);
 }
