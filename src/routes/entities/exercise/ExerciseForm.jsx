@@ -1,16 +1,20 @@
-import { Form as RouterForm, Link, useLoaderData } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { Form as RouterForm, json, Link, redirect, useActionData, useLoaderData, useLocation } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
 import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
-import { injectToken } from '../../../utils/AuthUtils';
-import { createObjFromEntries } from '../../../utils/EntitiesUtils';
+import useFormValidation from '../../../hooks/UseFormValidation';
+import { createObjFromEntries, filterObject } from '../../../utils/EntitiesUtils';
+import { defaultHeaders } from '../../../utils/FetchUtils';
 import defaultClasses from '../../Default.module.css';
 
-
-function ExerciseForm() {
+function ExerciseForm({method = 'post'}) {
+    const actionData = useActionData();
     const loaderData = useLoaderData();
+    const location = useLocation();
+
     const {exercise, allTrainings} = loaderData;
     const bodyParts = loaderData.bodyParts.bodyParts;
     const difficulties = loaderData.difficulties.difficulties;
@@ -21,9 +25,28 @@ function ExerciseForm() {
         })
     );
 
-    const message = loaderData && loaderData.message
-        ? loaderData.message
+    const formRef = useRef();
+
+    const message = actionData && actionData.message
+        ? actionData.message
         : null;
+
+    useEffect(() => {
+        if (message) {
+            formRef.current.reset();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    }, [message]);
+
+    const useFormValidationObj = useFormValidation(actionData);
+    const {
+        globalMessage,
+        getValidationProp,
+        getValidationMessages
+    } = useFormValidationObj;
 
     function getExerciseParam(param) {
         if (!exercise || !exercise.hasOwnProperty(param))
@@ -45,12 +68,12 @@ function ExerciseForm() {
         <>
             <AlertComponent
                 message={message}
-                showTrigger={loaderData}
+                showTrigger={actionData}
                 closeDelay={3000}
             />
             <RouterForm
-                action='#'
-                method='post'
+                method={method}
+                ref={formRef}
             >
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowe ćwiczenie</legend>
@@ -59,19 +82,24 @@ function ExerciseForm() {
                     <DefaultFormField
                         label='Nazwa'
                         name='name'
+                        useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('name')}
                     />
 
                     <DefaultFormField
                         label='Opis'
                         name='description'
+                        useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('description')}
                     />
-
-                    <FormField label='Trenowana część ciała'>
+                    <FormField
+                        label='Trenowana część ciała'
+                        errorMessages={getValidationMessages('bodyPart')}
+                    >
                         <SelectField
                             title='Lista rozwijana wyboru trenowanej części ciała'
                             name='bodyPart'
+                            {...getValidationProp('bodyPart')}
                             options={bodyParts}
                             firstElemDisplay='Wybierz część ciała'
                             selectedValues={getExerciseParam('bodyPart')}
@@ -81,13 +109,17 @@ function ExerciseForm() {
                     <DefaultFormField
                         label='Serie'
                         name='rounds'
+                        useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('rounds')}
+                        type='number'
                     />
 
                     <DefaultFormField
                         label='Powtórzenia'
                         name='repetition'
+                        useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('repetition')}
+                        type='number'
                         helperText='Jeśli ćwiczenie polegają długości wykonywania, zostaw puste pole
                         lub wpisz 0'
                     />
@@ -95,6 +127,7 @@ function ExerciseForm() {
                     <DefaultFormField
                         label='Czas wykonania'
                         name='time'
+                        useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('time')}
                         helperText='Jeśli ćwiczenia polegają na ilości powtórzeń, możesz zostawić
                         to pole puste (lub wpisz przewidywaną długość treningu)'
@@ -103,23 +136,33 @@ function ExerciseForm() {
                     <DefaultFormField
                         label='Obciążenie'
                         name='weights'
+                        useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('weights')}
+                        type='number'
                     />
 
-                    <FormField label='Poziom trudności'>
+                    <FormField
+                        label='Poziom trudności'
+                        errorMessages={getValidationMessages('difficulty')}
+                    >
                         <SelectField
                             title='Lista rozwijana wyboru poziomu trudności'
                             name='difficulty'
+                            {...getValidationProp('difficulty')}
                             options={difficulties}
                             firstElemDisplay='Wybierz poziom trudności'
                             selectedValues={getExerciseParam('difficulty')}
                         />
                     </FormField>
 
-                    <FormField label='Lista treningów do przypisania'>
+                    <FormField
+                        label='Lista treningów do przypisania'
+                        errorMessages={getValidationMessages('trainings')}
+                    >
                         <SelectField
                             title='Lista rozwijana wyboru treningu'
                             name='trainings'
+                            {...getValidationProp('trainings')}
                             options={selectTrainings}
                             multiple={true}
                             selectedValues={getSelectedTrainings()}
@@ -147,26 +190,51 @@ export async function loader({params}) {
     const response = await fetch(
         `http://localhost:8080/api/exercise/createModel${exerciseId}`,
         {
-            headers: injectToken({
-                'Content-Type': 'application/json'
-            })
+            headers: defaultHeaders()
         }
     );
     return await response.json();
 }
 
-export async function action({request}) {
+export const EDIT_SUCCESS = 'edit-success';
+
+export async function action({request, params}) {
+    const exerciseId = params.id
+        ? `/${params.id}`
+        : '';
     const data = await request.formData();
-    const toSave = createObjFromEntries(data);
+    const dataObject = createObjFromEntries(
+        data,
+        {
+            bodyPart: null,
+            repetition: null,
+            time: null,
+            weights: null,
+            difficulty: null
+        }
+    );
+    const toSave = {};
+
+    toSave['toSave'] = filterObject(dataObject, ['trainings']);
+    if (dataObject.hasOwnProperty('trainings'))
+        toSave['selectedTrainings'] = [...dataObject.trainings];
 
     const response = await fetch(
-        'http://localhost:8080/api/execrise/',
+        `http://localhost:8080/api/exercise${exerciseId}`,
         {
             method: request.method,
-            headers: injectToken({
-                'Content-Type': 'application/json'
-            }),
+            headers: defaultHeaders(),
             body: JSON.stringify(toSave)
         }
+    );
+
+    if (response.status === 204)
+        return redirect(`/main/exercise?${EDIT_SUCCESS}`);
+    if (response.status !== 201)
+        return await response.json();
+
+    return json(
+        {message: 'Utworzono nowe ćwiczenie!'},
+        {status: 201}
     );
 }
