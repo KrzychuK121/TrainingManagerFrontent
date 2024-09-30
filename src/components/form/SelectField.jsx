@@ -7,7 +7,8 @@ function SelectField(
         firstElemDisplay,
         options,
         multiple = false,
-        selectedValues = null
+        selectedValues = null,
+        ...rest
     }
 ) {
     return (
@@ -17,9 +18,10 @@ function SelectField(
                 name={name}
                 multiple={multiple}
                 defaultValue={selectedValues}
+                {...rest}
             >
                 {
-                    firstElemDisplay && <option>--{firstElemDisplay}--</option>
+                    firstElemDisplay && <option value=''>--{firstElemDisplay}--</option>
                 }
                 {
                     options.map(
