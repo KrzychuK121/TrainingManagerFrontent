@@ -1,18 +1,38 @@
 import { json, redirect } from 'react-router-dom';
 import { defaultHeaders } from './FetchUtils';
 
-const TOKEN_KEY = 'token';
+const AUTH_RESPONSE_KEYS = {
+    token: 'token',
+    firstName: 'firstName',
+    lastName: 'lastName'
+};
 
-function saveToken(token) {
-    localStorage.setItem(TOKEN_KEY, token);
+function saveResponse(authResponse) {
+    Object.values(AUTH_RESPONSE_KEYS).forEach(
+        key => localStorage.setItem(key, authResponse[key])
+    );
 }
 
-function clearToken() {
-    localStorage.removeItem(TOKEN_KEY);
+function clearResponse() {
+    Object.values(AUTH_RESPONSE_KEYS).forEach(
+        key => localStorage.removeItem(key)
+    );
+}
+
+function getAuthData(key) {
+    return localStorage.getItem(key);
 }
 
 function getToken() {
-    return localStorage.getItem(TOKEN_KEY);
+    return getAuthData(AUTH_RESPONSE_KEYS.token);
+}
+
+export function getFirstName() {
+    return getAuthData(AUTH_RESPONSE_KEYS.firstName);
+}
+
+export function getLastName() {
+    return getAuthData(AUTH_RESPONSE_KEYS.lastName);
 }
 
 export function injectToken(headers) {
@@ -63,8 +83,7 @@ export async function login(userCredentials) {
     }
 
     const data = await response.json();
-    const token = data.token;
-    saveToken(token);
+    saveResponse(data);
 
     return null;
 }
@@ -81,7 +100,6 @@ export async function logout() {
         }
     );
 
-    clearToken();
-
+    clearResponse();
     return null;
 }
