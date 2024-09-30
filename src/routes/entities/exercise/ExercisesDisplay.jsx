@@ -30,8 +30,6 @@ function getExerciseList(exercises) {
                 <td>{rounds}</td>
                 <td>{repetition}</td>
                 <td>{time}</td>
-                <td>{bodyPartDesc}</td>
-                <td>{difficultyDesc}</td>
                 <td>
                     {
                         weights === 0
@@ -39,6 +37,8 @@ function getExerciseList(exercises) {
                             : weights
                     }
                 </td>
+                <td>{bodyPartDesc}</td>
+                <td>{difficultyDesc}</td>
                 <td>
                     <Link to={`/main/exercise/edit/${id}`}>
                         <Button
@@ -48,7 +48,9 @@ function getExerciseList(exercises) {
                             Edytuj
                         </Button>
                     </Link>
-                    <DeleteModal/>
+                    <DeleteModal
+                        action={`/main/exercise/delete/${id}`}
+                    />
                 </td>
             </tr>
         )
@@ -181,11 +183,28 @@ export async function loader({request}) {
     const response = await fetch(
         `http://localhost:8080/api/exercise${filteredQueryString}`,
         {
-            headers: injectToken({
-                'Content-Type': 'application/json'
-            })
+            headers: defaultHeaders()
         }
     );
 
     return await response.json();
+}
+
+export async function deleteAction({request, params}) {
+    const exerciseId = params.id
+        ? `/${params.id}`
+        : '';
+
+    const response = await fetch(
+        `http://localhost:8080/api/exercise${exerciseId}`,
+        {
+            method: request.method,
+            headers: defaultHeaders()
+        }
+    );
+
+    if (response.status === 204) {
+        return redirect(`/main/exercise?${DELETE_SUCCESS}`);
+    }
+
 }
