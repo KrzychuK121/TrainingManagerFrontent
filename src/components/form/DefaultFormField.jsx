@@ -7,19 +7,22 @@ function DefaultFormField(
         name,
         type,
         defaultValue,
-        isValidProp,
+        useFormValidationObj,
         ...formFieldProps
     }
 ) {
     return (
-        <FormField {...formFieldProps}>
+        <FormField
+            {...formFieldProps}
+            errorMessages={useFormValidationObj.getValidationMessages(name)}
+        >
             <Form.Control
                 className='form-control'
                 id={name}
                 name={name}
                 type={type}
                 defaultValue={defaultValue}
-                {...isValidProp}
+                {...useFormValidationObj.getValidationProp(name)}
             />
         </FormField>
     );

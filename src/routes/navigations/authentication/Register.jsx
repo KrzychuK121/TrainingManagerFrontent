@@ -11,11 +11,7 @@ import defaultClasses from '../../Default.module.css';
 function Register() {
     const actionData = useActionData();
 
-    const {
-        globalMessage,
-        getValidationProp,
-        getValidationMessages
-    } = useFormValidation(
+    const useFormValidationObj = useFormValidation(
         actionData,
         errors => {
             if (errors.hasOwnProperty('error'))
@@ -28,7 +24,7 @@ function Register() {
         <Row className='justify-content-center'>
             <Col sm={5}>
                 <AlertComponent
-                    message={globalMessage}
+                    message={useFormValidationObj.globalMessage}
                     showTrigger={actionData}
                     variant='danger'
                     closeDelay={5000}
@@ -38,39 +34,34 @@ function Register() {
                         <legend>Rejestracja</legend>
                         <DefaultFormField
                             label='Login'
-                            errorMessages={getValidationMessages('username')}
-                            isValidProp={getValidationProp('username')}
                             name='username'
+                            useFormValidationObj={useFormValidationObj}
                         />
 
                         <DefaultFormField
                             label='Hasło'
-                            errorMessages={getValidationMessages('password')}
-                            isValidProp={getValidationProp('password')}
                             name='password'
+                            useFormValidationObj={useFormValidationObj}
                             type='password'
                         />
 
                         <DefaultFormField
                             label='Powtórz hasło'
-                            errorMessages={getValidationMessages('passwordRepeat')}
-                            isValidProp={getValidationProp('passwordRepeat')}
                             name='passwordRepeat'
+                            useFormValidationObj={useFormValidationObj}
                             type='password'
                         />
 
                         <DefaultFormField
                             label='Imię'
-                            errorMessages={getValidationMessages('firstName')}
-                            isValidProp={getValidationProp('firstName')}
                             name='firstName'
+                            useFormValidationObj={useFormValidationObj}
                         />
 
                         <DefaultFormField
                             label='Nazwisko'
-                            errorMessages={getValidationMessages('lastName')}
-                            isValidProp={getValidationProp('lastName')}
                             name='lastName'
+                            useFormValidationObj={useFormValidationObj}
                         />
 
                         <SubmitButton
