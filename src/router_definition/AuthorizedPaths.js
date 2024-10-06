@@ -7,6 +7,8 @@ import ExercisesDisplay, {
     deleteAction as exerciseDeleteAction,
     loader as exercisesLoader
 } from '../routes/entities/exercise/ExercisesDisplay';
+import TrainingDisplay, { loader as trainingLoader } from '../routes/entities/training/TrainingDisplay';
+import TrainingForm, { loader as trainingFormLoader } from '../routes/entities/training/TrainingForm';
 import { nonAuthenticatedLoader } from '../utils/AuthUtils';
 
 const AuthorizedPaths = {
@@ -36,6 +38,32 @@ const AuthorizedPaths = {
                 {
                     path: 'delete/:id',
                     action: exerciseDeleteAction
+                }
+            ]
+        },
+        {
+            path: 'training',
+            children: [
+                {
+                    index: true,
+                    element: <TrainingDisplay/>,
+                    loader: trainingLoader
+                },
+                {
+                    path: 'create',
+                    element: <TrainingForm/>,
+                    loader: trainingFormLoader
+                    // action: exerciseSaveAction
+                },
+                {
+                    path: 'edit/:id',
+                    element: <TrainingForm method='put'/>,
+                    loader: trainingFormLoader
+                    // action: exerciseSaveAction
+                },
+                {
+                    path: 'delete/:id'
+                    // action: exerciseDeleteAction
                 }
             ]
         }
