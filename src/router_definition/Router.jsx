@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Default from '../routes/Default';
 import MainPage from '../routes/main/MainPage';
 import MainWelcome from '../routes/main/MainWelcome';
+import AccessDenied from '../routes/navigations/authentication/AccessDenied';
 import LoginPage, { action as loginAction } from '../routes/navigations/authentication/Login';
 import LogoutPage, { action as logoutAction } from '../routes/navigations/authentication/Logout';
 import RegisterPage, { action as registerAction } from '../routes/navigations/authentication/Register';
@@ -48,6 +49,10 @@ export const router = createBrowserRouter(
                             path: 'logout',
                             element: <LogoutPage/>,
                             action: logoutAction
+                        },
+                        {
+                            path: 'access-denied',
+                            element: <AccessDenied/>
                         },
                         AuthorizedPaths
                     ]
