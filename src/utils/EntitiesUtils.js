@@ -40,3 +40,31 @@ export function filterObject(toFilter, propsToFilter, remove = true) {
             return newObj;
         }, {});
 }
+
+export function getEntityParamGetter(entity) {
+    return (param) => {
+        if (!entity || !entity.hasOwnProperty(param))
+            return '';
+        return entity[param];
+    };
+}
+
+export function getSelectedIdFrom(listFromParam) {
+    if (!listFromParam)
+        return null;
+
+    return listFromParam.map(
+        entity => entity.id
+    );
+}
+
+export function toSelectFieldData(toMap, valueProp, descProp) {
+    if (!toMap || !valueProp || !descProp)
+        return null;
+    return toMap.map(
+        entity => ({
+            value: entity[valueProp],
+            description: entity[descProp]
+        })
+    );
+}

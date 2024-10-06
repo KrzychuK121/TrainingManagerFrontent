@@ -6,7 +6,13 @@ import FormField from '../../../components/form/FormField';
 import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { createObjFromEntries, filterObject } from '../../../utils/EntitiesUtils';
+import {
+    createObjFromEntries,
+    filterObject,
+    getEntityParamGetter,
+    getSelectedIdFrom,
+    toSelectFieldData
+} from '../../../utils/EntitiesUtils';
 import { defaultHeaders } from '../../../utils/FetchUtils';
 import defaultClasses from '../../Default.module.css';
 
@@ -18,12 +24,7 @@ function ExerciseForm({method = 'post'}) {
     const {exercise, allTrainings} = loaderData;
     const bodyParts = loaderData.bodyParts.bodyParts;
     const difficulties = loaderData.difficulties.difficulties;
-    const selectTrainings = allTrainings.map(
-        training => ({
-            value: training.id,
-            description: training.title
-        })
-    );
+    const selectTrainings = toSelectFieldData(allTrainings, 'id', 'title');
 
     const formRef = useRef();
 
@@ -48,20 +49,11 @@ function ExerciseForm({method = 'post'}) {
         getValidationMessages
     } = useFormValidationObj;
 
-    function getExerciseParam(param) {
-        if (!exercise || !exercise.hasOwnProperty(param))
-            return '';
-        return exercise[param];
-    }
+    const getExerciseParam = getEntityParamGetter(exercise);
 
     function getSelectedTrainings() {
         const trainings = getExerciseParam('trainings');
-        if (trainings === '')
-            return null;
-
-        return trainings.map(
-            training => training.id
-        );
+        return getSelectedIdFrom(trainings);
     }
 
     return (
