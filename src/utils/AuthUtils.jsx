@@ -43,6 +43,11 @@ export function isAuthenticated() {
     return getToken() !== null;
 }
 
+export function tokenExpired(response) {
+    return response.status === 401 && isAuthenticated();
+}
+
+
 /**
  * This function should be used as loader in paths where
  * users should be prevented from accessing page after authentication
