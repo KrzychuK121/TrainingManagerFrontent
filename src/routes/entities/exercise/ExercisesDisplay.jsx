@@ -1,61 +1,11 @@
-import { Button, Table } from 'react-bootstrap';
-import { Link, redirect, useLoaderData } from 'react-router-dom';
+import { redirect, useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import DeleteModal from '../../../components/entities/DeleteModal';
-import PaginationEntity from '../../../components/entities/PaginationEntity';
-import SortAnchor from '../../../components/entities/SortAnchor';
+import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
+import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import { useMessageParams } from '../../../hooks/UseMessageParam';
 import { defaultHeaders } from '../../../utils/FetchUtils';
 import { getFilteredQueryString } from '../../../utils/URLUtils';
 import { EDIT_SUCCESS } from './ExerciseForm';
-
-function getExerciseList(exercises) {
-    return exercises.map(
-        (
-            {
-                id,
-                name,
-                description,
-                rounds,
-                repetition,
-                time,
-                bodyPartDesc,
-                difficultyDesc,
-                weights
-            }
-        ) => (
-            <tr key={id}>
-                <td>{name}</td>
-                <td>{description}</td>
-                <td>{rounds}</td>
-                <td>{repetition}</td>
-                <td>{time}</td>
-                <td>
-                    {
-                        weights === 0
-                            ? 'brak'
-                            : weights
-                    }
-                </td>
-                <td>{bodyPartDesc}</td>
-                <td>{difficultyDesc}</td>
-                <td>
-                    <Link to={`/main/exercise/edit/${id}`}>
-                        <Button
-                            type='submit'
-                            variant='primary'
-                        >
-                            Edytuj
-                        </Button>
-                    </Link>
-                    <DeleteModal
-                        action={`/main/exercise/delete/${id}`}
-                    />
-                </td>
-            </tr>
-        )
-    );
-}
 
 function ExercisesDisplay() {
     const loadedData = useLoaderData();
@@ -101,71 +51,7 @@ function ExercisesDisplay() {
                 <span th:if="${mess != null}" th:text="${mess}"></span>
             </div>*/}
             <h1>Lista wszystkich ćwiczeń</h1>
-            <Table
-                variant='success'
-                bordered
-                striped
-                hover
-            >
-                <thead>
-                <tr>
-                    <th>
-                        <SortAnchor
-                            display='Nazwa'
-                            field='name'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Opis'
-                            field='description'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Serie'
-                            field='rounds'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Powtórzenia'
-                            field='repetition'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Czas (do wykonania/przewidywany)'
-                            field='time'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Obciążenie'
-                            field='weights'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Część ciała'
-                            field='bodyPart'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor
-                            display='Trudność'
-                            field='difficulty'
-                        />
-                    </th>
-                    <th>
-                        <SortAnchor display='Zresetuj widok'/>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                {getExerciseList(exercises)}
-                </tbody>
-            </Table>
+            <ExerciseTable exercises={exercises}/>
             <PaginationEntity pages={loadedData}/>
         </>
     );
