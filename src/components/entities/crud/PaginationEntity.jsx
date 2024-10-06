@@ -1,6 +1,6 @@
 import { Col, Form, Pagination, Row } from 'react-bootstrap';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { getInjectedParamsUrl } from '../../utils/URLUtils';
+import { getInjectedParamsUrl } from '../../../utils/URLUtils';
 import classes from './PaginationEntity.module.css';
 
 function PaginationEntity({pages}) {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigation, useSearchParams } from 'react-router-dom';
-import { getInjectedParamsUrl } from '../../utils/URLUtils';
+import { getInjectedParamsUrl } from '../../../utils/URLUtils';
 import classes from './SortAnchor.module.css';
 
 function getSort(field, ascending) {
