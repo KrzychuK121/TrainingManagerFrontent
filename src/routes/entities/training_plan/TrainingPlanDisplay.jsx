@@ -3,22 +3,9 @@ import { useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import { defaultHeaders, handleResponseUnauthorized } from '../../../utils/FetchUtils';
 
-function getWeekdaysHeaders(weekdays) {
+function getColumnsByWeekdays(schedules, weekdays) {
     return weekdays.map(
         ({weekday, weekdayDisplay}) => (
-            <th
-                key={weekday}
-                className='text-capitalize'
-            >
-                {weekdayDisplay}
-            </th>
-        )
-    );
-}
-
-function getColumn(schedules, weekdays) {
-    return weekdays.map(
-        ({ weekday, weekdayDisplay }) => (
             <td key={weekday}>
                 <p>
                     {
@@ -39,10 +26,10 @@ function getColumn(schedules, weekdays) {
 }
 
 function getTableRow(plan, weekdays) {
-    const { active, schedules } = plan;
+    const {active, schedules} = plan;
     return (
         <>
-            {getColumn(schedules, weekdays)}
+            {getColumnsByWeekdays(schedules, weekdays)}
             <td>
                 {active ? 'Tak' : 'Nie'}
             </td>
@@ -97,6 +84,19 @@ function getTableContent(plans, weekdays) {
     return rows;
 }
 
+function getTableWeekdaysHeaders(weekdays) {
+    return weekdays.map(
+        ({weekday, weekdayDisplay}) => (
+            <th
+                key={weekday}
+                className='text-capitalize'
+            >
+                {weekdayDisplay}
+            </th>
+        )
+    );
+}
+
 function TrainingPlanDisplay() {
     const loadedData = useLoaderData();
     const plans = loadedData
@@ -106,12 +106,8 @@ function TrainingPlanDisplay() {
         ? loadedData.weekdays
         : null;
 
-    console.log(plans);
-    console.log('----------------');
-    console.log(weekdays);
-
     if (!plans)
-        return <span>Brak rutyn treningowych do wyświetlenia</span>    
+        return <span>Brak rutyn treningowych do wyświetlenia</span>;
 
     return (
         <>
@@ -127,16 +123,16 @@ function TrainingPlanDisplay() {
                 variant='success'
             >
                 <thead>
-                    <tr>
-                        {getWeekdaysHeaders(weekdays)}
-                        <th>
-                            Aktywny?
-                        </th>
-                        <th></th>
-                    </tr>
+                <tr>
+                    {getTableWeekdaysHeaders(weekdays)}
+                    <th>
+                        Aktywny?
+                    </th>
+                    <th></th>
+                </tr>
                 </thead>
                 <tbody>
-                    {getTableContent(plans, weekdays)}
+                {getTableContent(plans, weekdays)}
                 </tbody>
             </Table>
         </>
