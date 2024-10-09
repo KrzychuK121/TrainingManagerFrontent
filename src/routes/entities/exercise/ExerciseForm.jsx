@@ -13,7 +13,7 @@ import {
     getSelectedIdFrom,
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
-import { defaultHeaders } from '../../../utils/FetchUtils';
+import { defaultHeaders, handleResponseUnauthorized } from '../../../utils/FetchUtils';
 import defaultClasses from '../../Default.module.css';
 
 function ExerciseForm({method = 'post'}) {
@@ -185,6 +185,11 @@ export async function loader({params}) {
             headers: defaultHeaders()
         }
     );
+
+    const handledResponse = handleResponseUnauthorized(response);
+    if (handledResponse)
+        return handledResponse;
+
     return await response.json();
 }
 

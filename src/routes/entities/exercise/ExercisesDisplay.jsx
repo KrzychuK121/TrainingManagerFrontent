@@ -3,7 +3,7 @@ import AlertComponent from '../../../components/alerts/AlertComponent';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { defaultHeaders } from '../../../utils/FetchUtils';
+import { defaultHeaders, handleResponseUnauthorized } from '../../../utils/FetchUtils';
 import { getFilteredQueryString } from '../../../utils/URLUtils';
 import { EDIT_SUCCESS } from './ExerciseForm';
 
@@ -72,6 +72,10 @@ export async function loader({request}) {
             headers: defaultHeaders()
         }
     );
+
+    const handledResponse = handleResponseUnauthorized(response);
+    if (handledResponse)
+        return handledResponse;
 
     return await response.json();
 }
