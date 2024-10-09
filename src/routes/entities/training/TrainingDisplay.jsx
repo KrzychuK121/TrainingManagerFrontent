@@ -3,7 +3,7 @@ import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import SubmitButton from '../../../components/form/SubmitButton';
-import { defaultHeaders, handleResponseUnauthorized } from '../../../utils/FetchUtils';
+import { sendDefaultRequest } from '../../../utils/FetchUtils';
 import { getFilteredQueryString } from '../../../utils/URLUtils';
 
 function TrainingDisplay() {
@@ -85,16 +85,5 @@ export async function loader({request}) {
     const searchParams = url.searchParams;
     const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
 
-    const response = await fetch(
-        `http://localhost:8080/api/training${filteredQueryString}`,
-        {
-            headers: defaultHeaders()
-        }
-    );
-
-    const handledResponse = await handleResponseUnauthorized(response);
-    if (handledResponse !== null)
-        return handledResponse;
-
-    return await response.json();
+    return await sendDefaultRequest(`training${filteredQueryString}`);
 }

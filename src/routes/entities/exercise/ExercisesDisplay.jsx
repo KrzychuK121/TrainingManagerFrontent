@@ -3,7 +3,7 @@ import AlertComponent from '../../../components/alerts/AlertComponent';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { defaultHeaders, handleResponseUnauthorized } from '../../../utils/FetchUtils';
+import { defaultHeaders, handleResponseUnauthorized, sendDefaultRequest } from '../../../utils/FetchUtils';
 import { getFilteredQueryString } from '../../../utils/URLUtils';
 import { EDIT_SUCCESS } from './ExerciseForm';
 
@@ -66,18 +66,7 @@ export async function loader({request}) {
     const searchParams = url.searchParams;
     const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
 
-    const response = await fetch(
-        `http://localhost:8080/api/exercise${filteredQueryString}`,
-        {
-            headers: defaultHeaders()
-        }
-    );
-
-    const handledResponse = handleResponseUnauthorized(response);
-    if (handledResponse)
-        return handledResponse;
-
-    return await response.json();
+    return await sendDefaultRequest(`exercise${filteredQueryString}`);
 }
 
 export async function deleteAction({request, params}) {
@@ -92,6 +81,10 @@ export async function deleteAction({request, params}) {
             headers: defaultHeaders()
         }
     );
+
+    const handledResponse = await handleResponseUnauthorized(response);
+    if (handledResponse)
+        return handledResponse;
 
     if (response.status === 204) {
         return redirect(`/main/exercise?${DELETE_SUCCESS}`);

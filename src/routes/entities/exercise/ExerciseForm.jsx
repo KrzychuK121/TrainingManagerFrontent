@@ -13,7 +13,7 @@ import {
     getSelectedIdFrom,
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
-import { defaultHeaders, handleResponseUnauthorized } from '../../../utils/FetchUtils';
+import { defaultHeaders, sendDefaultRequest } from '../../../utils/FetchUtils';
 import defaultClasses from '../../Default.module.css';
 
 function ExerciseForm({method = 'post'}) {
@@ -179,18 +179,9 @@ export async function loader({params}) {
         ? `/${params.id}`
         : '';
 
-    const response = await fetch(
-        `http://localhost:8080/api/exercise/createModel${exerciseId}`,
-        {
-            headers: defaultHeaders()
-        }
+    return await sendDefaultRequest(
+        `exercise/createModel${exerciseId}`
     );
-
-    const handledResponse = handleResponseUnauthorized(response);
-    if (handledResponse)
-        return handledResponse;
-
-    return await response.json();
 }
 
 export const EDIT_SUCCESS = 'edit-success';

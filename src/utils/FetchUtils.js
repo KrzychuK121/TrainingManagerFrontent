@@ -15,3 +15,22 @@ export async function handleResponseUnauthorized(response) {
     const logoutResponse = await logout();
     return redirect('/main/login');
 }
+
+export async function sendDefaultRequest(
+    path,
+    domain = 'http://localhost:8080/api',
+    headers = null
+) {
+    const response = await fetch(
+        `${domain}/${path}`,
+        {
+            headers: defaultHeaders(headers)
+        }
+    );
+
+    const handledResponse = await handleResponseUnauthorized(response);
+    if (handledResponse)
+        return handledResponse;
+
+    return response.json();
+}

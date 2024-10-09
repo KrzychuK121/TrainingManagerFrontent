@@ -1,7 +1,7 @@
 import { Table } from 'react-bootstrap';
 import { useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import { defaultHeaders, handleResponseUnauthorized } from '../../../utils/FetchUtils';
+import { sendDefaultRequest } from '../../../utils/FetchUtils';
 
 function getColumnsByWeekdays(schedules, weekdays) {
     return weekdays.map(
@@ -142,16 +142,5 @@ function TrainingPlanDisplay() {
 export default TrainingPlanDisplay;
 
 export async function loader() {
-    const response = await fetch(
-        'http://localhost:8080/api/plans',
-        {
-            headers: defaultHeaders()
-        }
-    );
-
-    const handledResponse = await handleResponseUnauthorized(response);
-    if (handledResponse)
-        return handledResponse;
-
-    return await response.json();
+    return await sendDefaultRequest('plans');
 }
