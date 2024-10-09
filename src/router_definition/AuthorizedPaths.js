@@ -9,7 +9,10 @@ import ExercisesDisplay, {
 } from '../routes/entities/exercise/ExercisesDisplay';
 import TrainingDisplay, { loader as trainingLoader } from '../routes/entities/training/TrainingDisplay';
 import TrainingForm, { loader as trainingFormLoader } from '../routes/entities/training/TrainingForm';
-import TrainingPlanDisplay, { loader as trainingPlanLoader } from '../routes/entities/training_plan/TrainingPlanDisplay';
+import PlanWeekDisplay, { loader as planWeekDisplayLoader } from '../routes/entities/training_plan/PlanWeekDisplay';
+import TrainingPlanDisplay, {
+    loader as trainingPlanLoader
+} from '../routes/entities/training_plan/TrainingPlanDisplay';
 import { nonAuthenticatedLoader } from '../utils/AuthUtils';
 
 const AuthorizedPaths = {
@@ -77,13 +80,18 @@ const AuthorizedPaths = {
                     loader: trainingPlanLoader
                 },
                 {
-                    path: 'create',
+                    path: 'week',
+                    element: <PlanWeekDisplay/>,
+                    loader: planWeekDisplayLoader
+                },
+                {
+                    path: 'create'
                     //element: <TrainingForm />,
                     //loader: trainingFormLoader
                     // action: exerciseSaveAction
                 },
                 {
-                    path: 'edit/:id',
+                    path: 'edit/:id'
                     //element: <TrainingForm method='put' />,
                     //loader: trainingFormLoader
                     // action: exerciseSaveAction
