@@ -9,9 +9,9 @@ export function defaultHeaders(headers) {
 }
 
 export async function handleResponseUnauthorized(response) {
-    if (tokenExpired(response)) {
-        const logoutResponse = await logout();
-        return redirect('/main/login');
-    } else
+    if (!tokenExpired(response))
         return null;
+
+    const logoutResponse = await logout();
+    return redirect('/main/login');
 }
