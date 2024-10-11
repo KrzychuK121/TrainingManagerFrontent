@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Form as RouterForm, json, Link, redirect, useActionData, useLoaderData, useLocation } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
 import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
+import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {
     createObjFromEntries,
@@ -33,15 +34,7 @@ function ExerciseForm({method = 'post'}) {
         ? actionData.message
         : null;
 
-    useEffect(() => {
-        if (message) {
-            formRef.current.reset();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-    }, [message]);
+    useClearForm(message, formRef);
 
     const useFormValidationObj = useFormValidation(actionData);
     const {

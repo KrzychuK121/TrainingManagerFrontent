@@ -1,9 +1,11 @@
+import { useRef } from 'react';
 import { Form as RouterForm, json, redirect, useActionData, useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
 import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
+import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {
     createObjFromEntries,
@@ -22,7 +24,12 @@ function TrainingForm({method = 'post'}) {
 
     const {training, allExercises} = loadedData;
     const selectExercises = toSelectFieldData(allExercises, 'id', 'name');
-    const message = null;
+    const message = actionData && actionData.message
+        ? actionData.message
+        : null;
+    const formRef = useRef();
+
+    useClearForm(message, formRef);
 
     const useFormValidationObj = useFormValidation(actionData);
     const {
@@ -45,7 +52,10 @@ function TrainingForm({method = 'post'}) {
                 showTrigger={actionData}
                 closeDelay={3000}
             />
-            <RouterForm method={method}>
+            <RouterForm
+                method={method}
+                ref={formRef}
+            >
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowy trening</legend>
                     <DefaultFormField
