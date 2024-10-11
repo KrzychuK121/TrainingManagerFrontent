@@ -8,7 +8,10 @@ import ExercisesDisplay, {
     loader as exercisesLoader
 } from '../routes/entities/exercise/ExercisesDisplay';
 import TrainingDisplay, { loader as trainingLoader } from '../routes/entities/training/TrainingDisplay';
-import TrainingForm, { loader as trainingFormLoader } from '../routes/entities/training/TrainingForm';
+import TrainingForm, {
+    action as trainingSaveAction,
+    loader as trainingFormLoader
+} from '../routes/entities/training/TrainingForm';
 import PlanWeekDisplay, { loader as planWeekDisplayLoader } from '../routes/entities/training_plan/PlanWeekDisplay';
 import TrainingPlanDisplay, {
     loader as trainingPlanLoader
@@ -56,14 +59,14 @@ const AuthorizedPaths = {
                 {
                     path: 'create',
                     element: <TrainingForm/>,
-                    loader: trainingFormLoader
-                    // action: exerciseSaveAction
+                    loader: trainingFormLoader,
+                    action: trainingSaveAction
                 },
                 {
                     path: 'edit/:id',
                     element: <TrainingForm method='put'/>,
-                    loader: trainingFormLoader
-                    // action: exerciseSaveAction
+                    loader: trainingFormLoader,
+                    action: trainingSaveAction
                 },
                 {
                     path: 'delete/:id'

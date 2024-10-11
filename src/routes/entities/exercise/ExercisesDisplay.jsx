@@ -4,8 +4,7 @@ import PaginationEntity from '../../../components/entities/crud/PaginationEntity
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import { useMessageParams } from '../../../hooks/UseMessageParam';
 import { defaultHeaders, handleResponseUnauthorized, sendDefaultRequest } from '../../../utils/FetchUtils';
-import { getFilteredQueryString } from '../../../utils/URLUtils';
-import { EDIT_SUCCESS } from './ExerciseForm';
+import { DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString } from '../../../utils/URLUtils';
 
 function ExercisesDisplay() {
     const loadedData = useLoaderData();
@@ -58,8 +57,6 @@ function ExercisesDisplay() {
 }
 
 export default ExercisesDisplay;
-
-const DELETE_SUCCESS = 'delete-success';
 
 export async function loader({request}) {
     const url = new URL(request.url);

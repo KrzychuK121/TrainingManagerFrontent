@@ -1,3 +1,6 @@
+export const EDIT_SUCCESS = 'edit-success';
+export const DELETE_SUCCESS = 'delete-success';
+
 /**
  * This function formats `param` with `paramValue` into query string and concatenating `initValue` before if provided.
  *

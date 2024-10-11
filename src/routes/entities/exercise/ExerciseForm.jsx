@@ -14,6 +14,7 @@ import {
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
 import { createModelLoader, defaultHeaders } from '../../../utils/FetchUtils';
+import { EDIT_SUCCESS } from '../../../utils/URLUtils';
 import defaultClasses from '../../Default.module.css';
 
 function ExerciseForm({method = 'post'}) {
@@ -182,8 +183,6 @@ export async function loader({params}) {
         'exercise'
     );
 }
-
-export const EDIT_SUCCESS = 'edit-success';
 
 export async function action({request, params}) {
     const exerciseId = params.id

@@ -1,15 +1,30 @@
 import { useLoaderData, useNavigate } from 'react-router-dom';
+import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import SubmitButton from '../../../components/form/SubmitButton';
+import { useMessageParams } from '../../../hooks/UseMessageParam';
 import { sendDefaultRequest } from '../../../utils/FetchUtils';
-import { getFilteredQueryString } from '../../../utils/URLUtils';
+import { DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString } from '../../../utils/URLUtils';
 
 function TrainingDisplay() {
     const loadedData = useLoaderData();
     const trainings = loadedData.content;
     const navigate = useNavigate();
+    const {messages: successMessages} = useMessageParams(
+        [
+            {
+                messageParam: EDIT_SUCCESS,
+                displayIfSuccess: 'Trening został edytowany pomyślnie.'
+            },
+            {
+                messageParam: DELETE_SUCCESS,
+                displayIfSuccess: 'Trening został usunięty pomyślnie.'
+            }
+        ]
+    );
+
 
     function actionButtonClickHandler(path) {
         navigate(path);
@@ -20,7 +35,18 @@ function TrainingDisplay() {
 
     return (
         <>
-            <div>{/*'defaulttemplate :: alert'*/}</div>
+            {
+                successMessages && successMessages.map(
+                    message => (
+                        <AlertComponent
+                            key={message}
+                            message={message}
+                            showTrigger={null}
+                            closeDelay={4000}
+                        />
+                    )
+                )
+            }
             {/*TODO: Make sorting by column*/}
             <h1>Lista wszystkich treningów</h1>
             {
