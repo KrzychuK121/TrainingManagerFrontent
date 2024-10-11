@@ -13,7 +13,7 @@ import {
     getSelectedIdFrom,
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
-import { defaultHeaders, sendDefaultRequest } from '../../../utils/FetchUtils';
+import { createModelLoader, defaultHeaders } from '../../../utils/FetchUtils';
 import defaultClasses from '../../Default.module.css';
 
 function ExerciseForm({method = 'post'}) {
@@ -175,12 +175,11 @@ function ExerciseForm({method = 'post'}) {
 export default ExerciseForm;
 
 export async function loader({params}) {
-    const exerciseId = params.id
-        ? `/${params.id}`
-        : '';
-
-    return await sendDefaultRequest(
-        `exercise/createModel${exerciseId}`
+    return await createModelLoader(
+        'exercise/createModel',
+        '/main/training/create',
+        params,
+        'exercise'
     );
 }
 

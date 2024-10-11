@@ -6,13 +6,15 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import { getEntityParamGetter, getSelectedIdFrom, toSelectFieldData } from '../../../utils/EntitiesUtils';
+import { createModelLoader } from '../../../utils/FetchUtils';
 import defaultClasses from '../../Default.module.css';
 
 function TrainingForm({method = 'post'}) {
     const actionData = useActionData();
-    const loaderData = useLoaderData();
+    const loadedData = useLoaderData();
 
-    const {training, allExercises} = loaderData;
+    const {training, allExercises} = loadedData;
+    console.log(loadedData);
     const selectExercises = toSelectFieldData(allExercises, 'id', 'name');
     const message = null;
 
@@ -87,16 +89,10 @@ function TrainingForm({method = 'post'}) {
 export default TrainingForm;
 
 export async function loader({params}) {
-    const trainingId = params.id
-        ? `/${params.id}`
-        : '';
-
-    /*const response = await fetch(
-        `http://localhost:8080/api/training/createModel${trainingId}`,
-        {
-            headers: defaultHeaders()
-        }
+    return await createModelLoader(
+        'training/createModel',
+        '/main/training/create',
+        params,
+        'training'
     );
-    return await response.json();*/
-    return {training: null, allExercises: []};
 }

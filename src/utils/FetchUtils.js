@@ -34,3 +34,28 @@ export async function sendDefaultRequest(
 
     return response.json();
 }
+
+export async function createModelLoader(
+    path,
+    redirectPath,
+    params,
+    editAttribute
+) {
+    const entityId = params.id
+        ? `/${params.id}`
+        : '';
+
+    const fetchedData = await sendDefaultRequest(
+        `${path}${entityId}`
+    );
+
+    if (
+        fetchedData &&
+        params.id && (
+            !fetchedData.hasOwnProperty(editAttribute) ||
+            fetchedData[editAttribute] === null
+        )
+    )
+        return redirect(redirectPath);
+    return fetchedData;
+}
