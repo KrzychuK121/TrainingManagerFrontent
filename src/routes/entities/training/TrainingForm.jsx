@@ -28,8 +28,8 @@ function TrainingForm({method = 'post'}) {
     const getTrainingParam = getEntityParamGetter(training);
 
     function getSelectedTrainings() {
-        const trainings = getTrainingParam('trainings');
-        return getSelectedIdFrom(trainings);
+        const exercises = getTrainingParam('exercises');
+        return getSelectedIdFrom(exercises);
     }
 
     return (
