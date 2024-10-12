@@ -1,5 +1,5 @@
 import { json, redirect } from 'react-router-dom';
-import { defaultHeaders } from './FetchUtils';
+import { defaultHeaders } from './CRUDUtils';
 
 const AUTH_RESPONSE_KEYS = {
     token: 'token',
