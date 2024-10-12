@@ -4,10 +4,13 @@ import ExerciseForm, {
     loader as exerciseFormLoader
 } from '../routes/entities/exercise/ExerciseForm';
 import ExercisesDisplay, {
-    deleteAction as exerciseDeleteAction,
+    action as exerciseDeleteAction,
     loader as exercisesLoader
 } from '../routes/entities/exercise/ExercisesDisplay';
-import TrainingDisplay, { loader as trainingLoader } from '../routes/entities/training/TrainingDisplay';
+import TrainingDisplay, {
+    deleteTrainingAction,
+    loader as trainingLoader
+} from '../routes/entities/training/TrainingDisplay';
 import TrainingForm, {
     action as trainingSaveAction,
     loader as trainingFormLoader
@@ -69,8 +72,8 @@ const AuthorizedPaths = {
                     action: trainingSaveAction
                 },
                 {
-                    path: 'delete/:id'
-                    // action: exerciseDeleteAction
+                    path: 'delete/:id',
+                    action: deleteTrainingAction
                 }
             ]
         },
