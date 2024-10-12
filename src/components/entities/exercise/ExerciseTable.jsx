@@ -5,7 +5,8 @@ import SortAnchor from '../crud/SortAnchor';
 
 function getExerciseList(
     exercises,
-    optionsMapper
+    optionsMapper,
+    setActionData
 ) {
     return exercises.map(
         (exercise) => {
@@ -38,7 +39,7 @@ function getExerciseList(
                     <td>{bodyPartDesc}</td>
                     <td>{difficultyDesc}</td>
                     <td>
-                        {optionsMapper(exercise)}
+                        {optionsMapper(exercise, setActionData)}
                     </td>
                 </tr>
             );
@@ -46,7 +47,7 @@ function getExerciseList(
     );
 }
 
-function defaultOptionsMapper(exercise) {
+function defaultOptionsMapper(exercise, setActionData) {
     const id = exercise.id;
     return (
         <>
@@ -60,6 +61,7 @@ function defaultOptionsMapper(exercise) {
             </Link>
             <DeleteModal
                 action={`/main/exercise/delete/${id}`}
+                setActionData={setActionData}
             />
         </>
     );
@@ -68,7 +70,8 @@ function defaultOptionsMapper(exercise) {
 function ExerciseTable(
     {
         exercises,
-        optionsMapper = defaultOptionsMapper
+        optionsMapper = defaultOptionsMapper,
+        setActionData = null
     }
 ) {
     if (exercises && exercises.length === 0)
@@ -137,7 +140,7 @@ function ExerciseTable(
             </tr>
             </thead>
             <tbody>
-            {getExerciseList(exercises, optionsMapper)}
+            {getExerciseList(exercises, optionsMapper, setActionData)}
             </tbody>
         </Table>
     );

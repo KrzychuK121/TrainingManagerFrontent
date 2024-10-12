@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { Form as RouterForm } from 'react-router-dom';
+import { useFetcher } from 'react-router-dom';
 import classes from './DeleteModal.module.css';
 
 /**
@@ -8,6 +8,7 @@ import classes from './DeleteModal.module.css';
  *
  * @param action witch action should be triggered when submitting the delete form
  * @param deleteEntityName name of entity to delete. Default "element"
+ * @param setActionData setter to save response error message and pass it to parent component
  * @param children element or string that will provide more information about entity to delete
  *
  * @returns {JSX.Element} Delete confirmation modal that invokes provided `action` and provided
@@ -18,16 +19,25 @@ function DeleteModal(
     {
         action,
         deleteEntityName = 'element',
+        setActionData = null,
         children = null
     }
 ) {
+    const fetcher = useFetcher();
     const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        if (!setActionData)
+            return;
+
+        setActionData(fetcher.data);
+    }, [fetcher, setActionData]);
 
     function closeHandler() {
         setShow(false);
     }
 
-    function onDeleteHandler() {
+    function deleteHandler() {
         setShow(true);
     }
 
@@ -50,20 +60,21 @@ function DeleteModal(
                     <Button variant='secondary' onClick={closeHandler}>
                         Anuluj
                     </Button>
-                    <RouterForm
+                    <fetcher.Form
                         method='delete'
                         action={action}
                     >
                         <Button
                             type='submit'
                             variant='danger'
+                            onClick={closeHandler}
                         >
                             Usuń
                         </Button>
-                    </RouterForm>
+                    </fetcher.Form>
                 </Modal.Footer>
             </Modal>
-            <Button variant='primary' onClick={onDeleteHandler}>
+            <Button variant='primary' onClick={deleteHandler}>
                 Usuń
             </Button>
         </>
