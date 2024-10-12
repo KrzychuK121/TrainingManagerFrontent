@@ -7,6 +7,7 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
+import { createModelLoader, defaultHeaders } from '../../../utils/CRUDUtils';
 import {
     createObjFromEntries,
     filterObject,
@@ -14,7 +15,6 @@ import {
     getSelectedIdFrom,
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
-import { createModelLoader, defaultHeaders } from '../../../utils/FetchUtils';
 import { EDIT_SUCCESS } from '../../../utils/URLUtils';
 import defaultClasses from '../../Default.module.css';
 

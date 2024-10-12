@@ -1,7 +1,7 @@
 import { Col, Row } from 'react-bootstrap';
 import { useLoaderData } from 'react-router-dom';
 import PlanDayDisplay from '../../../components/entities/training_plan/PlanDayDisplay';
-import { sendDefaultRequest } from '../../../utils/FetchUtils';
+import { sendDefaultRequest } from '../../../utils/CRUDUtils';
 
 function PlanWeekDisplay() {
     const loadedData = useLoaderData();

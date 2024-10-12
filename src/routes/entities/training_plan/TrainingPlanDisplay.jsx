@@ -1,7 +1,7 @@
 import { Table } from 'react-bootstrap';
 import { useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import { sendDefaultRequest } from '../../../utils/FetchUtils';
+import { sendDefaultRequest } from '../../../utils/CRUDUtils';
 
 function getColumnsByWeekdays(schedules, weekdays) {
     return weekdays.map(
