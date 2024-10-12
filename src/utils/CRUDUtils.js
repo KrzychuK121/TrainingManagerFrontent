@@ -1,5 +1,6 @@
 import { redirect } from 'react-router-dom';
 import { injectToken, logout, tokenExpired } from './AuthUtils';
+import { DELETE_SUCCESS } from './URLUtils';
 
 export function defaultHeaders(headers) {
     return injectToken({
@@ -58,4 +59,33 @@ export async function createModelLoader(
     )
         return redirect(redirectPath);
     return fetchedData;
+}
+
+export async function deleteAction(
+    requestPath,
+    redirectPath,
+    request,
+    params
+) {
+    const entityId = params.id
+        ? `/${params.id}`
+        : '';
+
+    const response = await fetch(
+        `${requestPath}${entityId}`,
+        {
+            method: request.method,
+            headers: defaultHeaders()
+        }
+    );
+
+    const handledResponse = await handleResponseUnauthorized(response);
+    if (handledResponse)
+        return handledResponse;
+
+    if (response.status === 204) {
+        return redirect(`${redirectPath}?${DELETE_SUCCESS}`);
+    }
+
+    return response;
 }

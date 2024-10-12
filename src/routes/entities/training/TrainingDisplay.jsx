@@ -1,15 +1,19 @@
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { json, useLoaderData, useNavigate } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import SubmitButton from '../../../components/form/SubmitButton';
+import useFormValidation from '../../../hooks/UseFormValidation';
 import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { sendDefaultRequest } from '../../../utils/FetchUtils';
+import { deleteAction, sendDefaultRequest } from '../../../utils/CRUDUtils';
 import { DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString } from '../../../utils/URLUtils';
 
 function TrainingDisplay() {
     const loadedData = useLoaderData();
+    const [actionData, setActionData] = useState();
+
     const trainings = loadedData.content;
     const navigate = useNavigate();
     const {messages: successMessages} = useMessageParams(
@@ -25,6 +29,7 @@ function TrainingDisplay() {
         ]
     );
 
+    const {globalMessage} = useFormValidation(actionData);
 
     function actionButtonClickHandler(path) {
         navigate(path);
@@ -35,6 +40,13 @@ function TrainingDisplay() {
 
     return (
         <>
+            <AlertComponent
+                message={globalMessage}
+                showTrigger={actionData}
+                variant='danger'
+                closeDelay={5000}
+                scrollOnTrigger={true}
+            />
             {
                 successMessages && successMessages.map(
                     message => (
@@ -90,6 +102,7 @@ function TrainingDisplay() {
                                     {' | '}
                                     <DeleteModal
                                         action={`/main/training/delete/${id}`}
+                                        setActionData={setActionData}
                                     />
                                     {' | '}
                                 </div>
@@ -112,4 +125,21 @@ export async function loader({request}) {
     const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
 
     return await sendDefaultRequest(`training${filteredQueryString}`);
+}
+
+export async function deleteTrainingAction({request, params}) {
+    const response = await deleteAction(
+        'http://localhost:8080/api/training',
+        '/main/training',
+        request,
+        params
+    );
+
+    if (response.status === 400)
+        return json({error: 'Nie możesz usunąć treningu, który nie należy do Ciebie.'});
+
+    if (response.status === 404)
+        return json({error: 'Nie znaleziono treningu o podanym numerze.'});
+
+    return response;
 }

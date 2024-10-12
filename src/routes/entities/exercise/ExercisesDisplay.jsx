@@ -1,13 +1,16 @@
-import { redirect, useLoaderData } from 'react-router-dom';
+import { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
+import useFormValidation from '../../../hooks/UseFormValidation';
 import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { defaultHeaders, handleResponseUnauthorized, sendDefaultRequest } from '../../../utils/FetchUtils';
+import { deleteAction, sendDefaultRequest } from '../../../utils/CRUDUtils';
 import { DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString } from '../../../utils/URLUtils';
 
 function ExercisesDisplay() {
     const loadedData = useLoaderData();
+    const [actionData, setActionData] = useState();
     const exercises = loadedData.content;
     const {messages: successMessages} = useMessageParams(
         [
@@ -22,11 +25,20 @@ function ExercisesDisplay() {
         ]
     );
 
+    const {globalMessage} = useFormValidation(actionData);
+
     if (exercises && exercises.length === 0)
         return <div>Brak ćwiczeń do wyświetlenia</div>;
 
     return (
         <>
+            <AlertComponent
+                message={globalMessage}
+                showTrigger={actionData}
+                variant='danger'
+                closeDelay={5000}
+                scrollOnTrigger={true}
+            />
             {
                 successMessages && successMessages.map(
                     message => (
@@ -50,7 +62,10 @@ function ExercisesDisplay() {
                 <span th:if="${mess != null}" th:text="${mess}"></span>
             </div>*/}
             <h1>Lista wszystkich ćwiczeń</h1>
-            <ExerciseTable exercises={exercises}/>
+            <ExerciseTable
+                exercises={exercises}
+                setActionData={setActionData}
+            />
             <PaginationEntity pages={loadedData}/>
         </>
     );
@@ -66,25 +81,11 @@ export async function loader({request}) {
     return await sendDefaultRequest(`exercise${filteredQueryString}`);
 }
 
-export async function deleteAction({request, params}) {
-    const exerciseId = params.id
-        ? `/${params.id}`
-        : '';
-
-    const response = await fetch(
-        `http://localhost:8080/api/exercise${exerciseId}`,
-        {
-            method: request.method,
-            headers: defaultHeaders()
-        }
+export async function action({request, params}) {
+    return await deleteAction(
+        'http://localhost:8080/api/exercise',
+        '/main/exercise',
+        request,
+        params
     );
-
-    const handledResponse = await handleResponseUnauthorized(response);
-    if (handledResponse)
-        return handledResponse;
-
-    if (response.status === 204) {
-        return redirect(`/main/exercise?${DELETE_SUCCESS}`);
-    }
-
 }
