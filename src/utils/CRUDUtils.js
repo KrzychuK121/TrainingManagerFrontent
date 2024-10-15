@@ -36,6 +36,27 @@ export async function sendDefaultRequest(
     return response.json();
 }
 
+export async function sendDefaultParallelRequests(
+    paths,
+    domain = 'http://localhost:8080/api',
+    headers = null
+) {
+    const promises = paths.map(
+        path => fetch(
+            `${domain}/${path}`,
+            {
+                headers: defaultHeaders(headers)
+            }
+        )
+    );
+
+    const responses = await Promise.all(promises);
+
+    return await Promise.all(
+        responses.map(response => response.json())
+    );
+}
+
 export async function createModelLoader(
     path,
     redirectPath,
