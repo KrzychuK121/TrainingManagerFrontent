@@ -19,7 +19,7 @@ function OperationsDropdown() {
             <NavDropdown.ItemText>Plany treningowe</NavDropdown.ItemText>
             <NavDropdown.Item href='/main/plans'>Wyświetl wszystkie</NavDropdown.Item>
             <NavDropdown.Item href='/main/plans/week'>Wyświetl aktywny</NavDropdown.Item>
-            <NavDropdown.Item href='/main/plans/week/create'>Stwórz</NavDropdown.Item>
+            <NavDropdown.Item href='/main/plans/create'>Stwórz</NavDropdown.Item>
         </NavDropdown>
     );
 }
