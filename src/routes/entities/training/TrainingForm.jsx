@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Form as RouterForm, json, redirect, useActionData, useLoaderData } from 'react-router-dom';
+import { Form as RouterForm, useActionData, useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
@@ -7,7 +7,7 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { createModelLoader, defaultHeaders } from '../../../utils/CRUDUtils';
+import { createModelLoader, sendSaveRequest } from '../../../utils/CRUDUtils';
 import {
     createObjFromEntries,
     filterObject,
@@ -15,7 +15,6 @@ import {
     getSelectedIdFrom,
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
-import { EDIT_SUCCESS } from '../../../utils/URLUtils';
 import defaultClasses from '../../Default.module.css';
 
 function TrainingForm({method = 'post'}) {
@@ -114,9 +113,6 @@ export async function loader({params}) {
 }
 
 export async function action({request, params}) {
-    const exerciseId = params.id
-        ? `/${params.id}`
-        : '';
     const data = await request.formData();
     const dataObject = createObjFromEntries(data);
     const toSave = {};
@@ -125,22 +121,12 @@ export async function action({request, params}) {
     if (dataObject.hasOwnProperty('exercises'))
         toSave['selectedExercises'] = [...dataObject.exercises];
 
-    const response = await fetch(
-        `http://localhost:8080/api/training${exerciseId}`,
-        {
-            method: request.method,
-            headers: defaultHeaders(),
-            body: JSON.stringify(toSave)
-        }
-    );
-
-    if (response.status === 204)
-        return redirect(`/main/training?${EDIT_SUCCESS}`);
-    if (response.status !== 201)
-        return await response.json();
-
-    return json(
-        {message: 'Utworzono nowy trening!'},
-        {status: 201}
+    return await sendSaveRequest(
+        toSave,
+        'training',
+        '/main/training',
+        params,
+        request,
+        'nowy trening'
     );
 }

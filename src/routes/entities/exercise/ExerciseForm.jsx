@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Form as RouterForm, json, Link, redirect, useActionData, useLoaderData, useLocation } from 'react-router-dom';
+import { Form as RouterForm, Link, useActionData, useLoaderData, useLocation } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
@@ -7,7 +7,7 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { createModelLoader, defaultHeaders } from '../../../utils/CRUDUtils';
+import { createModelLoader, getIdPath, sendSaveRequest } from '../../../utils/CRUDUtils';
 import {
     createObjFromEntries,
     filterObject,
@@ -15,7 +15,6 @@ import {
     getSelectedIdFrom,
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
-import { EDIT_SUCCESS } from '../../../utils/URLUtils';
 import defaultClasses from '../../Default.module.css';
 
 function ExerciseForm({method = 'post'}) {
@@ -178,9 +177,7 @@ export async function loader({params}) {
 }
 
 export async function action({request, params}) {
-    const exerciseId = params.id
-        ? `/${params.id}`
-        : '';
+    const exerciseId = getIdPath(params);
     const data = await request.formData();
     const dataObject = createObjFromEntries(
         data,
@@ -198,22 +195,12 @@ export async function action({request, params}) {
     if (dataObject.hasOwnProperty('trainings'))
         toSave['selectedTrainings'] = [...dataObject.trainings];
 
-    const response = await fetch(
-        `http://localhost:8080/api/exercise${exerciseId}`,
-        {
-            method: request.method,
-            headers: defaultHeaders(),
-            body: JSON.stringify(toSave)
-        }
-    );
-
-    if (response.status === 204)
-        return redirect(`/main/exercise?${EDIT_SUCCESS}`);
-    if (response.status !== 201)
-        return await response.json();
-
-    return json(
-        {message: 'Utworzono nowe ćwiczenie!'},
-        {status: 201}
+    return await sendSaveRequest(
+        toSave,
+        'exercise',
+        '/main/exercise',
+        params,
+        request,
+        'nowe ćwiczenie'
     );
 }
