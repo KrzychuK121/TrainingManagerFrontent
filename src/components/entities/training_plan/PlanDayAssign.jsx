@@ -26,6 +26,9 @@ function PlanDayAssign(
     }
 ) {
     const HOW_MANY_ROWS = 20;
+    const SEARCH_ID = `search-${weekday}`;
+    const LIST_ID = `trainingId-${weekday}`;
+    const TIME_ID = `trainingTime-${weekday}`;
     const [filteredTrainings, setFilteredTrainings] = useState(getDefaultTrainings(allTrainings, HOW_MANY_ROWS));
 
     const [searchPhrase, setSearchPhrase] = useState('');
@@ -73,28 +76,31 @@ function PlanDayAssign(
             <Card.Body>
                 <Card.Title>Przypisz trening na ten dzień</Card.Title>
                 <p className='card-text'>
-                    <Form.Label htmlFor={`search${weekday}`} column={true}>
+                    <Form.Label htmlFor={SEARCH_ID} column={true}>
                         Wyszukaj po nazwie:
                     </Form.Label>
                     <Form.Control
+                        id={SEARCH_ID}
                         onChange={onSearchTrainingHandler}
                         value={searchPhrase}
                     />
-                    <Form.Label htmlFor={`training${weekday}`} column={true}>
+                    <Form.Label htmlFor={LIST_ID} column={true}>
                         Wybierz trening:
                     </Form.Label>
                     {/*th:name="|training${dayToAssign}|"*/}
                     <SelectField
-                        id={`training${weekday}`}
+                        id={LIST_ID}
+                        name={LIST_ID}
                         title={`Select training to do for ${weekdayDisplay} weekday`}
                         firstElemDisplay='Dzień wolny'
                         options={getDataToDisplay(filteredTrainings)}
                     />
-                    <Form.Label htmlFor={`trainingTime${weekday}`} column={true}>
+                    <Form.Label htmlFor={TIME_ID} column={true}>
                         Godzina treningu:
                     </Form.Label>
                     <Form.Control
-                        id={`trainingTime${weekday}`}
+                        id={TIME_ID}
+                        name={TIME_ID}
                         // th:field="*{planWriteMap['__${weekday}__'].trainingTime}"
                         pattern='[0-9]{2}:[0-9]{2}'
                     />
