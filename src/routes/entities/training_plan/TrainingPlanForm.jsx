@@ -2,7 +2,7 @@ import { Col, Row } from 'react-bootstrap';
 import { Form as RouterForm, useLoaderData } from 'react-router-dom';
 import PlanDayAssign from '../../../components/entities/training_plan/PlanDayAssign';
 import SubmitButton from '../../../components/form/SubmitButton';
-import { defaultHeaders, getIdPath, sendDefaultParallelRequests } from '../../../utils/CRUDUtils';
+import { sendDefaultParallelRequests, sendSaveRequest } from '../../../utils/CRUDUtils';
 import { createObjFromEntries } from '../../../utils/EntitiesUtils';
 
 function TrainingPlanForm({method = 'post'}) {
@@ -61,36 +61,34 @@ export async function loader() {
 }
 
 export async function action({request, params}) {
-    const trainingScheduleId = getIdPath(params);
     const data = await request.formData();
     const fromEntries = createObjFromEntries(data);
 
-    const transformedObj = {};
+    const mapData = {};
+    const transformedObj = {
+        planWriteMap: mapData
+    };
 
     Object.keys(fromEntries).forEach(
         formField => {
             const [property, day] = formField.split('-');
-            if (!transformedObj[day])
-                transformedObj[day] = null;
+            if (!mapData[day])
+                mapData[day] = null;
 
             if (fromEntries[formField]) {
-                if (transformedObj[day] === null)
-                    transformedObj[day] = {};
-                transformedObj[day][property] = fromEntries[formField];
+                if (mapData[day] === null)
+                    mapData[day] = {};
+                mapData[day][property] = fromEntries[formField];
             }
         }
     );
 
-    console.log(transformedObj);
-
-    const response = await fetch(
-        `http://localhost:8080/api/plans${trainingScheduleId}`,
-        {
-            method: request.method,
-            headers: defaultHeaders(),
-            body: JSON.stringify(transformedObj)
-        }
+    return await sendSaveRequest(
+        transformedObj,
+        'plans',
+        '/main/plans',
+        params,
+        request,
+        'nowy plan treningowy'
     );
-
-    return null;
 }
