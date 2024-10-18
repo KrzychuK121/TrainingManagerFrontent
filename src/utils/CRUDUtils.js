@@ -1,6 +1,6 @@
-import { redirect } from 'react-router-dom';
+import { json, redirect } from 'react-router-dom';
 import { injectToken, logout, tokenExpired } from './AuthUtils';
-import { DELETE_SUCCESS } from './URLUtils';
+import { DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS } from './URLUtils';
 
 export function defaultHeaders(headers) {
     return injectToken({
@@ -17,9 +17,15 @@ export async function handleResponseUnauthorized(response) {
     return redirect('/main/login');
 }
 
+export function getIdPath(params) {
+    return params.id
+        ? `/${params.id}`
+        : '';
+}
+
 export async function sendDefaultRequest(
     path,
-    domain = 'http://localhost:8080/api',
+    domain = DOMAIN,
     headers = null
 ) {
     const response = await fetch(
@@ -38,8 +44,8 @@ export async function sendDefaultRequest(
 
 export async function sendDefaultParallelRequests(
     paths,
-    domain = 'http://localhost:8080/api',
-    headers = null
+    headers = null,
+    domain = DOMAIN
 ) {
     const promises = paths.map(
         path => fetch(
@@ -52,8 +58,49 @@ export async function sendDefaultParallelRequests(
 
     const responses = await Promise.all(promises);
 
+    const handledResponse = await handleResponseUnauthorized(responses[0]);
+    if (handledResponse)
+        return handledResponse;
+
     return await Promise.all(
         responses.map(response => response.json())
+    );
+}
+
+const DEFAULT_ENTITY_LABEL = 'obiekt';
+
+export async function sendSaveRequest(
+    toSave,
+    path,
+    redirectPath,
+    params,
+    request,
+    entityLabel = DEFAULT_ENTITY_LABEL,
+    headers = null,
+    domain = DOMAIN
+) {
+    const entityId = getIdPath(params);
+    const response = await fetch(
+        `${domain}/${path}${entityId}`,
+        {
+            method: request.method,
+            headers: defaultHeaders(headers),
+            body: JSON.stringify(toSave)
+        }
+    );
+
+    if (response.status === 204)
+        return redirect(`${redirectPath}?${EDIT_SUCCESS}`);
+    if (response.status !== 201)
+        return await response.json();
+
+    return json(
+        {
+            message: entityLabel === DEFAULT_ENTITY_LABEL
+                ? `Utworzono nowy ${entityLabel}!`
+                : `Utworzono ${entityLabel}!`
+        },
+        {status: 201}
     );
 }
 
@@ -63,9 +110,7 @@ export async function createModelLoader(
     params,
     editAttribute
 ) {
-    const entityId = params.id
-        ? `/${params.id}`
-        : '';
+    const entityId = getIdPath(params);
 
     const fetchedData = await sendDefaultRequest(
         `${path}${entityId}`
@@ -88,9 +133,7 @@ export async function deleteAction(
     request,
     params
 ) {
-    const entityId = params.id
-        ? `/${params.id}`
-        : '';
+    const entityId = getIdPath(params);
 
     const response = await fetch(
         `${requestPath}${entityId}`,
