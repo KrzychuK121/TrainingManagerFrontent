@@ -19,7 +19,10 @@ import PlanWeekDisplay, { loader as planWeekDisplayLoader } from '../routes/enti
 import TrainingPlanDisplay, {
     loader as trainingPlanLoader
 } from '../routes/entities/training_plan/TrainingPlanDisplay';
-import TrainingPlanForm, { loader as trainingPlanFormLoader } from '../routes/entities/training_plan/TrainingPlanForm';
+import TrainingPlanForm, {
+    action as trainingPlanFormAction,
+    loader as trainingPlanFormLoader
+} from '../routes/entities/training_plan/TrainingPlanForm';
 import { nonAuthenticatedLoader } from '../utils/AuthUtils';
 
 const AuthorizedPaths = {
@@ -94,14 +97,14 @@ const AuthorizedPaths = {
                 {
                     path: 'create',
                     element: <TrainingPlanForm/>,
-                    loader: trainingPlanFormLoader
-                    // action: exerciseSaveAction
+                    loader: trainingPlanFormLoader,
+                    action: trainingPlanFormAction
                 },
                 {
-                    path: 'edit/:id'
-                    //element: <TrainingForm method='put' />,
+                    path: 'edit/:id',
+                    element: <TrainingPlanForm method='put'/>,
                     //loader: trainingFormLoader
-                    // action: exerciseSaveAction
+                    action: trainingPlanFormAction
                 },
                 {
                     path: 'delete/:id'
