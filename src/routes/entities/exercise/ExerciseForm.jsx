@@ -7,7 +7,7 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { createModelLoader, getIdPath, sendSaveRequest } from '../../../utils/CRUDUtils';
+import { createModelLoader, sendSaveRequest } from '../../../utils/CRUDUtils';
 import {
     createObjFromEntries,
     filterObject,
@@ -177,7 +177,6 @@ export async function loader({params}) {
 }
 
 export async function action({request, params}) {
-    const exerciseId = getIdPath(params);
     const data = await request.formData();
     const dataObject = createObjFromEntries(
         data,
