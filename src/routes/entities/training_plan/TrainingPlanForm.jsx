@@ -1,18 +1,54 @@
+import { useRef } from 'react';
 import { Col, Row } from 'react-bootstrap';
-import { Form as RouterForm, useLoaderData } from 'react-router-dom';
+import { Form as RouterForm, useActionData, useLoaderData } from 'react-router-dom';
+import AlertComponent from '../../../components/alerts/AlertComponent';
 import PlanDayAssign from '../../../components/entities/training_plan/PlanDayAssign';
 import SubmitButton from '../../../components/form/SubmitButton';
+import useClearForm from '../../../hooks/UseClearForm';
+import useFormValidation from '../../../hooks/UseFormValidation';
 import { sendDefaultParallelRequests, sendSaveRequest } from '../../../utils/CRUDUtils';
 import { createObjFromEntries } from '../../../utils/EntitiesUtils';
 
 function TrainingPlanForm({method = 'post'}) {
     const loadedData = useLoaderData();
+    const actionData = useActionData();
+
     const {allTrainings, weekdays} = loadedData;
+
+    const formRef = useRef();
+
+    const useFormValidationObj = useFormValidation(actionData);
+    const {
+        globalMessage,
+        getValidationProp,
+        getValidationMessages
+    } = useFormValidationObj;
+
+    const message = actionData && actionData.message
+        ? actionData.message
+        : null;
+
+    useClearForm(message, formRef);
 
     return (
         <>
-            {/*<AlertComponent />*/}
-            <RouterForm method={method}>
+            <AlertComponent
+                message={globalMessage}
+                showTrigger={actionData}
+                variant='danger'
+                closeDelay={5000}
+                scrollOnTrigger={true}
+            />
+            <AlertComponent
+                message={message}
+                showTrigger={actionData}
+                closeDelay={3000}
+                scrollOnTrigger={true}
+            />
+            <RouterForm
+                method={method}
+                ref={formRef}
+            >
                 <Row className='justify-content-center'>
                     {
                         weekdays.map(

@@ -98,15 +98,45 @@ function TrainingPlanDisplay() {
         ? loadedData.weekdays
         : null;
 
+    const {messages: successMessages} = useMessageParams(
+        [
+            {
+                messageParam: EDIT_SUCCESS,
+                displayIfSuccess: 'Rutyna treningowa została edytowana pomyślnie.'
+            },
+            {
+                messageParam: DELETE_SUCCESS,
+                displayIfSuccess: 'Rutyna treningowa została usunięta pomyślnie.'
+            }
+        ]
+    );
+
+    const {globalMessage} = useFormValidation(actionData);
+
     if (!plans)
         return <span>Brak rutyn treningowych do wyświetlenia</span>;
 
     return (
         <>
             <AlertComponent
-                message={null}
-                showTrigger={null}
+                message={globalMessage}
+                showTrigger={actionData}
+                variant='danger'
+                closeDelay={5000}
+                scrollOnTrigger={true}
             />
+            {
+                successMessages && successMessages.map(
+                    message => (
+                        <AlertComponent
+                            key={message}
+                            message={message}
+                            showTrigger={null}
+                            closeDelay={4000}
+                        />
+                    )
+                )
+            }
             <h1>Lista wszystkich planów treningowych</h1>
 
             <Table

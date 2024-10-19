@@ -47,6 +47,13 @@ function TrainingForm({method = 'post'}) {
     return (
         <>
             <AlertComponent
+                message={globalMessage}
+                showTrigger={actionData}
+                variant='danger'
+                closeDelay={5000}
+                scrollOnTrigger={true}
+            />
+            <AlertComponent
                 message={message}
                 showTrigger={actionData}
                 closeDelay={3000}
