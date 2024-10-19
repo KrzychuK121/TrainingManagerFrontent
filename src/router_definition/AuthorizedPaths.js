@@ -15,8 +15,10 @@ import TrainingForm, {
     action as trainingSaveAction,
     loader as trainingFormLoader
 } from '../routes/entities/training/TrainingForm';
+import TrainingTrainApp from '../routes/entities/training/TrainingTrainApp';
 import PlanWeekDisplay, { loader as planWeekDisplayLoader } from '../routes/entities/training_plan/PlanWeekDisplay';
 import TrainingPlanDisplay, {
+    deleteTrainingRoutineAction,
     loader as trainingPlanLoader
 } from '../routes/entities/training_plan/TrainingPlanDisplay';
 import TrainingPlanForm, {
@@ -64,6 +66,10 @@ const AuthorizedPaths = {
                     loader: trainingLoader
                 },
                 {
+                    path: 'train',
+                    element: <TrainingTrainApp/>
+                },
+                {
                     path: 'create',
                     element: <TrainingForm/>,
                     loader: trainingFormLoader,
@@ -107,8 +113,8 @@ const AuthorizedPaths = {
                     action: trainingPlanFormAction
                 },
                 {
-                    path: 'delete/:id'
-                    // action: exerciseDeleteAction
+                    path: 'delete/:id',
+                    action: deleteTrainingRoutineAction
                 }
             ]
         }

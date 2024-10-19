@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { Table } from 'react-bootstrap';
 import { useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import { sendDefaultRequest } from '../../../utils/CRUDUtils';
+import DeleteModal from '../../../components/entities/crud/DeleteModal';
+import useFormValidation from '../../../hooks/UseFormValidation';
+import { useMessageParams } from '../../../hooks/UseMessageParam';
+import { deleteAction, sendDefaultRequest } from '../../../utils/CRUDUtils';
+import { DELETE_SUCCESS, EDIT_SUCCESS } from '../../../utils/URLUtils';
 
 function getColumnsByWeekdays(schedules, weekdays) {
     return weekdays.map(
@@ -25,8 +30,8 @@ function getColumnsByWeekdays(schedules, weekdays) {
     );
 }
 
-function getTableRow(plan, weekdays) {
-    const {active, schedules} = plan;
+function getTableRow(plan, weekdays, setActionData) {
+    const {id, active, schedules} = plan;
     return (
         <>
             {getColumnsByWeekdays(schedules, weekdays)}
@@ -34,50 +39,35 @@ function getTableRow(plan, weekdays) {
                 {active ? 'Tak' : 'Nie'}
             </td>
             <td>
+                <DeleteModal
+                    action={`/main/plans/delete/${id}`}
+                    setActionData={setActionData}
+                />
                 {/*<fieldset>
-                                <form
-                                        method="get"
-                                        action="#"
-                                        th:action="@{/exercise/edit/{id}(id=${exercise.id})}"
-                                >
-                                    <button
-                                            type="submit"
-                                            class="btn btn-primary"
-                                    >
-                                        Edytuj
-                                    </button> |
-                                </form>
-                                <form
-                                        method="get"
-                                        action="#"
-                                        sec:authorize="hasRole('ROLE_ADMIN')"
-                                        th:action="@{/exercise/delete/{id}(id=${exercise.id})}"
-                                >-->
-                                    <!-- Modal -->
-                                    <!--<div
-                                            th:replace="~{defaulttemplate :: modal-delete('delItem' + ${i.index})}"
-                                    ></div>
-                                    <button
-                                            type="button"
-                                            class="btn btn-primary"
-                                            data-bs-toggle="modal"
-                                            th:data-bs-target="'#delItem' + ${i.index}"
-                                    >
-                                        Usuń
-                                    </button> |
-                                </form>
-                            </fieldset>*/}
+                    <form
+                            method="get"
+                            action="#"
+                            th:action="@{/exercise/edit/{id}(id=${exercise.id})}"
+                    >
+                        <button
+                                type="submit"
+                                class="btn btn-primary"
+                        >
+                            Edytuj
+                        </button> |
+                    </form>
+                </fieldset>*/}
             </td>
         </>
     );
 }
 
-function getTableContent(plans, weekdays) {
+function getTableContent(plans, weekdays, setActionData) {
     const rows = [];
     for (let i = 0; i < plans.length; i++) {
         rows.push(
             <tr key={`plansRow${i}`}>
-                {getTableRow(plans[i], weekdays)}
+                {getTableRow(plans[i], weekdays, setActionData)}
             </tr>
         );
     }
@@ -99,6 +89,8 @@ function getTableWeekdaysHeaders(weekdays) {
 
 function TrainingPlanDisplay() {
     const loadedData = useLoaderData();
+    const [actionData, setActionData] = useState();
+
     const plans = loadedData
         ? loadedData.plans
         : null;
@@ -128,11 +120,11 @@ function TrainingPlanDisplay() {
                     <th>
                         Aktywny?
                     </th>
-                    <th></th>
+                    <th>Opcje</th>
                 </tr>
                 </thead>
                 <tbody>
-                {getTableContent(plans, weekdays)}
+                {getTableContent(plans, weekdays, setActionData)}
                 </tbody>
             </Table>
         </>
@@ -143,4 +135,13 @@ export default TrainingPlanDisplay;
 
 export async function loader() {
     return await sendDefaultRequest('plans');
+}
+
+export async function deleteTrainingRoutineAction({request, params}) {
+    return await deleteAction(
+        'http://localhost:8080/api/routines',
+        '/main/plans',
+        request,
+        params
+    );
 }
