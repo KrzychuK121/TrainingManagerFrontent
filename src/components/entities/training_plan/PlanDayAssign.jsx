@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card, Form } from 'react-bootstrap';
 import SelectField from '../../form/SelectField';
+import classes from './PlanDayAssign.module.css';
 
 function getDefaultTrainings(allTrainings, howManyRows) {
     const trainingsAmount = Math.min(allTrainings.length, howManyRows);
@@ -69,7 +70,7 @@ function PlanDayAssign(
     }, []);
 
     return (
-        <Card className='dayAssignCard'>
+        <Card className={classes.dayAssignCard}>
             <Card.Header>
                 <span className='text-capitalize'>{weekdayDisplay}</span>
             </Card.Header>
