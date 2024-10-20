@@ -74,7 +74,7 @@ function TrainingTrainApp() {
                                                 <span className='me-1'>
                                                     {`${exercise.name}: ${exercise.rounds} serii `}
                                                     {
-                                                        exercise.repetition == 0
+                                                        exercise.repetition === 0
                                                             ? exercise.time
                                                             : `${exercise.repetition} powtórzeń`
                                                     }
