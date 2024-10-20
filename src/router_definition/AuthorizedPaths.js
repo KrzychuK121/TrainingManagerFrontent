@@ -15,7 +15,7 @@ import TrainingForm, {
     action as trainingSaveAction,
     loader as trainingFormLoader
 } from '../routes/entities/training/TrainingForm';
-import TrainingTrainApp from '../routes/entities/training/TrainingTrainApp';
+import TrainingTrainApp, { loader as trainingTrainAppLoader } from '../routes/entities/training/TrainingTrainApp';
 import PlanWeekDisplay, { loader as planWeekDisplayLoader } from '../routes/entities/training_plan/PlanWeekDisplay';
 import TrainingPlanDisplay, {
     deleteTrainingRoutineAction,
@@ -67,7 +67,8 @@ const AuthorizedPaths = {
                 },
                 {
                     path: 'train',
-                    element: <TrainingTrainApp/>
+                    element: <TrainingTrainApp/>,
+                    loader: trainingTrainAppLoader
                 },
                 {
                     path: 'create',
