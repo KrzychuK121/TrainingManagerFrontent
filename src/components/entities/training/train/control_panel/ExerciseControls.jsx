@@ -81,26 +81,26 @@ function ExerciseControls(
                                 onClick={handlePauseResume}
                                 label={
                                     resume
-                                        ? 'WZNÓW'
-                                        : 'ZATRZYMAJ'
+                                        ? LABELS.RESUME
+                                        : LABELS.PAUSE
                                 }
                             />
                             <OptionButton
                                 onClick={handleStop}
-                                label='Stop'
+                                label={LABELS.STOP}
                             />
                         </>
                     )
                     : (
                         <OptionButton
                             onClick={handleNextSeries}
-                            label='Następne powtórzenie'
+                            label={LABELS.NEXT_SERIES}
                         />
                     )
             }
             <OptionButton
                 onClick={handleSkip}
-                label='Pomiń'
+                label={LABELS.SKIP}
             />
         </>
     );
