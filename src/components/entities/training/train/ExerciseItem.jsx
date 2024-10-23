@@ -22,30 +22,50 @@ function ExerciseItem({exercise}) {
         id,
         name,
         description,
+        rounds,
         tempRounds,
+        amount,
         tempAmount,
         status
     } = exercise;
 
-    const [backgroundColor, setBackgroundColor] = useState('#FFD700');
+    const [backgroundColor, setBackgroundColor] = useState(getBackgroundColor(exercise));
+    const [displayRounds, setDisplayRounds] = useState();
+    const [displayAmount, setDisplayAmount] = useState();
 
     useEffect(() => {
         setBackgroundColor(getBackgroundColor(exercise));
-    }, [status]);
+    }, [status, exercise]);
+
+    useEffect(() => {
+        setDisplayRounds(
+            status === EXERCISE_STATUS.CURRENT
+                ? tempRounds
+                : rounds
+        );
+        setDisplayAmount(
+            status === EXERCISE_STATUS.CURRENT
+                ? tempAmount
+                : amount
+        );
+    }, [status, rounds, tempRounds, amount, tempAmount]);
 
     const style = {
         backgroundColor
     };
 
+    if (status === EXERCISE_STATUS.CURRENT)
+        console.log(`${name} : ${displayRounds}`);
+
     return (
         <Accordion.Item eventKey={id} className={classes.listBody}>
             <Accordion.Button className='m-0' style={style}>
                 <span className={`me-1 ${classes.listHeader}`}>
-                    {`${name}: ${tempRounds} serii `}
+                    {`${name}: ${displayRounds} serii, `}
                     {
                         exercise.mode === EXERCISE_TYPE.TIMER
-                            ? `${tempAmount}`
-                            : `${tempAmount} powtórzeń`
+                            ? `${displayAmount}`
+                            : `${displayAmount} powtórzeń`
                     }
                 </span>
             </Accordion.Button>
