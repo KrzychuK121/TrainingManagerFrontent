@@ -35,14 +35,18 @@ function ExerciseControls(
         NEXT_SERIES: 'SERIA ZROBIONA'
     };
 
-    const [timeInSeconds, setTimeInSeconds] = useState(
-        3
-    );
+    const [timeInSeconds, setTimeInSeconds] = useState();
     const [resume, setResume] = useState(true);
 
     function updateExercises() {
         setExercises([...exercises]);
     }
+
+    useEffect(() => {
+        setTimeInSeconds(
+            timeStringToSeconds(currExercise, currExercise.amount)
+        );
+    }, [currExerciseNumber]);
 
     useEffect(() => {
         if (currExercise.mode !== EXERCISE_TYPE.TIMER)
