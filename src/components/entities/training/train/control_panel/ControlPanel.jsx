@@ -1,4 +1,5 @@
 import { Accordion, Card } from 'react-bootstrap';
+import { EXERCISE_STATUS } from '../../../../../routes/entities/training/TrainingTrainApp';
 
 import trainAppClasses from '../../../../../routes/entities/training/TrainingTrainApp.module.css';
 import ExerciseControls from './ExerciseControls';
@@ -12,6 +13,17 @@ function ControlPanel(
         setCurrExerciseNumber
     }
 ) {
+    function moveToNextAndMarkStatus(status) {
+        const nextExerciseNumber = currExerciseNumber === null || currExerciseNumber === undefined
+            ? 0
+            : ++currExerciseNumber;
+        setCurrExerciseNumber(nextExerciseNumber);
+        exercises[nextExerciseNumber].status = EXERCISE_STATUS.CURRENT;
+
+        if (nextExerciseNumber > 0)
+            exercises[nextExerciseNumber - 1].status = status;
+    }
+
     return (
         <Accordion.Item eventKey='0'>
             <Card className={trainAppClasses.listBody}>
@@ -20,7 +32,10 @@ function ControlPanel(
                         {
                             currExerciseNumber === null || currExerciseNumber === undefined // Can't ! bc of 0 value
                                 ? (
-                                    <InitControls setCurrExerciseNumber={setCurrExerciseNumber}/>
+                                    <InitControls
+                                        setCurrExerciseNumber={setCurrExerciseNumber}
+                                        moveToNextAndMarkStatus={moveToNextAndMarkStatus}
+                                    />
                                 )
                                 : (
                                     <ExerciseControls
@@ -28,6 +43,7 @@ function ControlPanel(
                                         setExercises={setExercises}
                                         currExerciseNumber={currExerciseNumber}
                                         setCurrExerciseNumber={setCurrExerciseNumber}
+                                        moveToNextAndMarkStatus={moveToNextAndMarkStatus}
                                     />
                                 )
                         }
