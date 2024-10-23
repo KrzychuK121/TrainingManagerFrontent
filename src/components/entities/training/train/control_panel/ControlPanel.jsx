@@ -16,7 +16,7 @@ function ControlPanel(
     function moveToNextAndMarkStatus(status) {
         const nextExerciseNumber = currExerciseNumber === null || currExerciseNumber === undefined
             ? 0
-            : ++currExerciseNumber;
+            : currExerciseNumber + 1;
         setCurrExerciseNumber(nextExerciseNumber);
         exercises[nextExerciseNumber].status = EXERCISE_STATUS.CURRENT;
 
