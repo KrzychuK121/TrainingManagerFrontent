@@ -1,0 +1,12 @@
+.opt {
+    display: inline-block;
+    margin: 0 10px;
+    transition-property: font-size, font-weight, background-color;
+    transition-duration: 0.5s;
+}
+
+.opt:hover {
+    background-color: #06D6A0;
+    font-size: 25px;
+    font-weight: 700;
+}
