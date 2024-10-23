@@ -36,7 +36,7 @@ function ExerciseControls(
     };
 
     const [timeInSeconds, setTimeInSeconds] = useState(
-        timeStringToSeconds(currExercise, currExercise.amount)
+        3
     );
     const [resume, setResume] = useState(true);
 
@@ -44,8 +44,9 @@ function ExerciseControls(
         setExercises([...exercises]);
     }
 
-    // useEffect to update the time every second if the timer is running
     useEffect(() => {
+        if (currExercise.mode !== EXERCISE_TYPE.TIMER)
+            return;
         let interval;
         if (!resume) {
             if (timeInSeconds === 0)
@@ -59,7 +60,7 @@ function ExerciseControls(
                 updateExercises();
             }, 1000);
         }
-        return () => clearInterval(interval); // Cleanup on unmount or stop
+        return () => clearInterval(interval);
     }, [resume, currExercise, moveToNextAndMarkStatus]);
 
     function handlePauseResume() {
