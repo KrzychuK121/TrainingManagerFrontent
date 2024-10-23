@@ -1,11 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EXERCISE_STATUS, EXERCISE_TYPE } from '../../../../../routes/entities/training/TrainingTrainApp';
 import OptionButton from './OptionButton';
 
-function calculateTimer(exercise) {
-    exercise.amount.forEach(
-        amountEntity => console.log()
-    );
+function timeStringToSeconds(exercise, amount) {
+    if (exercise.mode === EXERCISE_TYPE.REPEAT)
+        return null;
+    const [hours, minutes, seconds] = amount.split(':')
+        .map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
+}
+
+function formatTime(seconds) {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
 }
 
 function ExerciseControls(
@@ -26,40 +35,43 @@ function ExerciseControls(
         NEXT_SERIES: 'SERIA ZROBIONA'
     };
 
-    const [timer, setTimer] = useState(0);
+    const [timeInSeconds, setTimeInSeconds] = useState(
+        timeStringToSeconds(currExercise, currExercise.amount)
+    );
     const [resume, setResume] = useState(true);
 
     function updateExercises() {
         setExercises([...exercises]);
     }
 
+    // useEffect to update the time every second if the timer is running
+    useEffect(() => {
+        let interval;
+        if (!resume) {
+            if (timeInSeconds === 0)
+                moveToNextAndMarkStatus(EXERCISE_STATUS.FINISHED);
+
+            interval = setInterval(() => {
+                const newTimeInSecond = timeInSeconds - 1;
+
+                currExercise.tempAmount = formatTime(newTimeInSecond);
+                setTimeInSeconds(newTimeInSecond);
+                updateExercises();
+            }, 1000);
+        }
+        return () => clearInterval(interval); // Cleanup on unmount or stop
+    }, [resume, currExercise, moveToNextAndMarkStatus]);
+
     function handlePauseResume() {
         setResume(!resume);
-
-        if (!resume) {
-            clearTimeout(timer);
-            setTimer(null);
-            return;
-        }
-
-
-        const newTimer = setTimeout(
-            () => {
-
-            }, 1000
-        );
-
-        setTimer(newTimer);
     }
 
     function handleStop() {
-
-        // Implement stop functionality
+        setResume(true);
+        setTimeInSeconds(timeStringToSeconds(currExercise, currExercise.amount));
     }
 
     function handleSkip() {
-        if (timer)
-            clearTimeout(timer);
         moveToNextAndMarkStatus(EXERCISE_STATUS.NOT_FINISHED);
         updateExercises();
     }
