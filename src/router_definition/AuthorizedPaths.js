@@ -66,7 +66,8 @@ const AuthorizedPaths = {
                     loader: trainingLoader
                 },
                 {
-                    path: 'train',
+                    // TODO: Remove this ID, it will fetch training for special endpoint in API
+                    path: 'train/:id',
                     element: <TrainingTrainApp/>,
                     loader: trainingTrainAppLoader
                 },
