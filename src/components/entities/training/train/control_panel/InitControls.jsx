@@ -1,9 +1,14 @@
 import OptionButton from './OptionButton';
 
-function InitControls({setCurrExerciseNumber}) {
+function InitControls(
+    {
+        setCurrExerciseNumber,
+        moveToNextAndMarkStatus
+    }
+) {
 
     function handleStartTraining() {
-        setCurrExerciseNumber(0);
+        moveToNextAndMarkStatus(null);
     }
 
     return (

@@ -13,7 +13,8 @@ function ExerciseControls(
         exercises,
         setExercises,
         currExerciseNumber,
-        setCurrExerciseNumber
+        setCurrExerciseNumber,
+        moveToNextAndMarkStatus
     }
 ) {
     const currExercise = exercises[currExerciseNumber];
@@ -59,12 +60,14 @@ function ExerciseControls(
     function handleSkip() {
         if (timer)
             clearTimeout(timer);
-        currExercise.status = EXERCISE_STATUS.NOT_FINISHED;
-        setCurrExerciseNumber(++currExerciseNumber);
+        moveToNextAndMarkStatus(EXERCISE_STATUS.NOT_FINISHED);
+        updateExercises();
     }
 
     function handleNextSeries() {
         currExercise.tempRounds = --currExercise.tempRounds;
+        if (currExercise.tempRounds === 0)
+            moveToNextAndMarkStatus(EXERCISE_STATUS.FINISHED);
         updateExercises();
     }
 
