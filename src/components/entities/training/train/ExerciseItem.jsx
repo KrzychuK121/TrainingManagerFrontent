@@ -54,9 +54,6 @@ function ExerciseItem({exercise}) {
         backgroundColor
     };
 
-    if (status === EXERCISE_STATUS.CURRENT)
-        console.log(`${name} : ${displayRounds}`);
-
     return (
         <Accordion.Item eventKey={id} className={classes.listBody}>
             <Accordion.Button className='m-0' style={style}>
