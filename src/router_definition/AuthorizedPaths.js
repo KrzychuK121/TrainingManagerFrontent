@@ -1,4 +1,5 @@
 import React from 'react';
+import CalcBMI, { action as calcBMIAction } from '../routes/calculators/CalcBMI';
 import ExerciseForm, {
     action as exerciseSaveAction,
     loader as exerciseFormLoader
@@ -31,6 +32,19 @@ const AuthorizedPaths = {
     path: '',
     loader: nonAuthenticatedLoader,
     children: [
+        {
+            path: 'calc',
+            children: [
+                {
+                    path: 'BMI',
+                    element: <CalcBMI/>,
+                    action: calcBMIAction
+                },
+                {
+                    path: 'BMR'
+                }
+            ]
+        },
         {
             path: 'exercise',
             children: [

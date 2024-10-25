@@ -2,6 +2,7 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import { useRouteLoaderData } from 'react-router-dom';
 
 import AuthNavigations from './AuthNavigations';
+import CalcDropdown from './CalcDropdown';
 import classes from './MainNavigation.module.css';
 import NavLink from './NavLink';
 import NonAuthNavigations from './NonAuthNavigations';
@@ -32,6 +33,7 @@ function MainNavigation() {
                                 href='/training'
                             />
                             <OperationsDropdown/>
+                            <CalcDropdown/>
                             {
                                 isAuthenticated
                                     ? <AuthNavigations classes={classes}/>
