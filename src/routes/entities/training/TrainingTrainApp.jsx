@@ -26,6 +26,12 @@ function TrainingTrainApp() {
 
     const [currExerciseNumber, setCurrExerciseNumber] = useState(null);
 
+    function getActiveKey() {
+        if (currExerciseNumber === null || currExerciseNumber === undefined)
+            return null;
+        return exercises[currExerciseNumber].id;
+    }
+
     return (
         <>
             <Row className='justify-content-center'>
@@ -37,7 +43,7 @@ function TrainingTrainApp() {
                     </div>
                     <h2>Twój trening zawiera:</h2>
                     <br/>
-                    <Accordion flush id='listaCwiczen'>
+                    <Accordion flush id='listaCwiczen' activeKey={getActiveKey()}>
                         <ControlPanel
                             exercises={exercises}
                             setExercises={setExercises}
