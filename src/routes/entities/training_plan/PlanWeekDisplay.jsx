@@ -1,7 +1,10 @@
 import { Col, Row } from 'react-bootstrap';
 import { useLoaderData } from 'react-router-dom';
+import AlertComponent from '../../../components/alerts/AlertComponent';
 import PlanDayDisplay from '../../../components/entities/training_plan/PlanDayDisplay';
+import { useMessageParams } from '../../../hooks/UseMessageParam';
 import { sendDefaultRequest } from '../../../utils/CRUDUtils';
+import { NO_TRAINING_DAY } from '../training/TrainingTrainApp';
 
 function PlanWeekDisplay() {
     const loadedData = useLoaderData();
@@ -12,6 +15,15 @@ function PlanWeekDisplay() {
     const weekdays = loadedData && loadedData.hasOwnProperty('weekdays')
         ? loadedData.weekdays
         : null;
+
+    const {messages: infoMessages} = useMessageParams(
+        [
+            {
+                messageParam: NO_TRAINING_DAY,
+                displayIfSuccess: 'Nie masz na dzisiaj zaplanowanego żadnego treningu.'
+            }
+        ]
+    );
 
     function getScheduleBy(weekday) {
         return schedules.hasOwnProperty(weekday)
@@ -30,6 +42,19 @@ function PlanWeekDisplay() {
         <>
             <Row className='row justify-content-center'>
                 {
+                    infoMessages && infoMessages.map(
+                        message => (
+                            <AlertComponent
+                                key={message}
+                                message={message}
+                                showTrigger={null}
+                                closeDelay={4000}
+                                variant='primary'
+                            />
+                        )
+                    )
+                }
+                {
                     weekdays.map(
                         ({weekday, weekdayDisplay}) => (
                             <Col key={weekday} sm={3}>
@@ -41,14 +66,6 @@ function PlanWeekDisplay() {
                         )
                     )
                 }
-                {/*<Col
-                    sm={3}
-                    th:each='weekday: ${T(springweb.training_manager.models.entities.Weekdays).values()}'
-                >
-                    <div
-                        th:replace='~{routine/template :: dayDisplay(${plans.get(weekday)}, ${weekday})}'
-                    ></div>
-                </Col>*/}
             </Row>
         </>
     );

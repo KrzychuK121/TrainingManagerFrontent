@@ -30,7 +30,7 @@ function MainNavigation() {
                         <Nav className={classes.menuContainerComponent}>
                             <NavLink
                                 label='Zacznij trening!'
-                                href='/training'
+                                href='/main/training/train'
                             />
                             <OperationsDropdown/>
                             <CalcDropdown/>

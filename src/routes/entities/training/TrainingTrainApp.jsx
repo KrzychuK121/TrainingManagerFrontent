@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Accordion, Col, Row } from 'react-bootstrap';
-import { useLoaderData } from 'react-router-dom';
+import { redirect, useLoaderData } from 'react-router-dom';
 import ControlPanel from '../../../components/entities/training/train/control_panel/ControlPanel';
 import ExerciseItem from '../../../components/entities/training/train/ExerciseItem';
 import { defaultHeaders, getIdPath, handleResponseUnauthorized } from '../../../utils/CRUDUtils';
+import { DOMAIN } from '../../../utils/URLUtils';
 
 export const EXERCISE_TYPE = {
     TIMER: 0,
@@ -79,18 +80,30 @@ function TrainingTrainApp() {
 
 export default TrainingTrainApp;
 
+export const NO_TRAINING_DAY = 'no-training-day';
+
 export async function loader({params}) {
     const trainingId = getIdPath(params);
-    const response = await fetch(
-        `http://localhost:8080/api/training${trainingId}`,
-        {
-            headers: defaultHeaders()
-        }
-    );
+    const response = trainingId
+        ? await fetch(
+            `${DOMAIN}/training${trainingId}`,
+            {
+                headers: defaultHeaders()
+            }
+        )
+        : await fetch(
+            `${DOMAIN}/plans/today-training`,
+            {
+                headers: defaultHeaders()
+            }
+        );
 
     const handledResponse = await handleResponseUnauthorized(response);
     if (handledResponse)
         return handledResponse;
+
+    if (response.status === 204)
+        return redirect(`/main/plans/week?${NO_TRAINING_DAY}`);
 
     const training = await response.json();
 
