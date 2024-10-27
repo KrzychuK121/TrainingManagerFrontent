@@ -48,7 +48,6 @@ function PlanWeekDisplay() {
                                 key={message}
                                 message={message}
                                 showTrigger={null}
-                                closeDelay={4000}
                                 variant='primary'
                             />
                         )
