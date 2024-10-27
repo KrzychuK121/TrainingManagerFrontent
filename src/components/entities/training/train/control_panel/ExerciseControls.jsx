@@ -32,6 +32,7 @@ function ExerciseControls(
         PAUSE: 'ZATRZYMAJ',
         STOP: 'STOP',
         SKIP: 'POMIŃ',
+        SKIP_ROUND: 'POMIŃ RUNDĘ',
         NEXT_SERIES: 'SERIA ZROBIONA'
     };
 
@@ -93,6 +94,12 @@ function ExerciseControls(
         updateExercises();
     }
 
+    function handleSkipRound() {
+        if (currExercise.tempRounds - 1 === 0) {
+
+        }
+    }
+
     function handleNextSeries() {
         currExercise.tempRounds = --currExercise.tempRounds;
         if (currExercise.tempRounds === 0)
@@ -130,6 +137,10 @@ function ExerciseControls(
             <OptionButton
                 onClick={handleSkip}
                 label={LABELS.SKIP}
+            />
+            <OptionButton
+                onClick={handleSkipRound}
+                label={LABELS.SKIP_ROUND}
             />
         </>
     );

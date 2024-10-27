@@ -10,18 +10,25 @@ function ControlPanel(
         exercises,
         setExercises,
         currExerciseNumber,
-        setCurrExerciseNumber
+        setCurrExerciseNumber,
+        setFinished
     }
 ) {
     function moveToNextAndMarkStatus(status) {
         const nextExerciseNumber = currExerciseNumber === null || currExerciseNumber === undefined
             ? 0
             : currExerciseNumber + 1;
-        setCurrExerciseNumber(nextExerciseNumber);
-        exercises[nextExerciseNumber].status = EXERCISE_STATUS.CURRENT;
 
         if (nextExerciseNumber > 0)
             exercises[nextExerciseNumber - 1].status = status;
+
+        if (nextExerciseNumber === exercises.length) {
+            setFinished(true);
+            return;
+        }
+
+        setCurrExerciseNumber(nextExerciseNumber);
+        exercises[nextExerciseNumber].status = EXERCISE_STATUS.CURRENT;
     }
 
     return (

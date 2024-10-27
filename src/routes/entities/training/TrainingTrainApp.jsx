@@ -25,9 +25,14 @@ function TrainingTrainApp() {
     const [exercises, setExercises] = useState(training.exercises);
 
     const [currExerciseNumber, setCurrExerciseNumber] = useState(null);
+    const [finished, setFinished] = useState(false);
 
     function getActiveKey() {
-        if (currExerciseNumber === null || currExerciseNumber === undefined)
+        if (
+            currExerciseNumber === null ||
+            currExerciseNumber === undefined ||
+            finished
+        )
             return null;
         return exercises[currExerciseNumber].id;
     }
@@ -44,12 +49,17 @@ function TrainingTrainApp() {
                     <h2>Twój trening zawiera:</h2>
                     <br/>
                     <Accordion flush id='listaCwiczen' activeKey={getActiveKey()}>
-                        <ControlPanel
-                            exercises={exercises}
-                            setExercises={setExercises}
-                            currExerciseNumber={currExerciseNumber}
-                            setCurrExerciseNumber={setCurrExerciseNumber}
-                        />
+                        {
+                            !finished && (
+                                <ControlPanel
+                                    exercises={exercises}
+                                    setExercises={setExercises}
+                                    currExerciseNumber={currExerciseNumber}
+                                    setCurrExerciseNumber={setCurrExerciseNumber}
+                                    setFinished={setFinished}
+                                />
+                            )
+                        }
                         {
                             exercises.map(
                                 exercise => (
