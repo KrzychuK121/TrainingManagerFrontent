@@ -53,8 +53,20 @@ function ExerciseControls(
             return;
         let interval;
         if (!resume) {
-            if (timeInSeconds === 0)
-                moveToNextAndMarkStatus(EXERCISE_STATUS.FINISHED);
+            if (timeInSeconds === 0) {
+                if (currExercise.tempRounds - 1 === 0) {
+                    moveToNextAndMarkStatus(EXERCISE_STATUS.FINISHED);
+                    return;
+                }
+
+                --currExercise.tempRounds;
+                currExercise.tempAmount = currExercise.amount;
+                setResume(true);
+                setTimeInSeconds(
+                    timeStringToSeconds(currExercise, currExercise.amount)
+                );
+                updateExercises();
+            }
 
             interval = setInterval(() => {
                 const newTimeInSecond = timeInSeconds - 1;
