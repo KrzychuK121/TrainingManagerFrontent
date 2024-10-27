@@ -51,16 +51,6 @@ function ExercisesDisplay() {
                     )
                 )
             }
-            {/*ALERT IF ERROR*/}
-            {/*<div
-                th:fragment="alert"
-                th:if="${mess != null}"
-                th:class="|alert alert-${messType} alert-dismissible|"
-                role="alert"
-            >
-                <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                <span th:if="${mess != null}" th:text="${mess}"></span>
-            </div>*/}
             <h1>Lista wszystkich ćwiczeń</h1>
             <ExerciseTable
                 exercises={exercises}
