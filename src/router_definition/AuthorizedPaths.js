@@ -20,7 +20,8 @@ import TrainingTrainApp, { loader as trainingTrainAppLoader } from '../routes/en
 import PlanWeekDisplay, { loader as planWeekDisplayLoader } from '../routes/entities/training_plan/PlanWeekDisplay';
 import TrainingPlanDisplay, {
     deleteTrainingRoutineAction,
-    loader as trainingPlanLoader
+    loader as trainingPlanLoader,
+    switchActiveAction
 } from '../routes/entities/training_plan/TrainingPlanDisplay';
 import TrainingPlanForm, {
     action as trainingPlanFormAction,
@@ -120,6 +121,10 @@ const AuthorizedPaths = {
                     index: true,
                     element: <TrainingPlanDisplay/>,
                     loader: trainingPlanLoader
+                },
+                {
+                    path: ':id',
+                    action: switchActiveAction
                 },
                 {
                     path: 'week',

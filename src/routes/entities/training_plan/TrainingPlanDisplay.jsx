@@ -1,12 +1,22 @@
 import { useState } from 'react';
 import { Table } from 'react-bootstrap';
-import { useLoaderData } from 'react-router-dom';
+import { Form as RouterForm, redirect, useLoaderData } from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
+import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { deleteAction, sendDefaultRequest } from '../../../utils/CRUDUtils';
-import { DELETE_SUCCESS, EDIT_SUCCESS } from '../../../utils/URLUtils';
+import {
+    defaultHeaders,
+    deleteAction,
+    getIdPath,
+    handleResponseUnauthorized,
+    sendDefaultRequest
+} from '../../../utils/CRUDUtils';
+import { DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS } from '../../../utils/URLUtils';
+
+const ROUTINE_NOT_OWNED = 'routine-not-owned';
+const ROUTINE_ACTIVATED = 'routine-activated';
 
 function getColumnsByWeekdays(schedules, weekdays) {
     return weekdays.map(
@@ -43,6 +53,19 @@ function getTableRow(plan, weekdays, setActionData) {
                     action={`/main/plans/delete/${id}`}
                     setActionData={setActionData}
                 />
+                {
+                    !active && (
+                        <RouterForm
+                            action={`/main/plans/${id}`}
+                            method='patch'
+                        >
+                            <SubmitButton
+                                display='Aktywuj'
+                                submittingDisplay='Aktywowanie rutyny'
+                            />
+                        </RouterForm>
+                    )
+                }
                 {/*<fieldset>
                     <form
                             method="get"
@@ -105,8 +128,21 @@ function TrainingPlanDisplay() {
                 displayIfSuccess: 'Rutyna treningowa została edytowana pomyślnie.'
             },
             {
+                messageParam: ROUTINE_ACTIVATED,
+                displayIfSuccess: 'Rutyna treningowa została aktywowana pomyślnie.'
+            },
+            {
                 messageParam: DELETE_SUCCESS,
                 displayIfSuccess: 'Rutyna treningowa została usunięta pomyślnie.'
+            }
+        ]
+    );
+
+    const {messages: errorMessages} = useMessageParams(
+        [
+            {
+                messageParam: ROUTINE_NOT_OWNED,
+                displayIfSuccess: 'Nie jesteś właścicielem rutyny, którą próbujesz aktywować.'
             }
         ]
     );
@@ -133,6 +169,19 @@ function TrainingPlanDisplay() {
                             message={message}
                             showTrigger={null}
                             closeDelay={4000}
+                        />
+                    )
+                )
+            }
+            {
+                errorMessages && errorMessages.map(
+                    message => (
+                        <AlertComponent
+                            key={message}
+                            message={message}
+                            showTrigger={null}
+                            closeDelay={4000}
+                            variant='danger'
                         />
                     )
                 )
@@ -165,6 +214,26 @@ export default TrainingPlanDisplay;
 
 export async function loader() {
     return await sendDefaultRequest('plans');
+}
+
+export async function switchActiveAction({request, params}) {
+    const routineId = getIdPath(params);
+    const response = await fetch(
+        `${DOMAIN}/routines${routineId}`,
+        {
+            method: request.method,
+            headers: defaultHeaders()
+        }
+    );
+
+    const handledResponse = await handleResponseUnauthorized(response);
+    if (handledResponse)
+        return handledResponse;
+
+    if (response.status === 400)
+        return redirect(`/main/plans?${ROUTINE_NOT_OWNED}`);
+    if (response.status === 204)
+        return redirect(`/main/plans?${ROUTINE_ACTIVATED}`);
 }
 
 export async function deleteTrainingRoutineAction({request, params}) {
