@@ -110,6 +110,7 @@ export async function loader({params}) {
                     : EXERCISE_TYPE.REPEAT,
                 rounds: exercise.rounds,
                 tempRounds: exercise.rounds,
+                finishedRounds: 0,
                 amount: newAmount,
                 tempAmount: newAmount,
                 status: EXERCISE_STATUS.TODO

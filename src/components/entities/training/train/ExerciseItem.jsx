@@ -24,6 +24,7 @@ function ExerciseItem({exercise}) {
         description,
         rounds,
         tempRounds,
+        finishedRounds,
         amount,
         tempAmount,
         status
@@ -38,16 +39,25 @@ function ExerciseItem({exercise}) {
     }, [status, exercise]);
 
     useEffect(() => {
-        setDisplayRounds(
-            status === EXERCISE_STATUS.CURRENT
-                ? tempRounds
-                : rounds
-        );
-        setDisplayAmount(
-            status === EXERCISE_STATUS.CURRENT
-                ? tempAmount
-                : amount
-        );
+        switch (status) {
+            case EXERCISE_STATUS.CURRENT:
+                setDisplayRounds(tempRounds);
+                setDisplayAmount(tempAmount);
+                break;
+            case EXERCISE_STATUS.NOT_FINISHED:
+            case EXERCISE_STATUS.FINISHED:
+                let dRounds = finishedRounds === rounds
+                    ? rounds
+                    : `(${finishedRounds}/${rounds})`;
+
+                setDisplayRounds(dRounds);
+                setDisplayAmount(amount);
+                break;
+            case EXERCISE_STATUS.TODO:
+            default:
+                setDisplayRounds(rounds);
+                setDisplayAmount(amount);
+        }
     }, [status, rounds, tempRounds, amount, tempAmount]);
 
     const style = {

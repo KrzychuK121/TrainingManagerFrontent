@@ -43,6 +43,16 @@ function ExerciseControls(
         setExercises([...exercises]);
     }
 
+    function getStatusByFinishedRounds() {
+        return currExercise.finishedRounds >= (currExercise.rounds / 2)
+            ? EXERCISE_STATUS.FINISHED
+            : EXERCISE_STATUS.NOT_FINISHED;
+    }
+
+    function moveToNext() {
+        moveToNextAndMarkStatus(getStatusByFinishedRounds());
+    }
+
     useEffect(() => {
         setTimeInSeconds(
             timeStringToSeconds(currExercise, currExercise.amount)
@@ -55,8 +65,9 @@ function ExerciseControls(
         let interval;
         if (!resume) {
             if (timeInSeconds === 0) {
+                ++currExercise.finishedRounds;
                 if (currExercise.tempRounds - 1 === 0) {
-                    moveToNextAndMarkStatus(EXERCISE_STATUS.FINISHED);
+                    moveToNext();
                     return;
                 }
 
@@ -78,7 +89,7 @@ function ExerciseControls(
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [resume, currExercise, moveToNextAndMarkStatus]);
+    }, [resume, currExercise, moveToNext]);
 
     function handlePauseResume() {
         setResume(!resume);
@@ -90,20 +101,25 @@ function ExerciseControls(
     }
 
     function handleSkip() {
-        moveToNextAndMarkStatus(EXERCISE_STATUS.NOT_FINISHED);
+        moveToNext();
         updateExercises();
     }
 
     function handleSkipRound() {
         if (currExercise.tempRounds - 1 === 0) {
-
+            handleSkip();
+            return;
         }
+
+        --currExercise.tempRounds;
+        updateExercises();
     }
 
     function handleNextSeries() {
-        currExercise.tempRounds = --currExercise.tempRounds;
+        ++currExercise.finishedRounds;
+        --currExercise.tempRounds;
         if (currExercise.tempRounds === 0)
-            moveToNextAndMarkStatus(EXERCISE_STATUS.FINISHED);
+            moveToNext();
         updateExercises();
     }
 
