@@ -15,7 +15,7 @@ import {
 } from '../../../utils/CRUDUtils';
 import { DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS } from '../../../utils/URLUtils';
 
-const ROUTINE_NOT_OWNED = 'routine-not-owned';
+const ROUTINE_NOT_OWNED_OR_ACTIVE = 'routine-not-owned-or-already-active';
 const ROUTINE_ACTIVATED = 'routine-activated';
 
 function getColumnsByWeekdays(schedules, weekdays) {
@@ -141,8 +141,8 @@ function TrainingPlanDisplay() {
     const {messages: errorMessages} = useMessageParams(
         [
             {
-                messageParam: ROUTINE_NOT_OWNED,
-                displayIfSuccess: 'Nie jesteś właścicielem rutyny, którą próbujesz aktywować.'
+                messageParam: ROUTINE_NOT_OWNED_OR_ACTIVE,
+                displayIfSuccess: 'Nie jesteś właścicielem rutyny, którą próbujesz aktywować lub rutyna jest już  aktywna.'
             }
         ]
     );
@@ -231,7 +231,7 @@ export async function switchActiveAction({request, params}) {
         return handledResponse;
 
     if (response.status === 400)
-        return redirect(`/main/plans?${ROUTINE_NOT_OWNED}`);
+        return redirect(`/main/plans?${ROUTINE_NOT_OWNED_OR_ACTIVE}`);
     if (response.status === 204)
         return redirect(`/main/plans?${ROUTINE_ACTIVATED}`);
 }
