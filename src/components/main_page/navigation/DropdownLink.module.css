@@ -1,0 +1,8 @@
+.link {
+    text-decoration: none;
+}
+
+.link > span:hover {
+    color: #FF4655;
+}
+

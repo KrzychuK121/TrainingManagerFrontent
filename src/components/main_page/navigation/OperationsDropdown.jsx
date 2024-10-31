@@ -1,4 +1,5 @@
 import { NavDropdown } from 'react-bootstrap';
+import DropdownLink from './DropdownLink';
 import classes from './MainNavigation.module.css';
 
 function OperationsDropdown() {
@@ -9,17 +10,17 @@ function OperationsDropdown() {
             className={`${classes.menuLinkDropdown}`}
         >
             <NavDropdown.ItemText>Treningi</NavDropdown.ItemText>
-            <NavDropdown.Item href='/main/training'>Wyświetl</NavDropdown.Item>
-            <NavDropdown.Item href='/main/training/create'>Stwórz</NavDropdown.Item>
+            <DropdownLink to='/main/training'>Wyświetl</DropdownLink>
+            <DropdownLink to='/main/training/create'>Stwórz</DropdownLink>
             <NavDropdown.Divider/>
             <NavDropdown.ItemText>Ćwiczenia</NavDropdown.ItemText>
-            <NavDropdown.Item href='/main/exercise'>Wyświetl</NavDropdown.Item>
-            <NavDropdown.Item href='/main/exercise/create'>Stwórz</NavDropdown.Item>
+            <DropdownLink to='/main/exercise'>Wyświetl</DropdownLink>
+            <DropdownLink to='/main/exercise/create'>Stwórz</DropdownLink>
             <NavDropdown.Divider/>
             <NavDropdown.ItemText>Plany treningowe</NavDropdown.ItemText>
-            <NavDropdown.Item href='/main/plans'>Wyświetl wszystkie</NavDropdown.Item>
-            <NavDropdown.Item href='/main/plans/week'>Wyświetl aktywny</NavDropdown.Item>
-            <NavDropdown.Item href='/main/plans/create'>Stwórz</NavDropdown.Item>
+            <DropdownLink to='/main/plans'>Wyświetl wszystkie</DropdownLink>
+            <DropdownLink to='/main/plans/week'>Wyświetl aktywny</DropdownLink>
+            <DropdownLink to='/main/plans/create'>Stwórz</DropdownLink>
         </NavDropdown>
     );
 }
