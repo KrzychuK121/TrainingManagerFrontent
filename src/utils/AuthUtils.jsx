@@ -7,16 +7,22 @@ const AUTH_RESPONSE_KEYS = {
     lastName: 'lastName'
 };
 
+function invokeStorageEvent() {
+    window.dispatchEvent(new Event('storage'));
+}
+
 function saveResponse(authResponse) {
     Object.values(AUTH_RESPONSE_KEYS).forEach(
         key => localStorage.setItem(key, authResponse[key])
     );
+    invokeStorageEvent();
 }
 
 function clearResponse() {
     Object.values(AUTH_RESPONSE_KEYS).forEach(
         key => localStorage.removeItem(key)
     );
+    invokeStorageEvent();
 }
 
 function getAuthData(key) {

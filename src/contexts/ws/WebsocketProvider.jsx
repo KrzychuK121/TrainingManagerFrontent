@@ -1,6 +1,7 @@
 import { Stomp } from '@stomp/stompjs';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import SockJS from 'sockjs-client';
+import { isAuthenticated } from '../../utils/AuthUtils';
 import { defaultHeaders } from '../../utils/CRUDUtils';
 import { WebsocketContext } from './WebsocketContext';
 
@@ -30,18 +31,40 @@ function WebsocketProvider({children}) {
     function connect() {
         if (stompClientRef.current)
             return;
+
         console.log(`${injectTime()}No ws connection yet. Creating new one...`);
-        const newStompClient = Stomp.over(
+        stompClientRef.current = Stomp.over(
             new SockJS('http://localhost:8080/ws')
         );
-        stompClientRef.current = newStompClient;
 
         stompClientRef.current.connect(defaultHeaders(), onConnect, onError);
     }
 
+    const disconnect = useCallback(() => {
+        if (!stompClientRef.current)
+            return;
+
+        console.log(`${injectTime()}Disconnecting from WS...`);
+        stompClientRef.current.disconnect();
+        stompClientRef.current = null;
+    }, []);
+
     useEffect(() => {
-        connect();
-    }, [connect]);
+        function connLogic() {
+            if (isAuthenticated())
+                connect();
+            else
+                disconnect();
+        }
+
+        connLogic();
+        window.addEventListener('storage', connLogic);
+
+        return () => {
+            window.removeEventListener('storage', () => {
+            });
+        };
+    }, []);
 
     return (
         <WebsocketContext.Provider value={
