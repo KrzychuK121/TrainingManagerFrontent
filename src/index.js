@@ -6,11 +6,6 @@ import { router } from './router_definition/Router';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-function injectTime() {
-    return `[${new Date().toISOString()}]: `;
-}
-
-console.log(`${injectTime()}invoked`);
 root.render(
     <React.StrictMode>
         <WebsocketProvider>
