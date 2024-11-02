@@ -3,13 +3,17 @@ import { Outlet } from 'react-router-dom';
 
 import MainNavigation from '../../components/main_page/navigation/MainNavigation';
 import './MainPage.module.css';
+import { useWebsocket } from '../../contexts/ws/WebsocketContext';
 
 function MainPage() {
+    const {reminderComponent} = useWebsocket();
     return (
         <>
             <MainNavigation/>
             <Container>
                 <main>
+                    {/*TODO: Fix this*/}
+                    {reminderComponent}
                     <Outlet/>
                 </main>
             </Container>

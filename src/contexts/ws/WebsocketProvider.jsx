@@ -1,31 +1,56 @@
 import { Stomp } from '@stomp/stompjs';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert } from 'react-bootstrap';
 import SockJS from 'sockjs-client';
-import { isAuthenticated } from '../../utils/AuthUtils';
+import { isAuthenticated, logout } from '../../utils/AuthUtils';
 import { defaultHeaders } from '../../utils/CRUDUtils';
 import { WebsocketContext } from './WebsocketContext';
+
+export const WS_DOMAIN = '/topic';
 
 function injectTime() {
     return `[${new Date().toISOString()}]: `;
 }
 
-function onTestMessage(payload) {
-    const mess = JSON.stringify(payload.body);
-    console.log(`${injectTime()}test`);
-    console.log(`${injectTime()}message: ${mess}`);
-}
-
-function onError() {
-    console.log(`${injectTime()}Error occured`);
-}
-
 function WebsocketProvider({children}) {
-    const WS_DOMAIN = '/topic';
     const stompClientRef = useRef(null);
 
+    const [reminderComponent, setReminderComponent] = useState(null);
+
+    function showTrainingReminder(payload) {
+        console.log('reminder info received');
+        const data = JSON.parse(payload.body);
+        const alertComponent = (
+            <Alert dismissible onClose={() => setReminderComponent(false)}>
+                <Alert.Heading className='d-flex justify-content-between'>
+                    {`${data.reminderTitle}: ${data.trainingTitle}`}
+                </Alert.Heading>
+                <hr/>
+                <p>{`Trening rozpocznie się o godzinie ${data.time}. Nie przegap treningu!`}</p>
+            </Alert>
+        );
+        console.log(alertComponent);
+        setReminderComponent(alertComponent);
+    }
+
+    function onError() {
+        console.log(`${injectTime()}Error occured`);
+        logout();
+        stompClientRef.current = null;
+    }
+
     function onConnect() {
-        console.log(`${injectTime()}Created new ws connection`);
-        stompClientRef.current.subscribe(`${WS_DOMAIN}/test`, onTestMessage);
+        const stompClient = stompClientRef.current;
+        stompClient.subscribe(
+            `/user/topic/training/notification`,
+            showTrainingReminder
+        );
+        stompClient.debug = (message) => {
+            console.log(`${injectTime()}${message}`);
+        };
+        stompClient.send(
+            '/websockets/plans.reminders'
+        );
     }
 
     function connect() {
@@ -36,15 +61,15 @@ function WebsocketProvider({children}) {
         stompClientRef.current = Stomp.over(
             new SockJS('http://localhost:8080/ws')
         );
+        const stompClient = stompClientRef.current;
 
-        stompClientRef.current.connect(defaultHeaders(), onConnect, onError);
+        stompClient.connect(defaultHeaders(), onConnect, onError);
     }
 
     const disconnect = useCallback(() => {
         if (!stompClientRef.current)
             return;
 
-        console.log(`${injectTime()}Disconnecting from WS...`);
         stompClientRef.current.disconnect();
         stompClientRef.current = null;
     }, []);
@@ -69,7 +94,8 @@ function WebsocketProvider({children}) {
     return (
         <WebsocketContext.Provider value={
             {
-                stompClientRef
+                stompClientRef,
+                reminderComponent
             }
         }>
             {children}
