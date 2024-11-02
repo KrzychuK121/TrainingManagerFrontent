@@ -1,7 +1,7 @@
 import { Stomp } from '@stomp/stompjs';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert } from 'react-bootstrap';
 import SockJS from 'sockjs-client';
+import NotificationAlert from '../../components/notification/NotificationAlert';
 import { isAuthenticated, logout } from '../../utils/AuthUtils';
 import { defaultHeaders } from '../../utils/CRUDUtils';
 import { WebsocketContext } from './WebsocketContext';
@@ -20,17 +20,16 @@ function WebsocketProvider({children}) {
     function showTrainingReminder(payload) {
         console.log('reminder info received');
         const data = JSON.parse(payload.body);
-        const alertComponent = (
-            <Alert dismissible onClose={() => setReminderComponent(false)}>
-                <Alert.Heading className='d-flex justify-content-between'>
-                    {`${data.reminderTitle}: ${data.trainingTitle}`}
-                </Alert.Heading>
-                <hr/>
-                <p>{`Trening rozpocznie się o godzinie ${data.time}. Nie przegap treningu!`}</p>
-            </Alert>
+
+        setReminderComponent(
+            <NotificationAlert
+                reminderTitle={data.reminderTitle}
+                trainingTitle={data.trainingTitle}
+                time={data.time}
+                type={data.type}
+                onClose={() => setReminderComponent(false)}
+            />
         );
-        console.log(alertComponent);
-        setReminderComponent(alertComponent);
     }
 
     function onError() {
