@@ -23,10 +23,7 @@ function WebsocketProvider({children}) {
 
         setReminderComponent(
             <NotificationAlert
-                reminderTitle={data.reminderTitle}
-                trainingTitle={data.trainingTitle}
-                time={data.time}
-                type={data.type}
+                reminderData={data}
                 onClose={() => setReminderComponent(false)}
             />
         );

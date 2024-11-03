@@ -11,37 +11,57 @@ function calculateMinutesDifference(timeString) {
     return differenceInMillis / (1000 * 60);
 }
 
-
 function NotificationAlert(
     {
+        reminderData,
+        onClose
+    }
+) {
+    const {
         reminderTitle,
         trainingTitle,
         time,
         type,
-        onClose
-    }
-) {
+    } = reminderData;
+
     const timeBeforeDisplay = type === 'SOME_TIME_BEFORE'
         ? ` (${calculateMinutesDifference(time)} min)`
         : '';
     const header = `${reminderTitle}${timeBeforeDisplay}: ${trainingTitle}`;
 
     function getContent() {
-        return type === 'NOW'
-            ? (
-                <div>
-                    <p>
-                        Trening właśnie się zaczął. Możesz do niego przejść klikając
-                        <Link
-                            to='/main/training/train'
-                            style={{textDecoration: 'none'}}
-                        >
-                            ten link
-                        </Link>
-                    </p>
-                </div>
-            )
-            : <p>{`Trening rozpocznie się o godzinie ${time}. Nie przegap treningu!`}</p>;
+        switch (type) {
+            case 'NOW':
+                return (
+                    <div>
+                        <p>
+                            Trening właśnie się zaczął. Możesz do niego przejść klikając {' '}
+                            <Link
+                                to='/main/training/train'
+                                style={{ textDecoration: 'none' }}
+                            >
+                                ten link
+                            </Link>
+                        </p>
+                    </div>
+                );
+            case 'LATE':
+                return (
+                    <div>
+                        <p>
+                            Pominąłeś trening zaplanowany na godzinę {time}. Możesz do niego przejść klikając {' '}
+                            <Link
+                                to='/main/training/train'
+                                style={{ textDecoration: 'none' }}
+                            >
+                                ten link
+                            </Link>
+                        </p>
+                    </div>
+                );
+            default:
+                return <p>{`Trening rozpocznie się o godzinie ${time}. Nie przegap treningu!`}</p>;
+        }
     }
 
     return (
