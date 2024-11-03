@@ -136,11 +136,9 @@ function PlanDayAssign(
                         id={TIME_ID}
                         name={TIME_ID}
                         defaultValue={getInitDataParam('trainingTime')}
-                        // th:field="*{planWriteMap['__${weekday}__'].trainingTime}"
                         pattern='[0-9]{2}:[0-9]{2}'
                     />
                 </p>
-                {/*<a href="#" class="btn btn-primary">Zrób trening</a>*/}
             </Card.Body>
         </Card>
     );

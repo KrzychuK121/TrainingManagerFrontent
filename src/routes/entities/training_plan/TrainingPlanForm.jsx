@@ -17,7 +17,6 @@ function TrainingPlanForm({method = 'post'}) {
     const planEditReadMap = editData
         ? editData['planEditReadMap']
         : null;
-    console.log(planEditReadMap);
     const formRef = useRef();
 
     const useFormValidationObj = useFormValidation(actionData);
