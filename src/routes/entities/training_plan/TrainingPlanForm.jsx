@@ -14,8 +14,8 @@ function TrainingPlanForm({method = 'post'}) {
     const actionData = useActionData();
 
     const {allTrainings, weekdays, editData} = loadedData;
-    const {planEditReadMap} = editData
-        ? editData
+    const planEditReadMap = editData
+        ? editData['planEditReadMap']
         : null;
     console.log(planEditReadMap);
     const formRef = useRef();

@@ -4,9 +4,32 @@ import SelectField from '../../form/SelectField';
 import classes from './PlanDayAssign.module.css';
 import {getEntityParamGetter} from "../../../utils/EntitiesUtils";
 
-function getDefaultTrainings(allTrainings, howManyRows) {
+function injectElementIfMissing(allTrainings, filteredTrainings, getInitDataParam) {
+    const id = getInitDataParam('id');
+    if(id === '')
+        return;
+    if(filteredTrainings.some(training => training.id === id))
+        return;
+    if(!allTrainings.some(training => training.id === id))
+        return;
+
+    filteredTrainings.push(allTrainings.find(training => training.id === id));
+}
+
+function getDefaultTrainings(
+    allTrainings,
+    howManyRows,
+    getInitDataParam
+) {
+
     const trainingsAmount = Math.min(allTrainings.length, howManyRows);
-    return allTrainings.slice(0, trainingsAmount);
+    const defaultFilteredTrainings = allTrainings.slice(0, trainingsAmount);
+    injectElementIfMissing(
+        allTrainings,
+        defaultFilteredTrainings,
+        getInitDataParam
+    )
+    return defaultFilteredTrainings;
 }
 
 function getDataToDisplay(filteredTrainings) {
@@ -28,17 +51,21 @@ function PlanDayAssign(
         initData = null
     }
 ) {
-    console.log(`${weekday}: `);
-    console.log(initData);
     const HOW_MANY_ROWS = 20;
     const SEARCH_ID = `search-${weekday}`;
     const LIST_ID = `trainingId-${weekday}`;
     const TIME_ID = `trainingTime-${weekday}`;
-    const [filteredTrainings, setFilteredTrainings] = useState(getDefaultTrainings(allTrainings, HOW_MANY_ROWS));
+    const getInitDataParam = getEntityParamGetter(initData);
 
+    const [filteredTrainings, setFilteredTrainings] = useState(
+        getDefaultTrainings(
+            allTrainings,
+            HOW_MANY_ROWS,
+            getInitDataParam
+        )
+    );
     const [searchPhrase, setSearchPhrase] = useState('');
     const typingTimeoutRef = useRef(null);
-    const getInitDataParam = getEntityParamGetter(initData);
 
     function filterTrainings(searchPhrase) {
         if (!searchPhrase.trim())
@@ -100,6 +127,7 @@ function PlanDayAssign(
                         title={`Select training to do for ${weekdayDisplay} weekday`}
                         firstElemDisplay='Dzień wolny'
                         options={getDataToDisplay(filteredTrainings)}
+                        selectedValues={getInitDataParam('trainingId')}
                     />
                     <Form.Label htmlFor={TIME_ID} column={true}>
                         Godzina treningu:
