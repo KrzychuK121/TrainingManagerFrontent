@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Table } from 'react-bootstrap';
-import { Form as RouterForm, redirect, useLoaderData } from 'react-router-dom';
+import {Button, Table} from 'react-bootstrap';
+import {Form as RouterForm, Link, redirect, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import SubmitButton from '../../../components/form/SubmitButton';
@@ -49,6 +49,9 @@ function getTableRow(plan, weekdays, setActionData) {
                 {active ? 'Tak' : 'Nie'}
             </td>
             <td>
+                <Link to={`/main/plans/edit/${id}`}>
+                    <Button>Edytuj</Button>
+                </Link>
                 <DeleteModal
                     action={`/main/plans/delete/${id}`}
                     setActionData={setActionData}

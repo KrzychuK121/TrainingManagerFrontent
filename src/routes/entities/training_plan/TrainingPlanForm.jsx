@@ -6,15 +6,18 @@ import PlanDayAssign from '../../../components/entities/training_plan/PlanDayAss
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { sendDefaultParallelRequests, sendSaveRequest } from '../../../utils/CRUDUtils';
+import {createModelLoader, sendDefaultParallelRequests, sendSaveRequest} from '../../../utils/CRUDUtils';
 import { createObjFromEntries } from '../../../utils/EntitiesUtils';
 
 function TrainingPlanForm({method = 'post'}) {
     const loadedData = useLoaderData();
     const actionData = useActionData();
 
-    const {allTrainings, weekdays} = loadedData;
-
+    const {allTrainings, weekdays, editData} = loadedData;
+    const {planEditReadMap} = editData
+        ? editData
+        : null;
+    console.log(planEditReadMap);
     const formRef = useRef();
 
     const useFormValidationObj = useFormValidation(actionData);
@@ -52,15 +55,22 @@ function TrainingPlanForm({method = 'post'}) {
                 <Row className='justify-content-center'>
                     {
                         weekdays.map(
-                            ({weekday, weekdayDisplay}) => (
-                                <Col key={weekday} sm={3}>
-                                    <PlanDayAssign
-                                        allTrainings={allTrainings}
-                                        weekday={weekday}
-                                        weekdayDisplay={weekdayDisplay}
-                                    />
-                                </Col>
-                            )
+                            ({weekday, weekdayDisplay}) => {
+                                const initData = planEditReadMap &&
+                                    planEditReadMap.hasOwnProperty(weekday)
+                                        ? planEditReadMap[weekday]
+                                        : null;
+                                return (
+                                    <Col key={weekday} sm={3}>
+                                        <PlanDayAssign
+                                            allTrainings={allTrainings}
+                                            weekday={weekday}
+                                            weekdayDisplay={weekdayDisplay}
+                                            initData={initData}
+                                        />
+                                    </Col>
+                                )
+                            }
                         )
                     }
                 </Row>
@@ -78,7 +88,7 @@ function TrainingPlanForm({method = 'post'}) {
 
 export default TrainingPlanForm;
 
-export async function loader() {
+export async function loader({params}) {
     const data = await sendDefaultParallelRequests(
         ['training/all', 'weekdays/read']
     );
@@ -86,9 +96,19 @@ export async function loader() {
     try {
         const [allTrainings, weekdays] = data;
 
+        let editData = null;
+        if(params.id)
+            editData = await createModelLoader(
+                'plans/editModel',
+                '',
+                params,
+                'planEditReadMap'
+            );
+
         return {
             allTrainings,
-            weekdays
+            weekdays,
+            editData
         };
     } catch (ex) {
         // if(ex instanceof TypeError) // Might be not useful

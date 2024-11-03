@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Card, Form } from 'react-bootstrap';
 import SelectField from '../../form/SelectField';
 import classes from './PlanDayAssign.module.css';
+import {getEntityParamGetter} from "../../../utils/EntitiesUtils";
 
 function getDefaultTrainings(allTrainings, howManyRows) {
     const trainingsAmount = Math.min(allTrainings.length, howManyRows);
@@ -23,9 +24,12 @@ function PlanDayAssign(
     {
         allTrainings,
         weekday,
-        weekdayDisplay
+        weekdayDisplay,
+        initData = null
     }
 ) {
+    console.log(`${weekday}: `);
+    console.log(initData);
     const HOW_MANY_ROWS = 20;
     const SEARCH_ID = `search-${weekday}`;
     const LIST_ID = `trainingId-${weekday}`;
@@ -34,6 +38,7 @@ function PlanDayAssign(
 
     const [searchPhrase, setSearchPhrase] = useState('');
     const typingTimeoutRef = useRef(null);
+    const getInitDataParam = getEntityParamGetter(initData);
 
     function filterTrainings(searchPhrase) {
         if (!searchPhrase.trim())
@@ -102,6 +107,7 @@ function PlanDayAssign(
                     <Form.Control
                         id={TIME_ID}
                         name={TIME_ID}
+                        defaultValue={getInitDataParam('trainingTime')}
                         // th:field="*{planWriteMap['__${weekday}__'].trainingTime}"
                         pattern='[0-9]{2}:[0-9]{2}'
                     />

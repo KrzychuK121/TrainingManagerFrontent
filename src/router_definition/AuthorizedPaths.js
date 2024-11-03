@@ -140,7 +140,7 @@ const AuthorizedPaths = {
                 {
                     path: 'edit/:id',
                     element: <TrainingPlanForm method='put'/>,
-                    //loader: trainingFormLoader
+                    loader: trainingPlanFormLoader,
                     action: trainingPlanFormAction
                 },
                 {
