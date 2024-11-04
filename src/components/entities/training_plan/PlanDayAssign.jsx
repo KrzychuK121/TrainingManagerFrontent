@@ -66,6 +66,7 @@ function PlanDayAssign(
     );
     const [searchPhrase, setSearchPhrase] = useState('');
     const typingTimeoutRef = useRef(null);
+    const trainingTimeInputRef = useRef(null);
 
     function filterTrainings(searchPhrase) {
         if (!searchPhrase.trim())
@@ -90,6 +91,13 @@ function PlanDayAssign(
         typingTimeoutRef.current = setTimeout(() => {
             filterTrainings(searchPhrase); // only fetch if the input is not empty
         }, 500);
+    }
+
+    function onInputHandler(event) {
+        const value = event.currentTarget.value;
+        if(!value)
+            trainingTimeInputRef.current.value = '';
+        trainingTimeInputRef.current.disabled = !value;
     }
 
     // Cleanup function when the component unmounts
@@ -128,6 +136,7 @@ function PlanDayAssign(
                         firstElemDisplay='Dzień wolny'
                         options={getDataToDisplay(filteredTrainings)}
                         selectedValues={getInitDataParam('trainingId')}
+                        onInput={onInputHandler}
                     />
                     <Form.Label htmlFor={TIME_ID} column={true}>
                         Godzina treningu:
@@ -135,8 +144,10 @@ function PlanDayAssign(
                     <Form.Control
                         id={TIME_ID}
                         name={TIME_ID}
+                        ref={trainingTimeInputRef}
                         defaultValue={getInitDataParam('trainingTime')}
-                        pattern='[0-9]{2}:[0-9]{2}'
+                        pattern='^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$'
+                        disabled={!Boolean(getInitDataParam('trainingId'))}
                     />
                 </p>
             </Card.Body>
