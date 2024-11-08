@@ -9,7 +9,7 @@ import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import { createModelLoader, sendSaveRequest } from '../../../utils/CRUDUtils';
 import {
-    createObjFromEntries,
+    createObjFromEntries, filterAndCollectProps,
     filterObject,
     getEntityParamGetter,
     getSelectedIdFrom,
@@ -40,6 +40,7 @@ function ExerciseForm({method = 'post'}) {
         getValidationProp,
         getValidationMessages
     } = useFormValidationObj;
+
 
     const getExerciseParam = getEntityParamGetter(exercise);
 
@@ -92,7 +93,7 @@ function ExerciseForm({method = 'post'}) {
 
                     <DefaultFormField
                         label='Serie'
-                        name='rounds'
+                        name='parameters.rounds'
                         useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('rounds')}
                         type='number'
@@ -100,7 +101,7 @@ function ExerciseForm({method = 'post'}) {
 
                     <DefaultFormField
                         label='Powtórzenia'
-                        name='repetition'
+                        name='parameters.repetition'
                         useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('repetition')}
                         type='number'
@@ -110,7 +111,7 @@ function ExerciseForm({method = 'post'}) {
 
                     <DefaultFormField
                         label='Czas wykonania'
-                        name='time'
+                        name='parameters.time'
                         useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('time')}
                         helperText='Jeśli ćwiczenia polegają na ilości powtórzeń, możesz zostawić
@@ -119,7 +120,7 @@ function ExerciseForm({method = 'post'}) {
 
                     <DefaultFormField
                         label='Obciążenie'
-                        name='weights'
+                        name='parameters.weights'
                         useFormValidationObj={useFormValidationObj}
                         defaultValue={getExerciseParam('weights')}
                         type='number'
@@ -170,6 +171,7 @@ export async function loader({params}) {
 }
 
 export async function action({request, params}) {
+    const PARAMETERS_PREFIX = 'parameters.';
     const data = await request.formData();
     const dataObject = createObjFromEntries(
         data,
@@ -183,9 +185,11 @@ export async function action({request, params}) {
     );
     const toSave = {};
 
-    toSave['toSave'] = filterObject(dataObject, ['trainings']);
+    toSave['toSave'] = filterObject(dataObject, ['trainings', PARAMETERS_PREFIX]);
     if (dataObject.hasOwnProperty('trainings'))
         toSave['selectedTrainings'] = [...dataObject.trainings];
+
+    toSave['toSave'].parameters = filterAndCollectProps(dataObject, PARAMETERS_PREFIX);
 
     return await sendSaveRequest(
         toSave,

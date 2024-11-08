@@ -28,17 +28,31 @@ export function createObjFromEntries(toCreate, emptiesMapping = null) {
     return toReturn;
 }
 
-export function filterObject(toFilter, propsToFilter, remove = true) {
+export function filterObject(toFilter, prefixesToFilter, remove = true) {
     return Object.keys(toFilter)
         .filter(
             key => remove ?
-                !propsToFilter.includes(key)
-                : propsToFilter.includes(key)
+                !prefixesToFilter.some(prefix => key.startsWith(prefix))
+                : prefixesToFilter.some(prefix => key.startsWith(prefix))
         )
         .reduce((newObj, key) => {
             newObj[key] = toFilter[key];
             return newObj;
         }, {});
+}
+
+export function filterAndCollectProps(toFilter, prefix) {
+    const result = {};
+
+    for (const objProp in toFilter) {
+        if (!objProp.startsWith(prefix))
+            continue;
+
+        const newKey = objProp.slice(prefix.length);
+        result[newKey] = toFilter[objProp];
+    }
+
+    return result;
 }
 
 export function getEntityParamGetter(entity) {

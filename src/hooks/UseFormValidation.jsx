@@ -35,6 +35,7 @@ export default function useFormValidation(
 ) {
     const [globalMessage, setGlobalMessage] = useState(getGlobalError());
     useEffect(() => {
+            console.log(errors);
             setGlobalMessage(getGlobalError());
         }, [errors]
     );
