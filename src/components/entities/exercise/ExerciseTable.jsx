@@ -18,7 +18,7 @@ function getExerciseList(
                 repetition,
                 time,
                 bodyPartDesc,
-                difficultyDesc,
+                defaultBurnedKcal,
                 weights
             } = exercise;
 
@@ -37,7 +37,7 @@ function getExerciseList(
                         }
                     </td>
                     <td>{bodyPartDesc}</td>
-                    <td>{difficultyDesc}</td>
+                    <td>{defaultBurnedKcal} kcal</td>
                     <td>
                         {optionsMapper(exercise, setActionData)}
                     </td>
@@ -130,8 +130,8 @@ function ExerciseTable(
                 </th>
                 <th>
                     <SortAnchor
-                        display='Trudność'
-                        field='difficulty'
+                        display='Spalane kalorie'
+                        field='defaultBurnedKcal'
                     />
                 </th>
                 <th>

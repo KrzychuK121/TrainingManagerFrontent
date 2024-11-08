@@ -24,7 +24,6 @@ function ExerciseForm({method = 'post'}) {
 
     const {exercise, allTrainings} = loaderData;
     const bodyParts = loaderData.bodyParts.bodyParts;
-    const difficulties = loaderData.difficulties.difficulties;
     const selectTrainings = toSelectFieldData(allTrainings, 'id', 'title');
 
     const formRef = useRef();
@@ -126,19 +125,13 @@ function ExerciseForm({method = 'post'}) {
                         type='number'
                     />
 
-                    <FormField
-                        label='Poziom trudności'
-                        errorMessages={getValidationMessages('difficulty')}
-                    >
-                        <SelectField
-                            title='Lista rozwijana wyboru poziomu trudności'
-                            name='difficulty'
-                            {...getValidationProp('difficulty')}
-                            options={difficulties}
-                            firstElemDisplay='Wybierz poziom trudności'
-                            selectedValues={getExerciseParam('difficulty')}
-                        />
-                    </FormField>
+                    <DefaultFormField
+                        label='Domyślne spalanie kaloryczne'
+                        name='defaultBurnedKcal'
+                        useFormValidationObj={useFormValidationObj}
+                        defaultValue={getExerciseParam('defaultBurnedKcal')}
+                        type='number'
+                    />
 
                     <FormField
                         label='Lista treningów do przypisania'
@@ -185,7 +178,7 @@ export async function action({request, params}) {
             repetition: null,
             time: null,
             weights: null,
-            difficulty: null
+            defaultBurnedKcal: null
         }
     );
     const toSave = {};
