@@ -16,6 +16,9 @@ import {
     toSelectFieldData
 } from '../../../utils/EntitiesUtils';
 import defaultClasses from '../../Default.module.css';
+import ExerciseParametersFields, {
+    getExerciseParametersData
+} from "../../../components/entities/exercise/ExerciseParametersFields";
 
 function ExerciseForm({method = 'post'}) {
     const actionData = useActionData();
@@ -43,6 +46,7 @@ function ExerciseForm({method = 'post'}) {
 
 
     const getExerciseParam = getEntityParamGetter(exercise);
+    const parametersData = getExerciseParametersData(exercise);
 
     function getSelectedTrainings() {
         const trainings = getExerciseParam('trainings');
@@ -91,39 +95,9 @@ function ExerciseForm({method = 'post'}) {
                         />
                     </FormField>
 
-                    <DefaultFormField
-                        label='Serie'
-                        name='parameters.rounds'
+                    <ExerciseParametersFields
+                        parametersData={parametersData}
                         useFormValidationObj={useFormValidationObj}
-                        defaultValue={getExerciseParam('rounds')}
-                        type='number'
-                    />
-
-                    <DefaultFormField
-                        label='Powtórzenia'
-                        name='parameters.repetition'
-                        useFormValidationObj={useFormValidationObj}
-                        defaultValue={getExerciseParam('repetition')}
-                        type='number'
-                        helperText='Jeśli ćwiczenie polegają długości wykonywania, zostaw puste pole
-                        lub wpisz 0'
-                    />
-
-                    <DefaultFormField
-                        label='Czas wykonania'
-                        name='parameters.time'
-                        useFormValidationObj={useFormValidationObj}
-                        defaultValue={getExerciseParam('time')}
-                        helperText='Jeśli ćwiczenia polegają na ilości powtórzeń, możesz zostawić
-                        to pole puste (lub wpisz przewidywaną długość treningu)'
-                    />
-
-                    <DefaultFormField
-                        label='Obciążenie'
-                        name='parameters.weights'
-                        useFormValidationObj={useFormValidationObj}
-                        defaultValue={getExerciseParam('weights')}
-                        type='number'
                     />
 
                     <DefaultFormField

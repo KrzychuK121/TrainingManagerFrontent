@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { Form as RouterForm, useActionData, useLoaderData } from 'react-router-dom';
+import {useRef, useState} from 'react';
+import {Form as RouterForm, useActionData, useLoaderData, useSubmit} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
@@ -13,16 +13,66 @@ import {
     filterObject,
     getEntityParamGetter,
     getSelectedIdFrom,
-    toSelectFieldData
+    toSelectFieldData, toSelectFieldObject
 } from '../../../utils/EntitiesUtils';
 import defaultClasses from '../../Default.module.css';
+import CustomParametersList from "../../../components/entities/training/save/CustomParametersList";
+
+const SELECT_VALUE_PROP = 'id';
+const SELECT_DESC_PROP = 'name';
+
+function initExerciseOptionItems(
+    allExercises,
+    selectedIds
+) {
+    const toMap = selectedIds
+        ? allExercises.filter(
+            exercise => !selectedIds
+                .includes(exercise.id)
+        )
+        : allExercises;
+    return toSelectFieldData(toMap, SELECT_VALUE_PROP, SELECT_DESC_PROP);
+}
+
+function initSelectedExercises(
+    allExercises,
+    selectedIds
+) {
+    if(selectedIds)
+        return allExercises.filter(
+            exercise => selectedIds
+                .includes(exercise.id)
+        );
+    return null;
+}
 
 function TrainingForm({method = 'post'}) {
+    const submit = useSubmit();
     const actionData = useActionData();
     const loadedData = useLoaderData();
 
     const {training, allExercises} = loadedData;
-    const selectExercises = toSelectFieldData(allExercises, 'id', 'name');
+    const getTrainingParam = getEntityParamGetter(training);
+
+    function getSelectedExercisesIds() {
+        const exercises = getTrainingParam('exercises');
+        return getSelectedIdFrom(exercises);
+    }
+
+    const [exerciseOptionItems, setExerciseOptionItems] = useState(
+        initExerciseOptionItems(
+            allExercises,
+            getSelectedExercisesIds()
+        )
+    );
+
+    const [selectedExercises, setSelectedExercises] = useState(
+        initSelectedExercises(
+            allExercises,
+            getSelectedExercisesIds()
+        )
+    );
+
     const message = actionData && actionData.message
         ? actionData.message
         : null;
@@ -37,11 +87,66 @@ function TrainingForm({method = 'post'}) {
         getValidationMessages
     } = useFormValidationObj;
 
-    const getTrainingParam = getEntityParamGetter(training);
+    function handleExerciseSelect(event) {
+        const selectedId = parseInt(event.target.value);
+        if(selectedId === 0)
+            return;
+        setSelectedExercises(
+            selectedExercises === null
+                ? [
+                    allExercises.find(exercise => exercise.id === selectedId)
+                ]
+                : [
+                    ...selectedExercises,
+                    allExercises.find(exercise => exercise.id === selectedId)
+                ]
+        );
+        setExerciseOptionItems(exerciseOptionItems.filter(selectData => selectData.value !== selectedId));
+    }
 
-    function getSelectedTrainings() {
-        const exercises = getTrainingParam('exercises');
-        return getSelectedIdFrom(exercises);
+    function handleExerciseUnchecked(exerciseId) {
+        if(!selectedExercises)
+            return;
+
+        setSelectedExercises(
+            [
+                ...selectedExercises.filter(
+                    exercise => exercise.id !== exerciseId
+                )
+            ]
+        );
+
+        setExerciseOptionItems(
+            [
+                ...(
+                    exerciseOptionItems === null
+                    ? []
+                    : exerciseOptionItems
+                ),
+                toSelectFieldObject(
+                    allExercises.find(exercise => exercise.id === exerciseId),
+                    SELECT_VALUE_PROP,
+                    SELECT_DESC_PROP
+                )
+            ]
+        );
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const EXERCISES_ATTRIBUTE =  'exercises';
+        const formData = new FormData(event.target);
+
+        formData.set(EXERCISES_ATTRIBUTE, null);
+        if(selectedExercises) {
+            formData.delete(EXERCISES_ATTRIBUTE);
+            selectedExercises.forEach(
+                exercise => formData.append(EXERCISES_ATTRIBUTE, `${exercise.id}`)
+            )
+        }
+
+        submit(formData, {method: method});
     }
 
     return (
@@ -61,6 +166,7 @@ function TrainingForm({method = 'post'}) {
             <RouterForm
                 method={method}
                 ref={formRef}
+                onSubmit={handleFormSubmit}
             >
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowy trening</legend>
@@ -84,20 +190,21 @@ function TrainingForm({method = 'post'}) {
                         <SelectField
                             title='Lista rozwijana wyboru ćwiczeń'
                             name='exercises'
+                            firstElemDisplay='Wybierz ćwiczenie'
                             {...getValidationProp('exercises')}
-                            options={selectExercises}
-                            multiple={true}
-                            selectedValues={getSelectedTrainings()}
+                            options={exerciseOptionItems}
+                            // multiple={true}
+                            onChange={handleExerciseSelect}
                         />
                     </FormField>
 
+                    <CustomParametersList
+                        selectedExercises={selectedExercises}
+                        useFormValidationObj={useFormValidationObj}
+                        handleExerciseUnchecked={handleExerciseUnchecked}
+                    />
+
                     {/*TODO: Add here form for new exercises optionally*/}
-                    {/*<button type='submit' name='addExercise'>+</button>*/}
-                    {/*<fieldset*/}
-                    {/*    th:if='${id == null}'*/}
-                    {/*    th:each='exercise, i : *{exercises}'*/}
-                    {/*>*/}
-                    {/*</fieldset>*/}
                     <SubmitButton
                         display='Zapisz'
                         submittingDisplay='Zapisuję'
@@ -125,8 +232,21 @@ export async function action({request, params}) {
     const toSave = {};
 
     toSave['toSave'] = filterObject(dataObject, ['exercises']);
-    if (dataObject.hasOwnProperty('exercises'))
-        toSave['selectedExercises'] = [...dataObject.exercises];
+    if (dataObject.hasOwnProperty('exercises')) {
+        const selectedExercises = [];
+        dataObject.exercises.forEach(
+            exerciseId => {
+                // TODO: Use this to map `parameters`
+                // toSave['toSave'].parameters = filterAndCollectProps(dataObject, PARAMETERS_PREFIX);
+                const selectedExerciseWrite = {
+                    selectedId: exerciseId,
+                    parameters: null
+                };
+                selectedExercises.push(selectedExerciseWrite);
+            }
+        )
+        toSave.selectedExercises = selectedExercises;
+    }
 
     return await sendSaveRequest(
         toSave,

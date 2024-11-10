@@ -72,13 +72,19 @@ export function getSelectedIdFrom(listFromParam) {
     );
 }
 
+export function toSelectFieldObject(toObject, valueProp, descProp) {
+    if (!toObject || !valueProp || !descProp)
+        return null;
+    return {
+        value: toObject[valueProp],
+        description: toObject[descProp]
+    }
+}
+
 export function toSelectFieldData(toMap, valueProp, descProp) {
     if (!toMap || !valueProp || !descProp)
         return null;
     return toMap.map(
-        entity => ({
-            value: entity[valueProp],
-            description: entity[descProp]
-        })
+        entity => toSelectFieldObject(entity, valueProp, descProp)
     );
 }
