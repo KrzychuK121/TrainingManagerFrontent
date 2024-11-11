@@ -1,7 +1,9 @@
 import ExerciseParametersFields, {
-    getExerciseParametersData
+    getExerciseParametersData, PARAMETERS_PREFIX
 } from "../../exercise/ExerciseParametersFields";
-import {Card, CloseButton} from "react-bootstrap";
+import {Card, CloseButton, Form} from "react-bootstrap";
+import {useState} from "react";
+import ExerciseParametersDisplayList from "./ExerciseParametersDisplayList";
 
 function CustomParametersForm(
     {
@@ -11,6 +13,7 @@ function CustomParametersForm(
     }
 ) {
     const parametersData = getExerciseParametersData(exercise);
+    const [customParameters, setCustomParameters] = useState(false);
 
     return (
         <>
@@ -21,10 +24,28 @@ function CustomParametersForm(
                 </Card.Header>
                 <Card.Body>
                     <Card.Title>{exercise.description}</Card.Title>
-                    <ExerciseParametersFields
-                        parametersData={parametersData}
-                        useFormValidationObj={useFormValidationObj}
+                    <Form.Check
+                        label='Ustaw własne parametry'
+                        type='switch'
+                        onClick={() => setCustomParameters(!customParameters)}
+                        checked={customParameters}
+                        readOnly
                     />
+                    {
+                        customParameters
+                        ? (
+                            <ExerciseParametersFields
+                                parametersData={parametersData}
+                                useFormValidationObj={useFormValidationObj}
+                                parametersPrefix={`${PARAMETERS_PREFIX}${exercise.id}.`}
+                            />
+                        )
+                        : (
+                            <ExerciseParametersDisplayList
+                                parametersData={parametersData}
+                            />
+                        )
+                    }
                 </Card.Body>
             </Card>
         </>
