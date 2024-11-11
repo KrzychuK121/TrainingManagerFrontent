@@ -38,11 +38,11 @@ function initExerciseOptionItems(
 }
 
 function initSelectedExercises(
-    allExercises,
+    trainingExercises,
     selectedIds
 ) {
     if(selectedIds)
-        return allExercises.filter(
+        return trainingExercises.filter(
             exercise => selectedIds
                 .includes(exercise.id)
         );
@@ -55,6 +55,9 @@ function TrainingForm({method = 'post'}) {
     const loadedData = useLoaderData();
 
     const {training, allExercises} = loadedData;
+    const trainingExercises = training && training.hasOwnProperty('exercises')
+        ? training.exercises
+        : null;
     const getTrainingParam = getEntityParamGetter(training);
 
     function getSelectedExercisesIds() {
@@ -71,7 +74,7 @@ function TrainingForm({method = 'post'}) {
 
     const [selectedExercises, setSelectedExercises] = useState(
         initSelectedExercises(
-            allExercises,
+            trainingExercises,
             getSelectedExercisesIds()
         )
     );
@@ -94,7 +97,7 @@ function TrainingForm({method = 'post'}) {
         );
         setSelectedExercises(
             initSelectedExercises(
-                allExercises,
+                trainingExercises,
                 getSelectedExercisesIds()
             )
         );
@@ -107,6 +110,13 @@ function TrainingForm({method = 'post'}) {
         getValidationMessages
     } = useFormValidationObj;
 
+    function getExerciseById(selectedId) {
+        const toFind = (exercise) => exercise.id === selectedId;
+        if(trainingExercises)
+            return trainingExercises.find(toFind) || allExercises.find(toFind);
+        return allExercises.find(toFind);
+    }
+
     function handleExerciseSelect(event) {
         const selectedId = parseInt(event.target.value);
         if(selectedId === 0)
@@ -114,11 +124,11 @@ function TrainingForm({method = 'post'}) {
         setSelectedExercises(
             selectedExercises === null
                 ? [
-                    allExercises.find(exercise => exercise.id === selectedId)
+                    getExerciseById(selectedId)
                 ]
                 : [
                     ...selectedExercises,
-                    allExercises.find(exercise => exercise.id === selectedId)
+                    getExerciseById(selectedId)
                 ]
         );
         setExerciseOptionItems(exerciseOptionItems.filter(selectData => selectData.value !== selectedId));
