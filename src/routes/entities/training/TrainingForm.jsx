@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Form as RouterForm, useActionData, useLoaderData, useSubmit} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
@@ -7,16 +7,19 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { createModelLoader, sendSaveRequest } from '../../../utils/CRUDUtils';
+import {createModelLoader, sendSaveRequest} from '../../../utils/CRUDUtils';
 import {
     createObjFromEntries,
+    filterAndCollectProps,
     filterObject,
     getEntityParamGetter,
     getSelectedIdFrom,
-    toSelectFieldData, toSelectFieldObject
+    toSelectFieldData,
+    toSelectFieldObject
 } from '../../../utils/EntitiesUtils';
 import defaultClasses from '../../Default.module.css';
 import CustomParametersList from "../../../components/entities/training/save/CustomParametersList";
+import {PARAMETERS_PREFIX} from "../../../components/entities/exercise/ExerciseParametersFields";
 
 const SELECT_VALUE_PROP = 'id';
 const SELECT_DESC_PROP = 'name';
@@ -80,6 +83,23 @@ function TrainingForm({method = 'post'}) {
 
     useClearForm(message, formRef);
 
+    useEffect(() => {
+        if(!message)
+            return;
+        setExerciseOptionItems(
+            initExerciseOptionItems(
+                allExercises,
+                getSelectedExercisesIds()
+            )
+        );
+        setSelectedExercises(
+            initSelectedExercises(
+                allExercises,
+                getSelectedExercisesIds()
+            )
+        );
+    }, [message]);
+
     const useFormValidationObj = useFormValidation(actionData);
     const {
         globalMessage,
@@ -138,7 +158,6 @@ function TrainingForm({method = 'post'}) {
         const EXERCISES_ATTRIBUTE =  'exercises';
         const formData = new FormData(event.target);
 
-        formData.set(EXERCISES_ATTRIBUTE, null);
         if(selectedExercises) {
             formData.delete(EXERCISES_ATTRIBUTE);
             selectedExercises.forEach(
@@ -193,7 +212,6 @@ function TrainingForm({method = 'post'}) {
                             firstElemDisplay='Wybierz ćwiczenie'
                             {...getValidationProp('exercises')}
                             options={exerciseOptionItems}
-                            // multiple={true}
                             onChange={handleExerciseSelect}
                         />
                     </FormField>
@@ -232,15 +250,16 @@ export async function action({request, params}) {
     const toSave = {};
 
     toSave['toSave'] = filterObject(dataObject, ['exercises']);
-    if (dataObject.hasOwnProperty('exercises')) {
+    if (dataObject.hasOwnProperty('exercises') && dataObject.exercises) {
+        if(!Array.isArray(dataObject.exercises))
+            dataObject.exercises = [...dataObject.exercises];
         const selectedExercises = [];
         dataObject.exercises.forEach(
             exerciseId => {
-                // TODO: Use this to map `parameters`
-                // toSave['toSave'].parameters = filterAndCollectProps(dataObject, PARAMETERS_PREFIX);
+                const parameters = filterAndCollectProps(dataObject, `${PARAMETERS_PREFIX}${exerciseId}.`);
                 const selectedExerciseWrite = {
                     selectedId: exerciseId,
-                    parameters: null
+                    parameters: Object.keys(parameters).length !== 0 ? parameters : null
                 };
                 selectedExercises.push(selectedExerciseWrite);
             }
