@@ -256,7 +256,13 @@ export async function loader({params}) {
 
 export async function action({request, params}) {
     const data = await request.formData();
-    const dataObject = createObjFromEntries(data);
+    const dataObject = createObjFromEntries(
+        data,
+        null,
+        [
+            'exercises'
+        ]
+    );
     const toSave = {};
 
     toSave['toSave'] = filterObject(dataObject, ['exercises']);

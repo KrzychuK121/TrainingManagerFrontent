@@ -1,4 +1,8 @@
-export function createObjFromEntries(toCreate, emptiesMapping = null) {
+export function createObjFromEntries(
+    toCreate,
+    emptiesMapping = null,
+    mapToArray = null
+) {
     const requiredFunc = 'keys';
     if (!toCreate)
         throw new Error(`Object can't be null or undefined.`);
@@ -10,7 +14,7 @@ export function createObjFromEntries(toCreate, emptiesMapping = null) {
     for (const key of toCreate.keys()) {
         const allValues = toCreate.getAll(key);
 
-        if (allValues.length > 1)
+        if (allValues.length > 1 || (mapToArray && mapToArray.includes(key)))
             toReturn[key] = allValues;
         else {
             if (

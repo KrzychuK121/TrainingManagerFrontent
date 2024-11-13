@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { Form as RouterForm, Link, useActionData, useLoaderData, useLocation } from 'react-router-dom';
+import {useRef} from 'react';
+import {Form as RouterForm, Link, useActionData, useLoaderData, useLocation} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
@@ -7,9 +7,10 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { createModelLoader, sendSaveRequest } from '../../../utils/CRUDUtils';
+import {createModelLoader, sendSaveRequest} from '../../../utils/CRUDUtils';
 import {
-    createObjFromEntries, filterAndCollectProps,
+    createObjFromEntries,
+    filterAndCollectProps,
     filterObject,
     getEntityParamGetter,
     getSelectedIdFrom,
@@ -155,7 +156,8 @@ export async function action({request, params}) {
             time: null,
             weights: null,
             defaultBurnedKcal: null
-        }
+        },
+        ['trainings']
     );
     const toSave = {};
 
