@@ -1,13 +1,13 @@
-import { useRef } from 'react';
-import { Col, Row } from 'react-bootstrap';
-import { Form as RouterForm, useActionData, useLoaderData } from 'react-router-dom';
+import {useRef} from 'react';
+import {Col, Row} from 'react-bootstrap';
+import {Form as RouterForm, useActionData, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import PlanDayAssign from '../../../components/entities/training_plan/PlanDayAssign';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {createModelLoader, sendDefaultParallelRequests, sendSaveRequest} from '../../../utils/CRUDUtils';
-import { createObjFromEntries } from '../../../utils/EntitiesUtils';
+import {createObjFromEntries} from '../../../utils/EntitiesUtils';
 
 function TrainingPlanForm({method = 'post'}) {
     const loadedData = useLoaderData();
@@ -89,7 +89,7 @@ export default TrainingPlanForm;
 
 export async function loader({params}) {
     const data = await sendDefaultParallelRequests(
-        ['training/all', 'weekdays/read']
+        ['training/publicOrOwned', 'weekdays/read']
     );
 
     try {

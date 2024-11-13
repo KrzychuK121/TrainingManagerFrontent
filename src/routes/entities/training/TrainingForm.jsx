@@ -20,6 +20,7 @@ import {
 import defaultClasses from '../../Default.module.css';
 import CustomParametersList from "../../../components/entities/training/save/CustomParametersList";
 import {PARAMETERS_PREFIX} from "../../../components/entities/exercise/ExerciseParametersFields";
+import ToggleField from "../../../components/form/ToggleField";
 
 const SELECT_VALUE_PROP = 'id';
 const SELECT_DESC_PROP = 'name';
@@ -199,6 +200,16 @@ function TrainingForm({method = 'post'}) {
             >
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowy trening</legend>
+                    <ToggleField
+                        name='trainingPrivate'
+                        label='Prywatny'
+                        defaultValue={Boolean(getTrainingParam('trainingPrivate'))}
+                        /*disabled={
+                            training
+                            && Boolean(getTrainingParam('trainingPrivate'))
+                        }*/
+                    />
+
                     <DefaultFormField
                         name='title'
                         label='Tytuł'
@@ -264,6 +275,9 @@ export async function action({request, params}) {
         ]
     );
     const toSave = {};
+
+    if(!dataObject.hasOwnProperty('trainingPrivate'))
+        toSave.trainingPrivate = false;
 
     toSave['toSave'] = filterObject(dataObject, ['exercises']);
     if (dataObject.hasOwnProperty('exercises') && dataObject.exercises) {
