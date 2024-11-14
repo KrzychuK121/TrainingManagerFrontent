@@ -70,7 +70,7 @@ function ExerciseForm({method = 'post'}) {
                     <legend>Stwórz nowe ćwiczenie</legend>
                     <Link to='/main/exercise'>Powrót do ćwiczeń</Link>
 
-                    <ToggleField>
+                    <ToggleField
                         name='exercisePrivate'
                         label='Prywatny'
                         defaultValue={Boolean(getExerciseParam('exercisePrivate'))}
@@ -78,7 +78,7 @@ function ExerciseForm({method = 'post'}) {
                             exercise
                             && Boolean(getExerciseParam('exercisePrivate'))
                         }
-                    </ToggleField>
+                    />
 
                     <DefaultFormField
                         label='Nazwa'
@@ -171,9 +171,6 @@ export async function action({request, params}) {
         ['trainings']
     );
     const toSave = {};
-
-    if(!dataObject.hasOwnProperty('exercisePrivate'))
-        toSave.exercisePrivate = false;
 
     toSave['toSave'] = filterObject(dataObject, ['trainings', PARAMETERS_PREFIX]);
     if (dataObject.hasOwnProperty('trainings'))

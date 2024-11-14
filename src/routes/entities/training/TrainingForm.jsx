@@ -276,9 +276,6 @@ export async function action({request, params}) {
     );
     const toSave = {};
 
-    if(!dataObject.hasOwnProperty('trainingPrivate'))
-        toSave.trainingPrivate = false;
-
     toSave['toSave'] = filterObject(dataObject, ['exercises']);
     if (dataObject.hasOwnProperty('exercises') && dataObject.exercises) {
         if(!Array.isArray(dataObject.exercises))
