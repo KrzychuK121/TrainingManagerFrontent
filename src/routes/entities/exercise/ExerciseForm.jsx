@@ -20,6 +20,7 @@ import defaultClasses from '../../Default.module.css';
 import ExerciseParametersFields, {
     getExerciseParametersData
 } from "../../../components/entities/exercise/ExerciseParametersFields";
+import ToggleField from "../../../components/form/ToggleField";
 
 function ExerciseForm({method = 'post'}) {
     const actionData = useActionData();
@@ -68,6 +69,16 @@ function ExerciseForm({method = 'post'}) {
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowe ćwiczenie</legend>
                     <Link to='/main/exercise'>Powrót do ćwiczeń</Link>
+
+                    <ToggleField>
+                        name='exercisePrivate'
+                        label='Prywatny'
+                        defaultValue={Boolean(getExerciseParam('exercisePrivate'))}
+                        disabled={
+                            exercise
+                            && Boolean(getExerciseParam('exercisePrivate'))
+                        }
+                    </ToggleField>
 
                     <DefaultFormField
                         label='Nazwa'
@@ -160,6 +171,9 @@ export async function action({request, params}) {
         ['trainings']
     );
     const toSave = {};
+
+    if(!dataObject.hasOwnProperty('exercisePrivate'))
+        toSave.exercisePrivate = false;
 
     toSave['toSave'] = filterObject(dataObject, ['trainings', PARAMETERS_PREFIX]);
     if (dataObject.hasOwnProperty('trainings'))

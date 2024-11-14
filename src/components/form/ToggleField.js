@@ -3,22 +3,25 @@ import {useState} from "react";
 
 function ToggleField(
     {
+        name,
         defaultValue,
         ...rest
     }
 ) {
     const [value, setValue] = useState(defaultValue);
     return (
-        <Form.Switch
-            value={value}
-            defaultChecked={defaultValue}
-            onClick={() => setValue(!value)}
-            /*disabled={
-                training
-                && !Boolean(getTrainingParam('trainingPrivate'))
-            }*/
-            {...rest}
-        />
+        <>
+            <input
+                name={name}
+                type='hidden'
+                value={'' + value}
+            />
+            <Form.Switch
+                defaultChecked={defaultValue}
+                onClick={() => setValue(!value)}
+                {...rest}
+            />
+        </>
     );
 }
 

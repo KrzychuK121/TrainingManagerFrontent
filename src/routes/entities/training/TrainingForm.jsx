@@ -204,10 +204,10 @@ function TrainingForm({method = 'post'}) {
                         name='trainingPrivate'
                         label='Prywatny'
                         defaultValue={Boolean(getTrainingParam('trainingPrivate'))}
-                        /*disabled={
+                        disabled={
                             training
                             && Boolean(getTrainingParam('trainingPrivate'))
-                        }*/
+                        }
                     />
 
                     <DefaultFormField
