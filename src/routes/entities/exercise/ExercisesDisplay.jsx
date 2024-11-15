@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useLoaderData } from 'react-router-dom';
+import {useState} from 'react';
+import {useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { deleteAction, sendDefaultRequest } from '../../../utils/CRUDUtils';
-import { DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString } from '../../../utils/URLUtils';
+import {useMessageParams} from '../../../hooks/UseMessageParam';
+import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
+import {DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
 
 function ExercisesDisplay() {
     const loadedData = useLoaderData();
@@ -68,7 +68,7 @@ export async function loader({request}) {
     const searchParams = url.searchParams;
     const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
 
-    return await sendDefaultRequest(`exercise${filteredQueryString}`);
+    return await sendDefaultRequest(`exercise/paged${filteredQueryString}`);
 }
 
 export async function action({request, params}) {
