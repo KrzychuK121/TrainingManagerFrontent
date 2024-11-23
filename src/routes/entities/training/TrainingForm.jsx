@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {Form as RouterForm, useActionData, useLoaderData, useSubmit} from 'react-router-dom';
+import {Form as RouterForm, Link, useActionData, useLoaderData, useParams, useSubmit} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
@@ -7,7 +7,7 @@ import SelectField from '../../../components/form/SelectField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useClearForm from '../../../hooks/UseClearForm';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import {createModelLoader, sendSaveRequest} from '../../../utils/CRUDUtils';
+import {createModelLoader, defaultHeaders, sendSaveRequest} from '../../../utils/CRUDUtils';
 import {
     createObjFromEntries,
     filterAndCollectProps,
@@ -21,6 +21,9 @@ import defaultClasses from '../../Default.module.css';
 import CustomParametersList from "../../../components/entities/training/save/CustomParametersList";
 import {PARAMETERS_PREFIX} from "../../../components/entities/exercise/ExerciseParametersFields";
 import ToggleField from "../../../components/form/ToggleField";
+import {DOMAIN, EDIT_ACCESS_DENIED} from "../../../utils/URLUtils";
+import {useMessageParams} from "../../../hooks/UseMessageParam";
+import ConfirmModal from "../../../components/entities/crud/ConfirmModal";
 
 const SELECT_VALUE_PROP = 'id';
 const SELECT_DESC_PROP = 'name';
@@ -51,9 +54,12 @@ function initSelectedExercises(
 }
 
 function TrainingForm({method = 'post'}) {
+    const {id} = useParams();
     const submit = useSubmit();
     const actionData = useActionData();
     const loadedData = useLoaderData();
+
+    const [showPublifyTrainingConfirmation, setShowPublifyTrainingConfirmation] = useState(false);
 
     const {training, allExercises} = loadedData;
     const trainingExercises = training && training.hasOwnProperty('exercises')
@@ -83,8 +89,18 @@ function TrainingForm({method = 'post'}) {
     const message = actionData && actionData.message
         ? actionData.message
         : null;
+    const {UrlAlertsList} = useMessageParams(
+        [
+            {
+                messageParam: EDIT_ACCESS_DENIED,
+                displayIfSuccess: 'Nie możesz edytować wybranego treningu.'
+            }
+        ],
+        {
+            variant: 'danger'
+        }
+    );
     const formRef = useRef();
-
     useClearForm(message, formRef);
 
     useEffect(() => {
@@ -163,13 +179,41 @@ function TrainingForm({method = 'post'}) {
         );
     }
 
-    function handleFormSubmit(event) {
-        event.preventDefault();
+    /**
+     * This function checks if training to edit contains any private exercise then show modal to ask user
+     * if he wants to make them public too.
+     *
+     * @param formData data from form
+     * @returns {Promise<boolean>} True if submit process can proceed. Otherwise, false.
+     */
+    async function confirmIfPublicExercisesFound(formData) {
+        if(
+            !id
+            || formData.get('trainingPrivate') !== 'false'
+        ) {
+            return true;
+        }
 
+        const response = await fetch(
+            `${DOMAIN}/training/${id}/hasPrivateExercises`,
+            {
+                headers: defaultHeaders()
+            }
+        );
+        const hasPrivateExercises = response.json();
+
+        if(!hasPrivateExercises) {
+            return true;
+        }
+
+        setShowPublifyTrainingConfirmation(true);
+        return false;
+    }
+
+    function processDataAndSubmitForm(formData) {
         const EXERCISES_ATTRIBUTE =  'exercises';
-        const formData = new FormData(event.target);
 
-        if(selectedExercises) {
+        if (selectedExercises) {
             formData.delete(EXERCISES_ATTRIBUTE);
             selectedExercises.forEach(
                 exercise => formData.append(EXERCISES_ATTRIBUTE, `${exercise.id}`)
@@ -177,6 +221,22 @@ function TrainingForm({method = 'post'}) {
         }
 
         submit(formData, {method: method});
+    }
+
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+
+        const shouldProceed = await confirmIfPublicExercisesFound(formData);
+        if(!shouldProceed)
+            return;
+        processDataAndSubmitForm(formData);
+    }
+
+    async function handleConfirmPublifyingExercises(event) {
+        event.preventDefault();
+        const formData = new FormData(formRef.current);
+        processDataAndSubmitForm(formData);
     }
 
     return (
@@ -188,6 +248,7 @@ function TrainingForm({method = 'post'}) {
                 closeDelay={5000}
                 scrollOnTrigger={true}
             />
+            {UrlAlertsList}
             <AlertComponent
                 message={message}
                 showTrigger={actionData}
@@ -200,14 +261,17 @@ function TrainingForm({method = 'post'}) {
             >
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowy trening</legend>
+                    <Link to='/main/training'>Powrót do treningów</Link>
+                    <ConfirmModal
+                        body={'Ten trening posiada prywatne ćwiczenia. Czy chcesz upublicznić trening wraz z ćwiczeniami?'}
+                        show={showPublifyTrainingConfirmation}
+                        setShow={setShowPublifyTrainingConfirmation}
+                        onConfirm={handleConfirmPublifyingExercises}
+                    />
                     <ToggleField
                         name='trainingPrivate'
                         label='Prywatny'
                         defaultValue={Boolean(getTrainingParam('trainingPrivate'))}
-                        disabled={
-                            training
-                            && Boolean(getTrainingParam('trainingPrivate'))
-                        }
                     />
 
                     <DefaultFormField
@@ -247,6 +311,7 @@ function TrainingForm({method = 'post'}) {
                     <SubmitButton
                         display='Zapisz'
                         submittingDisplay='Zapisuję'
+                        disabled={showPublifyTrainingConfirmation}
                     />
                 </fieldset>
             </RouterForm>
@@ -259,7 +324,7 @@ export default TrainingForm;
 export async function loader({params}) {
     return await createModelLoader(
         'training/createModel',
-        '/main/training/create',
+        `/main/training/create?${EDIT_ACCESS_DENIED}`,
         params,
         'training'
     );

@@ -89,7 +89,7 @@ export default TrainingPlanForm;
 
 export async function loader({params}) {
     const data = await sendDefaultParallelRequests(
-        ['training/publicOrOwned', 'weekdays/read']
+        ['training/all', 'weekdays/read']
     );
 
     try {

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useLoaderData} from 'react-router-dom';
+import {json, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
@@ -12,7 +12,7 @@ function ExercisesDisplay() {
     const loadedData = useLoaderData();
     const [actionData, setActionData] = useState();
     const exercises = loadedData.content;
-    const {messages: successMessages} = useMessageParams(
+    const {messages: successMessages, UrlAlertsList} = useMessageParams(
         [
             {
                 messageParam: EDIT_SUCCESS,
@@ -22,7 +22,7 @@ function ExercisesDisplay() {
                 messageParam: DELETE_SUCCESS,
                 displayIfSuccess: 'Ćwiczenie zostało usunięte pomyślnie.'
             }
-        ]
+        ],
     );
 
     const {globalMessage} = useFormValidation(actionData);
@@ -39,18 +39,7 @@ function ExercisesDisplay() {
                 closeDelay={5000}
                 scrollOnTrigger={true}
             />
-            {
-                successMessages && successMessages.map(
-                    message => (
-                        <AlertComponent
-                            key={message}
-                            message={message}
-                            showTrigger={null}
-                            closeDelay={4000}
-                        />
-                    )
-                )
-            }
+            {UrlAlertsList}
             <h1>Lista wszystkich ćwiczeń</h1>
             <ExerciseTable
                 exercises={exercises}
@@ -72,10 +61,18 @@ export async function loader({request}) {
 }
 
 export async function action({request, params}) {
-    return await deleteAction(
+    const response =  await deleteAction(
         'http://localhost:8080/api/exercise',
         '/main/exercise',
         request,
         params
     );
+
+    if(response.status === 400)
+        return json({error: 'Nie możesz usunąć ćwiczenia, którego nie posiadasz'});
+
+    if(response.status === 404)
+        return json({error: 'Ćwiczenie, które próbujesz usunąć, nie istnieje'});
+
+    return response;
 }

@@ -1,5 +1,5 @@
 import {useRef} from 'react';
-import {Form as RouterForm, Link, useActionData, useLoaderData, useLocation} from 'react-router-dom';
+import {Form as RouterForm, Link, useActionData, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import FormField from '../../../components/form/FormField';
@@ -21,17 +21,30 @@ import ExerciseParametersFields, {
     getExerciseParametersData
 } from "../../../components/entities/exercise/ExerciseParametersFields";
 import ToggleField from "../../../components/form/ToggleField";
+import {EDIT_ACCESS_DENIED} from "../../../utils/URLUtils";
+import {useMessageParams} from "../../../hooks/UseMessageParam";
 
 function ExerciseForm({method = 'post'}) {
     const actionData = useActionData();
     const loaderData = useLoaderData();
-    const location = useLocation();
 
     const {exercise, allTrainings} = loaderData;
     const bodyParts = loaderData.bodyParts.bodyParts;
     const selectTrainings = toSelectFieldData(allTrainings, 'id', 'title');
 
     const formRef = useRef();
+
+    const {messages: errorMessages, UrlAlertsList} = useMessageParams(
+        [
+            {
+                messageParam: EDIT_ACCESS_DENIED,
+                displayIfSuccess: 'Nie możesz edytować wybranego ćwiczenia.'
+            }
+        ],
+        {
+            variant: 'danger'
+        }
+    );
 
     const message = actionData && actionData.message
         ? actionData.message
@@ -57,6 +70,7 @@ function ExerciseForm({method = 'post'}) {
 
     return (
         <>
+            {UrlAlertsList}
             <AlertComponent
                 message={message}
                 showTrigger={actionData}
@@ -150,7 +164,7 @@ export default ExerciseForm;
 export async function loader({params}) {
     return await createModelLoader(
         'exercise/createModel',
-        '/main/training/create',
+        `/main/exercise/create?${EDIT_ACCESS_DENIED}`,
         params,
         'exercise'
     );

@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { json, useLoaderData, useNavigate } from 'react-router-dom';
+import {useState} from 'react';
+import {json, useLoaderData, useNavigate} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { deleteAction, sendDefaultRequest } from '../../../utils/CRUDUtils';
-import { DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString } from '../../../utils/URLUtils';
+import {useMessageParams} from '../../../hooks/UseMessageParam';
+import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
+import {DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
 
 function TrainingDisplay() {
     const loadedData = useLoaderData();
@@ -16,7 +16,7 @@ function TrainingDisplay() {
 
     const trainings = loadedData.content;
     const navigate = useNavigate();
-    const {messages: successMessages} = useMessageParams(
+    const {messages: successMessages, UrlAlertsList} = useMessageParams(
         [
             {
                 messageParam: EDIT_SUCCESS,
@@ -47,18 +47,7 @@ function TrainingDisplay() {
                 closeDelay={5000}
                 scrollOnTrigger={true}
             />
-            {
-                successMessages && successMessages.map(
-                    message => (
-                        <AlertComponent
-                            key={message}
-                            message={message}
-                            showTrigger={null}
-                            closeDelay={4000}
-                        />
-                    )
-                )
-            }
+            {UrlAlertsList}
             {/*TODO: Make sorting by column*/}
             <h1>Lista wszystkich treningów</h1>
             {
@@ -68,7 +57,8 @@ function TrainingDisplay() {
                             id,
                             title,
                             description,
-                            exercises
+                            exercises,
+                            trainingPrivate
                         }
                     ) => (
                         <div key={id}>
@@ -91,20 +81,25 @@ function TrainingDisplay() {
                                             () => actionButtonClickHandler(`/main/training/train/${id}`)
                                         }
                                     />
-                                    {' | '}
-                                    <SubmitButton
-                                        display='Edytuj'
-                                        submittingDisplay='Ładowanie strony'
-                                        onClick={
-                                            () => actionButtonClickHandler(`/main/training/edit/${id}`)
-                                        }
-                                    />
-                                    {' | '}
-                                    <DeleteModal
-                                        action={`/main/training/delete/${id}`}
-                                        setActionData={setActionData}
-                                    />
-                                    {' | '}
+                                    {
+                                        trainingPrivate &&
+                                        <>
+                                            {' | '}
+                                            <SubmitButton
+                                                display='Edytuj'
+                                                submittingDisplay='Ładowanie strony'
+                                                onClick={
+                                                    () => actionButtonClickHandler(`/main/training/edit/${id}`)
+                                                }
+                                            />
+                                            {' | '}
+                                            <DeleteModal
+                                                action={`/main/training/delete/${id}`}
+                                                setActionData={setActionData}
+                                            />
+                                            {' | '}
+                                        </>
+                                    }
                                 </div>
                             </div>
                             <hr/>
@@ -124,7 +119,7 @@ export async function loader({request}) {
     const searchParams = url.searchParams;
     const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
 
-    return await sendDefaultRequest(`training${filteredQueryString}`);
+    return await sendDefaultRequest(`training/paged${filteredQueryString}`);
 }
 
 export async function deleteTrainingAction({request, params}) {

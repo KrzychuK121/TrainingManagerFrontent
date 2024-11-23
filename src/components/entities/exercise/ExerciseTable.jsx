@@ -1,5 +1,5 @@
-import { Button, Table } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import {Button, Table} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 import DeleteModal from '../crud/DeleteModal';
 import SortAnchor from '../crud/SortAnchor';
 
@@ -49,6 +49,12 @@ function getExerciseList(
 
 function defaultOptionsMapper(exercise, setActionData) {
     const id = exercise.id;
+    if(
+        exercise.hasOwnProperty('exercisePrivate')
+        && !exercise.exercisePrivate
+    )
+        return <></>;
+
     return (
         <>
             <Link to={`/main/exercise/edit/${id}`}>

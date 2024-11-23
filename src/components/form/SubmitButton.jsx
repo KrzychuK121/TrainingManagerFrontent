@@ -1,5 +1,5 @@
-import { Button, Spinner } from 'react-bootstrap';
-import { useNavigation } from 'react-router-dom';
+import {Button, Spinner} from 'react-bootstrap';
+import {useNavigation} from 'react-router-dom';
 import {useEffect, useState} from "react";
 
 function SubmitButton(
@@ -28,6 +28,8 @@ function SubmitButton(
         );
         if(onClick)
             onClick(event);
+        if(navigation.state !== 'submitting')
+            setUpdatedDisplay(display);
     }
 
     return (
