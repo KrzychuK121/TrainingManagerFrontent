@@ -2,13 +2,14 @@ import OptionButton from './OptionButton';
 
 function InitControls(
     {
-        setCurrExerciseNumber,
-        moveToNextAndMarkStatus
+        moveToNextAndMarkStatus,
+        setStartDate
     }
 ) {
 
     function handleStartTraining() {
         moveToNextAndMarkStatus(null);
+        setStartDate(new Date());
     }
 
     return (

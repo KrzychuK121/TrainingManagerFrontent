@@ -1,5 +1,5 @@
-import { Accordion, Card } from 'react-bootstrap';
-import { EXERCISE_STATUS } from '../../../../../routes/entities/training/TrainingTrainApp';
+import {Accordion, Card} from 'react-bootstrap';
+import {EXERCISE_STATUS} from '../../../../../routes/entities/training/TrainingTrainApp';
 
 import trainAppClasses from '../../../../../routes/entities/training/TrainingTrainApp.module.css';
 import ExerciseControls from './ExerciseControls';
@@ -11,7 +11,8 @@ function ControlPanel(
         setExercises,
         currExerciseNumber,
         setCurrExerciseNumber,
-        setFinished
+        setFinished,
+        setStartDate
     }
 ) {
     function moveToNextAndMarkStatus(status) {
@@ -40,8 +41,8 @@ function ControlPanel(
                             currExerciseNumber === null || currExerciseNumber === undefined // Can't ! bc of 0 value
                                 ? (
                                     <InitControls
-                                        setCurrExerciseNumber={setCurrExerciseNumber}
                                         moveToNextAndMarkStatus={moveToNextAndMarkStatus}
+                                        setStartDate={setStartDate}
                                     />
                                 )
                                 : (
