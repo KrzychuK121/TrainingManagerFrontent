@@ -1,8 +1,14 @@
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import mainNavClasses from './MainNavigation.module.css';
 import classes from './NavLink.module.css';
 
-function NavLink({label, href, className = mainNavClasses.menuLink}) {
+function NavLink(
+    {
+        label,
+        href,
+        className = mainNavClasses.menuLink
+    }
+) {
     return (
         <Link
             to={href}

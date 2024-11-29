@@ -1,5 +1,5 @@
-import { Container, Nav, Navbar } from 'react-bootstrap';
-import { useRouteLoaderData } from 'react-router-dom';
+import {Container, Nav, Navbar} from 'react-bootstrap';
+import {Link, useRouteLoaderData} from 'react-router-dom';
 
 import AuthNavigations from './AuthNavigations';
 import CalcDropdown from './CalcDropdown';
@@ -13,13 +13,24 @@ function MainNavigation() {
     return (
         <Container as='header' fluid id={classes.menuContainer}>
             <nav id='menu'>
-                <Navbar expand='lg' data-bs-theme='dark'>
+                <Navbar
+                    expand='lg'
+                    data-bs-theme='dark'
+                    style={{padding: 0}}
+                >
                     <Navbar.Brand>
                         <article
                             className={`${classes.menuContainerComponent} ${classes.brandDesc}`}
                         >
                             <img src='/img/icon-scaled.png' alt='icon.png' style={{paddingRight: '20px'}}/>
-                            <span>Trening</span>
+                            <span>
+                                <Link
+                                    to={'/main'}
+                                    className={`${classes.menuLink} ${classes.logoTitleLink}`}
+                                >
+                                    Trening
+                                </Link>
+                            </span>
                         </article>
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls='navbar-links'/>
@@ -31,6 +42,10 @@ function MainNavigation() {
                             <NavLink
                                 label='Zacznij trening!'
                                 href='/main/training/train'
+                            />
+                            <NavLink
+                                label='Statystyki treningów'
+                                href='/main/workout-statistics/all'
                             />
                             <OperationsDropdown/>
                             <CalcDropdown/>

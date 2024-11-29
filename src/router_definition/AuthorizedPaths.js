@@ -1,5 +1,5 @@
 import React from 'react';
-import CalcBMI, { action as calcBMIAction } from '../routes/calculators/CalcBMI';
+import CalcBMI, {action as calcBMIAction} from '../routes/calculators/CalcBMI';
 import ExerciseForm, {
     action as exerciseSaveAction,
     loader as exerciseFormLoader
@@ -16,8 +16,8 @@ import TrainingForm, {
     action as trainingSaveAction,
     loader as trainingFormLoader
 } from '../routes/entities/training/TrainingForm';
-import TrainingTrainApp, { loader as trainingTrainAppLoader } from '../routes/entities/training/TrainingTrainApp';
-import PlanWeekDisplay, { loader as planWeekDisplayLoader } from '../routes/entities/training_plan/PlanWeekDisplay';
+import TrainingTrainApp, {loader as trainingTrainAppLoader} from '../routes/entities/training/TrainingTrainApp';
+import PlanWeekDisplay, {loader as planWeekDisplayLoader} from '../routes/entities/training_plan/PlanWeekDisplay';
 import TrainingPlanDisplay, {
     deleteTrainingRoutineAction,
     loader as trainingPlanLoader,
@@ -27,7 +27,8 @@ import TrainingPlanForm, {
     action as trainingPlanFormAction,
     loader as trainingPlanFormLoader
 } from '../routes/entities/training_plan/TrainingPlanForm';
-import { nonAuthenticatedLoader } from '../utils/AuthUtils';
+import {nonAuthenticatedLoader} from '../utils/AuthUtils';
+import StatisticsCalendar, {loader as statisticsCalendarLoader} from "../routes/workout_statistics/StatisticsCalendar";
 
 const AuthorizedPaths = {
     path: '',
@@ -43,6 +44,16 @@ const AuthorizedPaths = {
                 },
                 {
                     path: 'BMR'
+                }
+            ]
+        },
+        {
+            path: 'workout-statistics',
+            children: [
+                {
+                    path: 'all',
+                    element: <StatisticsCalendar/>,
+                    loader: statisticsCalendarLoader
                 }
             ]
         },

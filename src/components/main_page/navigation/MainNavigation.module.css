@@ -13,7 +13,15 @@
     color: white;
 }
 
-.menuLink:hover, .menuLink:focus, .menuLinkDropdown:hover > a, .menuLinkDropdown:focus > a {
+.logoTitleLink {
+    color: #FF4655;
+    text-decoration: none;
+}
+
+.menuLink:hover,
+.menuLink:focus,
+.menuLinkDropdown:hover > a,
+.menuLinkDropdown:focus > a {
     color: #FF4655;
 }
 
@@ -26,7 +34,7 @@
 
 .menuContainerComponent {
     font-weight: 700;
-    font-size: 30px;
+    font-size: 20px;
 }
 
 .menuContainerComponent .menuLink {
