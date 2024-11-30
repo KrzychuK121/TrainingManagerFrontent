@@ -55,19 +55,6 @@ function StatisticsCalendar() {
 export default StatisticsCalendar;
 
 export async function loader() {
-    /*const startDate1 = new Date();
-    startDate1.setHours(14, 0, 0, 0);
-    const endDate1 = new Date();
-    endDate1.setHours(15, 30, 0, 0);
-    const startDate2 = new Date();
-    startDate2.setHours(15, 45, 0, 0);
-    const endDate2 = new Date();
-    endDate2.setHours(17, 45, 0, 0);
-    return [
-        { startDate: startDate1, endDate: endDate1, title: 'Meeting' },
-        { startDate: startDate2, endDate: endDate2, title: 'Go to a gym' }
-    ];*/
-
     const response = await sendDefaultRequest('doneTrainings');
     return response;
 }
