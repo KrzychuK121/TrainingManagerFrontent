@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Accordion } from 'react-bootstrap';
-import { EXERCISE_STATUS, EXERCISE_TYPE } from '../../../../routes/entities/training/TrainingTrainApp';
+import {useEffect, useState} from 'react';
+import {Accordion} from 'react-bootstrap';
+import {EXERCISE_STATUS, EXERCISE_TYPE} from '../../../../routes/entities/training/TrainingTrainApp';
 import classes from '../../../../routes/entities/training/TrainingTrainApp.module.css';
 
 function getBackgroundColor(exercise) {
@@ -15,6 +15,27 @@ function getBackgroundColor(exercise) {
         default:
             return '';
     }
+}
+
+export function mapExerciseToExerciseItem(exercise) {
+    let newAmount = exercise.repetition === 0
+        ? exercise.time
+        : exercise.repetition;
+
+    return {
+        id: exercise.id,
+        name: exercise.name,
+        description: exercise.description,
+        mode: exercise.repetition === 0
+            ? EXERCISE_TYPE.TIMER
+            : EXERCISE_TYPE.REPEAT,
+        rounds: exercise.rounds,
+        tempRounds: exercise.rounds,
+        finishedRounds: 0,
+        amount: newAmount,
+        tempAmount: newAmount,
+        status: EXERCISE_STATUS.TODO
+    };
 }
 
 function ExerciseItem({exercise}) {

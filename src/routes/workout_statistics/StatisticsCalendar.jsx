@@ -1,4 +1,4 @@
-import {useLoaderData} from "react-router-dom";
+import {Outlet, useLoaderData} from "react-router-dom";
 import {
     Appointments,
     DateNavigator,
@@ -13,16 +13,34 @@ import {
 import {ViewState} from "@devexpress/dx-react-scheduler";
 import {Paper} from "@mui/material";
 import {sendDefaultRequest} from "../../utils/CRUDUtils";
+import CustomAppointment from "../../components/entities/workout_statistics/CustomAppointment";
 
 function StatisticsCalendar() {
-    const appointments = useLoaderData();
+    const doneTrainings = useLoaderData();
+
+    if(
+        Array.isArray(doneTrainings)
+        && doneTrainings[0].hasOwnProperty('title')
+    )
+        doneTrainings.forEach(
+            doneTraining => {
+                const newEndDate = new Date(doneTraining.startDate);
+                newEndDate.setMilliseconds(newEndDate.getMilliseconds() + 1);
+
+                doneTraining.endDate = !doneTraining.endDate
+                    ? newEndDate
+                    : doneTraining.endDate
+            }
+        )
 
     return (
         <>
+            <Outlet />
             <Paper>
                 <Scheduler
-                    data={appointments}
+                    data={doneTrainings}
                     locale={'pl-PL'}
+                    firstDayOfWeek={1}
                     height={660}
                 >
                     <ViewState
@@ -45,7 +63,9 @@ function StatisticsCalendar() {
                     />
                     <DateNavigator />
                     <ViewSwitcher />
-                    <Appointments />
+                    <Appointments
+                        appointmentComponent={CustomAppointment}
+                    />
                 </Scheduler>
             </Paper>
         </>

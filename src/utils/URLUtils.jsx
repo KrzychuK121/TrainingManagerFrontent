@@ -5,6 +5,12 @@ export const DELETE_SUCCESS = 'delete-success';
 
 export const EDIT_ACCESS_DENIED = 'edit-access-denied';
 
+export function getIdPath(params) {
+    return params.id
+        ? `/${params.id}`
+        : '';
+}
+
 /**
  * This function formats `param` with `paramValue` into query string and concatenating `initValue` before if provided.
  *

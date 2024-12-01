@@ -1,6 +1,6 @@
-import { json, redirect } from 'react-router-dom';
-import { injectToken, logout, tokenExpired } from './AuthUtils';
-import { DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS } from './URLUtils';
+import {json, redirect} from 'react-router-dom';
+import {injectToken, logout, tokenExpired} from './AuthUtils';
+import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getIdPath} from './URLUtils';
 
 export function defaultHeaders(headers) {
     return injectToken({
@@ -15,12 +15,6 @@ export async function handleResponseUnauthorized(response) {
 
     const logoutResponse = await logout();
     return redirect('/main/login');
-}
-
-export function getIdPath(params) {
-    return params.id
-        ? `/${params.id}`
-        : '';
 }
 
 export async function sendDefaultRequest(

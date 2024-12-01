@@ -1,19 +1,13 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import {Button, Table} from 'react-bootstrap';
 import {Form as RouterForm, Link, redirect, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { useMessageParams } from '../../../hooks/UseMessageParam';
-import {
-    defaultHeaders,
-    deleteAction,
-    getIdPath,
-    handleResponseUnauthorized,
-    sendDefaultRequest
-} from '../../../utils/CRUDUtils';
-import { DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS } from '../../../utils/URLUtils';
+import {useMessageParams} from '../../../hooks/UseMessageParam';
+import {defaultHeaders, deleteAction, handleResponseUnauthorized, sendDefaultRequest} from '../../../utils/CRUDUtils';
+import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getIdPath} from '../../../utils/URLUtils';
 
 const ROUTINE_NOT_OWNED_OR_ACTIVE = 'routine-not-owned-or-already-active';
 const ROUTINE_ACTIVATED = 'routine-activated';

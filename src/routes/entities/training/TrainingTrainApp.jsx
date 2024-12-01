@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react';
-import {Accordion, Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
 import {redirect, useLoaderData, useNavigate} from 'react-router-dom';
-import ControlPanel from '../../../components/entities/training/train/control_panel/ControlPanel';
-import ExerciseItem from '../../../components/entities/training/train/ExerciseItem';
-import {defaultHeaders, getIdPath, handleResponseUnauthorized} from '../../../utils/CRUDUtils';
-import {DOMAIN} from '../../../utils/URLUtils';
+import {defaultHeaders, handleResponseUnauthorized} from '../../../utils/CRUDUtils';
+import {DOMAIN, getIdPath} from '../../../utils/URLUtils';
 import AlertComponent from "../../../components/alerts/AlertComponent";
+import TrainingPanel from "../../../components/entities/training/train/TrainingPanel";
+import {mapExerciseToExerciseItem} from "../../../components/entities/training/train/ExerciseItem";
 
 export const EXERCISE_TYPE = {
     TIMER: 0,
@@ -18,18 +18,7 @@ export const EXERCISE_STATUS = {
     NOT_FINISHED: 2,
     FINISHED: 3
 };
-/*
-private int routineId;
-private int trainingId;
-private LocalDateTime startDate;
-private LocalDateTime endDate;
 
-private List<DoneExerciseWrite> doneExercises;
----------------------------------------------------
-private int exerciseId;
-@NotNull
-private int doneSeries;
-*/
 function TrainingTrainApp() {
     const navigate = useNavigate();
     const loadedData = useLoaderData();
@@ -60,7 +49,6 @@ function TrainingTrainApp() {
                 }
             )
         }
-        // console.log(doneTraining);
 
         const response = await fetch(
             `${DOMAIN}/doneTrainings`,
@@ -78,16 +66,6 @@ function TrainingTrainApp() {
 
         if (!response.ok)
             setErrorMessage('Wystąpił problem podczas zapisywania wyników treningu. Spróbuj wysłać wynik ponownie');
-    }
-
-    function getActiveKey() {
-        if (
-            currExerciseNumber === null ||
-            currExerciseNumber === undefined ||
-            finished
-        )
-            return null;
-        return exercises[currExerciseNumber].id;
     }
 
     useEffect(() => {
@@ -112,30 +90,15 @@ function TrainingTrainApp() {
                     </div>
                     <h2>Twój trening zawiera:</h2>
                     <br/>
-                    <Accordion flush id='listaCwiczen' activeKey={getActiveKey()}>
-                        {
-                            !finished && (
-                                <ControlPanel
-                                    exercises={exercises}
-                                    setExercises={setExercises}
-                                    currExerciseNumber={currExerciseNumber}
-                                    setCurrExerciseNumber={setCurrExerciseNumber}
-                                    setFinished={setFinished}
-                                    setStartDate={setStartDate}
-                                />
-                            )
-                        }
-                        {
-                            exercises.map(
-                                exercise => (
-                                    <ExerciseItem
-                                        key={exercise.id}
-                                        exercise={exercise}
-                                    />
-                                )
-                            )
-                        }
-                    </Accordion>
+                    <TrainingPanel
+                        finished={finished}
+                        exercises={exercises}
+                        setExercises={setExercises}
+                        currExerciseNumber={currExerciseNumber}
+                        setCurrExerciseNumber={setCurrExerciseNumber}
+                        setFinished={setFinished}
+                        startDate={setStartDate}
+                    />
                     {
                         errorMessage && (
                             <Button
@@ -184,27 +147,7 @@ export async function loader({params}) {
     const training = workoutRead.trainingRead;
 
     const exercises = training.exercises.map(
-        exercise => {
-
-            let newAmount = exercise.repetition === 0
-                ? exercise.time
-                : exercise.repetition;
-
-            return {
-                id: exercise.id,
-                name: exercise.name,
-                description: exercise.description,
-                mode: exercise.repetition === 0
-                    ? EXERCISE_TYPE.TIMER
-                    : EXERCISE_TYPE.REPEAT,
-                rounds: exercise.rounds,
-                tempRounds: exercise.rounds,
-                finishedRounds: 0,
-                amount: newAmount,
-                tempAmount: newAmount,
-                status: EXERCISE_STATUS.TODO
-            };
-        }
+        exercise => mapExerciseToExerciseItem(exercise)
     );
 
     return {

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { EXERCISE_STATUS, EXERCISE_TYPE } from '../../../../../routes/entities/training/TrainingTrainApp';
+import {useEffect, useState} from 'react';
+import {EXERCISE_STATUS, EXERCISE_TYPE} from '../../../../../routes/entities/training/TrainingTrainApp';
 import OptionButton from './OptionButton';
 
 function timeStringToSeconds(exercise, amount) {
@@ -15,6 +15,12 @@ function formatTime(seconds) {
     const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
     const s = (seconds % 60).toString().padStart(2, '0');
     return `${h}:${m}:${s}`;
+}
+
+export function getStatusByFinishedRounds(currExercise) {
+    return currExercise.finishedRounds >= (currExercise.rounds / 2)
+        ? EXERCISE_STATUS.FINISHED
+        : EXERCISE_STATUS.NOT_FINISHED;
 }
 
 function ExerciseControls(
@@ -43,14 +49,8 @@ function ExerciseControls(
         setExercises([...exercises]);
     }
 
-    function getStatusByFinishedRounds() {
-        return currExercise.finishedRounds >= (currExercise.rounds / 2)
-            ? EXERCISE_STATUS.FINISHED
-            : EXERCISE_STATUS.NOT_FINISHED;
-    }
-
     function moveToNext() {
-        moveToNextAndMarkStatus(getStatusByFinishedRounds());
+        moveToNextAndMarkStatus(getStatusByFinishedRounds(currExercise));
     }
 
     useEffect(() => {

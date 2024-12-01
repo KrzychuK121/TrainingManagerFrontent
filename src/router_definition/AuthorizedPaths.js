@@ -29,6 +29,7 @@ import TrainingPlanForm, {
 } from '../routes/entities/training_plan/TrainingPlanForm';
 import {nonAuthenticatedLoader} from '../utils/AuthUtils';
 import StatisticsCalendar, {loader as statisticsCalendarLoader} from "../routes/workout_statistics/StatisticsCalendar";
+import StatisticsDetails, {loader as statisticsDetailsLoader} from "../routes/workout_statistics/StatisticsDetails";
 
 const AuthorizedPaths = {
     path: '',
@@ -51,9 +52,16 @@ const AuthorizedPaths = {
             path: 'workout-statistics',
             children: [
                 {
-                    path: 'all',
+                    path: '',
                     element: <StatisticsCalendar/>,
-                    loader: statisticsCalendarLoader
+                    loader: statisticsCalendarLoader,
+                    children: [
+                        {
+                            path: ':id',
+                            element: <StatisticsDetails/>,
+                            loader: statisticsDetailsLoader
+                        }
+                    ]
                 }
             ]
         },
