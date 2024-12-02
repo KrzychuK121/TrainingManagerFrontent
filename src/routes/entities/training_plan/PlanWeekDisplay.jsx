@@ -1,10 +1,10 @@
-import { Col, Row } from 'react-bootstrap';
-import { useLoaderData } from 'react-router-dom';
+import {Col, Row} from 'react-bootstrap';
+import {useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import PlanDayDisplay from '../../../components/entities/training_plan/PlanDayDisplay';
-import { useMessageParams } from '../../../hooks/UseMessageParam';
-import { sendDefaultRequest } from '../../../utils/CRUDUtils';
-import { NO_TRAINING_DAY } from '../training/TrainingTrainApp';
+import {useMessageParams} from '../../../hooks/UseMessageParam';
+import {sendDefaultRequest} from '../../../utils/CRUDUtils';
+import {NO_TRAINING_DAY, TRAINING_DONE} from '../training/TrainingTrainApp';
 
 function PlanWeekDisplay() {
     const loadedData = useLoaderData();
@@ -21,6 +21,10 @@ function PlanWeekDisplay() {
             {
                 messageParam: NO_TRAINING_DAY,
                 displayIfSuccess: 'Nie masz na dzisiaj zaplanowanego żadnego treningu.'
+            },
+            {
+                messageParam: TRAINING_DONE,
+                displayIfSuccess: 'Wykonałeś już dzisiejszy trening. Możesz go podejrzeć w "Statystyki treningów".'
             }
         ]
     );

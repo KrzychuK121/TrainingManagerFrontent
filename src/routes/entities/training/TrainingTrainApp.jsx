@@ -119,6 +119,7 @@ function TrainingTrainApp() {
 export default TrainingTrainApp;
 
 export const NO_TRAINING_DAY = 'no-training-day';
+export const TRAINING_DONE = 'training-done';
 
 export async function loader({params}) {
     const trainingId = getIdPath(params);
@@ -140,8 +141,10 @@ export async function loader({params}) {
     if (handledResponse)
         return handledResponse;
 
-    if (response.status === 204)
+    if (response.status === 404)
         return redirect(`/main/plans/week?${NO_TRAINING_DAY}`);
+    if(response.status === 204)
+        return redirect(`/main/plans/week?${TRAINING_DONE}`);
 
     const workoutRead = await response.json();
     const training = workoutRead.trainingRead;
