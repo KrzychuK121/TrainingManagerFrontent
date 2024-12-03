@@ -1,7 +1,9 @@
 import {Row} from 'react-bootstrap';
 import {Form as RouterForm, json, useActionData} from 'react-router-dom';
 import SubmitButton from '../../components/form/SubmitButton';
-import BMIFields, {SEXES} from "../../components/calculators/BMIFields";
+import BMIFields from "../../components/calculators/BMIFields";
+import {getBasicBodyParametersFrom} from "../../utils/CalcUtils";
+import {SEXES} from "../../components/calculators/BasicBodyParameters";
 
 const BMI_CATEGORIES = {
     UNDERWEIGHT: 'Niedowaga',
@@ -144,17 +146,12 @@ function calculateBMI(weight, height) {
     return (weight / (height * height)).toFixed(2);
 }
 
-export function getBMICategoryBy(
-    sex,
-    weight,
-    height,
-    age
-) {
-    const BMI = calculateBMI(weight, height);
+export function getBMICategoryBy(BMIData) {
+    const BMI = calculateBMI(BMIData.weight, BMIData.height);
 
-    return sex === SEXES.WOMEN
-        ? getBMICategoryWoman(age, BMI)
-        : getBMICategoryMen(age, BMI);
+    return BMIData.sex === SEXES.WOMEN
+        ? getBMICategoryWoman(BMIData.age, BMI)
+        : getBMICategoryMen(BMIData.age, BMI);
 }
 
 function CalcBMI() {
@@ -191,12 +188,8 @@ export default CalcBMI;
 
 export async function action({request}) {
     const data = await request.formData();
-    const BMIDataObject = {
-        sex: data.get('sex'),
-        age: parseInt(data.get('age')),
-        height: parseInt(data.get('height')) / 100,
-        weight: parseFloat(data.get('weight'))
-    };
+    const BMIDataObject = getBasicBodyParametersFrom(data);
+    BMIDataObject.height = BMIDataObject.height / 100;
 
     const BMI = calculateBMI(BMIDataObject.weight, BMIDataObject.height);
     const BMICategory = BMIDataObject.sex === SEXES.WOMEN
