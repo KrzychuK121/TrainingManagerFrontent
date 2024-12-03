@@ -21,7 +21,7 @@ function CustomAppointment(
 
     function handleDoneTrainingClicked() {
         const doneTrainingId = doneTraining.id;
-        navigate(`/main/workout-statistics/${doneTrainingId}`);
+        navigate(`/main/workout/statistics/${doneTrainingId}`);
     }
 
     return (

@@ -10,7 +10,6 @@ import RegisterPage, {action as registerAction} from '../routes/navigations/auth
 import Welcome from '../routes/Welcome';
 import {authenticatedLoader, isAuthenticated as isAuthLoader} from '../utils/AuthUtils';
 import AuthorizedPaths from './AuthorizedPaths';
-import TrainingPlanerForm from "../routes/workout_assistant/TrainingPlanerForm";
 
 // TODO: add titles to pages https://dev.to/rohitnirban/adding-page-titles-to-react-app-23oe
 export const router = createBrowserRouter(
@@ -54,11 +53,6 @@ export const router = createBrowserRouter(
                         {
                             path: 'access-denied',
                             element: <AccessDenied/>
-                        },
-                        {
-                            // TODO: Move this to authorized paths
-                            path: 'assistant',
-                            element: <TrainingPlanerForm/>
                         },
                         AuthorizedPaths
                     ]

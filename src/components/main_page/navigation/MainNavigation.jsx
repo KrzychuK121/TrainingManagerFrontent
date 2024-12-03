@@ -45,7 +45,7 @@ function MainNavigation() {
                             />
                             <NavLink
                                 label='Statystyki treningów'
-                                href='/main/workout-statistics'
+                                href='/main/workout/statistics'
                             />
                             <OperationsDropdown/>
                             <CalcDropdown/>
