@@ -26,8 +26,6 @@ function RadioButton(
 
     useEffect(() => {
         const newChecked = isChecked(chosenRadioValues, groupId, value);
-        console.log(chosenRadioValues);
-        console.log(newChecked);
         setChecked(newChecked);
     }, [chosenRadioValues]);
 
@@ -35,12 +33,9 @@ function RadioButton(
         const radio = event.currentTarget;
         const radioValue = radio.value;
 
-        console.log(radioValue);
-
         setChosenRadioValues(
             prev => {
                 prev[groupId] = radioValue;
-                console.log(prev);
                 return {...prev};
             }
         );
