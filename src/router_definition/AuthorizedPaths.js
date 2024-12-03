@@ -30,6 +30,7 @@ import TrainingPlanForm, {
 import {nonAuthenticatedLoader} from '../utils/AuthUtils';
 import StatisticsCalendar, {loader as statisticsCalendarLoader} from "../routes/workout_statistics/StatisticsCalendar";
 import StatisticsDetails, {loader as statisticsDetailsLoader} from "../routes/workout_statistics/StatisticsDetails";
+import CalcBMR, {action as calcBMRAction} from "../routes/calculators/CalcBMR";
 
 const AuthorizedPaths = {
     path: '',
@@ -44,7 +45,9 @@ const AuthorizedPaths = {
                     action: calcBMIAction
                 },
                 {
-                    path: 'BMR'
+                    path: 'BMR',
+                    element: <CalcBMR/>,
+                    action: calcBMRAction
                 }
             ]
         },
