@@ -2,11 +2,11 @@ import {Container, Nav, Navbar} from 'react-bootstrap';
 import {Link, useRouteLoaderData} from 'react-router-dom';
 
 import AuthNavigations from './AuthNavigations';
-import CalcDropdown from './CalcDropdown';
 import classes from './MainNavigation.module.css';
 import NavLink from './NavLink';
 import NonAuthNavigations from './NonAuthNavigations';
 import OperationsDropdown from './OperationsDropdown';
+import WorkoutAssistanceDropdown from "./WorkoutAssistanceDropdown";
 
 function MainNavigation() {
     const isAuthenticated = useRouteLoaderData('root');
@@ -43,12 +43,8 @@ function MainNavigation() {
                                 label='Zacznij trening!'
                                 href='/main/training/train'
                             />
-                            <NavLink
-                                label='Statystyki treningów'
-                                href='/main/workout/statistics'
-                            />
+                            <WorkoutAssistanceDropdown />
                             <OperationsDropdown/>
-                            <CalcDropdown/>
                             {
                                 isAuthenticated
                                     ? <AuthNavigations classes={classes}/>
