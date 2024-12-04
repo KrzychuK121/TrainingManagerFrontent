@@ -8,3 +8,7 @@ function MuscleGrowControls() {
 }
 
 export default MuscleGrowControls;
+
+export function getMuscleGrowDataFrom(formData) {
+    return {};
+}
