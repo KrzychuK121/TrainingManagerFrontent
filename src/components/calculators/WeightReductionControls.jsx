@@ -1,6 +1,8 @@
 import {Form} from 'react-bootstrap';
 import {useState} from "react";
 import BasicBodyParameters from "./BasicBodyParameters";
+import {getBMRDataFrom, getFullBMRStatistics} from "../../routes/calculators/CalcBMR";
+import {getActivityLevelBy} from "./BMRFields";
 
 function WeightReductionControls() {
     const JUSTIFY_CONTENT = 'start';
@@ -35,6 +37,9 @@ function WeightReductionControls() {
 export default WeightReductionControls;
 
 export function getWeightReductionDataFrom(formData) {
-    console.log(formData.fromEntries());
-    return formData;
+    const BMRData = getBMRDataFrom(formData);
+    const workoutDays = parseInt(formData.get('workoutDays'));
+    BMRData.activity = getActivityLevelBy(workoutDays);
+
+    return getFullBMRStatistics(BMRData);
 }
