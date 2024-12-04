@@ -11,13 +11,13 @@ function isChecked(
 
 function RadioButton(
     {
-        id,
         groupId,
         label,
         value,
         chosenRadioValues,
         setChosenRadioValues,
-        className = 'm-2'
+        className = 'm-2',
+        ...rest
     }
 ) {
     const [checked, setChecked] = useState(
@@ -45,12 +45,13 @@ function RadioButton(
         <>
             <ToggleButton
                 className={className}
-                id={id}
+                name={groupId}
                 type='radio'
                 variant='primary'
-                checked={checked}
                 value={value}
+                checked={checked}
                 onChange={handleCheck}
+                {...rest}
             >
                 {label}
             </ToggleButton>
