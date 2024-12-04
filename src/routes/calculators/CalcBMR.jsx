@@ -22,6 +22,18 @@ function getCaloriesReduction(TDEE, goal) {
     return TDEE + goal;
 }
 
+export function getFullBMRStatistics(BMRData) {
+    const bmr = getBMR(BMRData);
+    const tdee = getTDEE(bmr, BMRData.activity);
+    const caloriesReduction = getCaloriesReduction(tdee, BMRData.goal);
+
+    return {
+        bmr,
+        tdee,
+        caloriesReduction
+    };
+}
+
 function CalcBMR() {
     const actionData = useActionData();
     return (
@@ -39,8 +51,8 @@ function CalcBMR() {
                         <div className={`d-flex justify-content-center`}>
                             <div>
                                 <h2>Zapotrzebowanie kaloryczne:</h2>
-                                <p>Minimalne zapotrzebowanie (BMR) wynosi: {actionData.BMR}</p>
-                                <p>Z uwzględnieniem treningów: {actionData.TDEE.toFixed(2)}</p>
+                                <p>Minimalne zapotrzebowanie (BMR) wynosi: {actionData.bmr}</p>
+                                <p>Z uwzględnieniem treningów: {actionData.tdee.toFixed(2)}</p>
                                 <p>Aby osiągnąć cel potrzebujesz: {actionData.caloriesReduction.toFixed(2)}</p>
                             </div>
                         </div>
@@ -53,26 +65,19 @@ function CalcBMR() {
 
 export default CalcBMR;
 
+export function getBMRDataFrom(formData) {
+    return {
+        ...getBasicBodyParametersFrom(formData),
+        activity: parseFloat(formData.get('activity')),
+        goal: parseInt(formData.get('goal'))
+    };
+}
+
 export async function action({request}) {
     const data = await request.formData();
+    const BMRData = getBMRDataFrom(data);
 
-    const BMRData = {
-        ...getBasicBodyParametersFrom(data),
-        activity: parseFloat(data.get('activity')),
-        goal: parseInt(data.get('goal'))
-    };
+    const BMRStatistics = getFullBMRStatistics(BMRData);
 
-    // Według wzoru Mifflina-St Jeora,
-    const BMR = getBMR(BMRData);
-
-    const TDEE = getTDEE(BMR, BMRData.activity);
-    const caloriesReduction = getCaloriesReduction(TDEE, BMRData.goal);
-
-    return json(
-        {
-            BMR,
-            TDEE,
-            caloriesReduction
-        }
-    );
+    return json(BMRStatistics);
 }
