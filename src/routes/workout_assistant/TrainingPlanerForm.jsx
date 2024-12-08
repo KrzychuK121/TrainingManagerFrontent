@@ -1,13 +1,15 @@
-import {useState} from "react";
-import {Form as RouterForm} from 'react-router-dom';
+import {useRef, useState} from "react";
+import {Form as RouterForm, useLoaderData, useSubmit} from 'react-router-dom';
 import {ButtonGroup, Form} from "react-bootstrap";
 import RadioButton from "../../components/calculators/RadioButton";
 import MuscleGrowControls, {getMuscleGrowDataFrom} from "../../components/calculators/MuscleGrowControls";
 import WeightReductionControls, {
+    calcWeeksToLossWeight,
     getWeightReductionDataFrom
 } from "../../components/calculators/WeightReductionControls";
 import SubmitButton from "../../components/form/SubmitButton";
-import {defaultHeaders, handleResponseUnauthorized} from "../../utils/CRUDUtils";
+import ConfirmModal from "../../components/entities/crud/ConfirmModal";
+import {defaultHeaders, handleResponseUnauthorized, sendDefaultRequest} from "../../utils/CRUDUtils";
 import {DOMAIN} from "../../utils/URLUtils";
 
 const TRAINING_AIM = {
@@ -16,17 +18,51 @@ const TRAINING_AIM = {
 }
 
 function TrainingPlanerForm() {
+    const FORM_METHOD = 'post';
+    const submit = useSubmit();
+    const loadedData = useLoaderData();
+    const {bodyParts} = loadedData;
+
+
     const [checkedValues, setCheckedValues] = useState([]);
     const [chosenRadioValues, setChosenRadioValues] = useState(
         {
             trainingAim: TRAINING_AIM.MUSCLE_GROW
         }
     );
+
     const [workoutDays, setWorkoutDays] = useState(1);
+    const [weeksToLoseWeight, setWeeksToLoseWeight] = useState(null);
+    const [confirmWorkoutDays, setConfirmWorkoutDays] = useState(false);
+
+    const formRef = useRef(null);
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+
+        const newWeeksToLoseWeight = calcWeeksToLossWeight(
+            {goal: formData.get('goal')},
+            workoutDays
+        );
+        setWeeksToLoseWeight(newWeeksToLoseWeight);
+
+        if(workoutDays !== 7){
+            setConfirmWorkoutDays(true);
+            return;
+        }
+
+        formData.append('weeksToLoseWeight', newWeeksToLoseWeight);
+        submit(formData, {method: FORM_METHOD});
+    }
 
     return (
         <>
-            <RouterForm method='post'>
+            <RouterForm
+                method={FORM_METHOD}
+                onSubmit={handleFormSubmit}
+                ref={formRef}
+            >
                 <h1>Formularz asystenta treningowego</h1>
                 <p>
                     Uzupełnij formularz a asystent treningowy automatycznie zaplanuje trening dostosowany do Twoich potrzeb
@@ -60,7 +96,12 @@ function TrainingPlanerForm() {
                 <Form.Label column={true}>
                     <p>
                         Ile dni w tygodniu chcesz ćwiczyć?<br/>
-                        - Mogę ćwiczyć {workoutDays} {workoutDays === 1 ? 'raz' : 'razy'} w tygodniu.
+                        - Mogę ćwiczyć {' '}
+                        {
+                            workoutDays !== 7
+                                ? `${workoutDays} ${workoutDays === 1 ? 'raz' : 'razy'} w tygodniu`
+                                : 'cały tydzień'
+                        }.
                     </p>
                     <Form.Range
                         name='workoutDays'
@@ -73,8 +114,31 @@ function TrainingPlanerForm() {
 
                 {
                     chosenRadioValues.trainingAim === 'MUSCLE_GROW'
-                        ? <MuscleGrowControls/>
-                        : <WeightReductionControls/>
+                        ? (
+                            <MuscleGrowControls
+                                bodyParts={bodyParts}
+                            />
+                        )
+                        : (
+                            <>
+                                <ConfirmModal
+                                    body={
+                                        `Odchudzanie zajmie ${weeksToLoseWeight} tygodni. ` +
+                                        `Czy na pewno chcesz ćwiczyć ${workoutDays} ${workoutDays === 1 ? 'raz' : 'razy'} w tygodniu?`
+                                    }
+                                    show={confirmWorkoutDays}
+                                    setShow={setConfirmWorkoutDays}
+                                    onConfirm={
+                                        () => {
+                                            const formData = new FormData(formRef.current);
+                                            formData.append('weeksToLoseWeight', weeksToLoseWeight);
+                                            submit(formData, {method: FORM_METHOD});
+                                        }
+                                    }
+                                />
+                                <WeightReductionControls/>
+                            </>
+                        )
                 }
 
                 <div>
@@ -89,6 +153,15 @@ function TrainingPlanerForm() {
 }
 
 export default TrainingPlanerForm;
+
+export async function loader() {
+    const response = await sendDefaultRequest('enum/body-part/read');
+    if(!response.hasOwnProperty('CARDIO'))
+        return response;
+    return {
+        bodyParts: response
+    };
+}
 
 export async function action({request}) {
     const data = await request.formData();
@@ -124,4 +197,6 @@ export async function action({request}) {
         return handled;
 
     return response;
+
+    // return  formattedData;
 }
