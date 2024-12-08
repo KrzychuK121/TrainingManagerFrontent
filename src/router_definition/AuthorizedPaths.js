@@ -31,7 +31,10 @@ import {nonAuthenticatedLoader} from '../utils/AuthUtils';
 import StatisticsCalendar, {loader as statisticsCalendarLoader} from "../routes/workout_statistics/StatisticsCalendar";
 import StatisticsDetails, {loader as statisticsDetailsLoader} from "../routes/workout_statistics/StatisticsDetails";
 import CalcBMR, {action as calcBMRAction} from "../routes/calculators/CalcBMR";
-import TrainingPlanerForm, {action as trainingPlanerFormAction} from "../routes/workout_assistant/TrainingPlanerForm";
+import TrainingPlanerForm, {
+    action as trainingPlanerFormAction,
+    loader as trainingPlanerFormLoader
+} from "../routes/workout_assistant/TrainingPlanerForm";
 
 const AuthorizedPaths = {
     path: '',
@@ -70,6 +73,7 @@ const AuthorizedPaths = {
                 {
                     path: 'assistant',
                     element: <TrainingPlanerForm/>,
+                    loader: trainingPlanerFormLoader,
                     action: trainingPlanerFormAction
                 }
             ]
