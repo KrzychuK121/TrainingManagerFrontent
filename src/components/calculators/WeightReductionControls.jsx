@@ -36,10 +36,26 @@ function WeightReductionControls() {
 
 export default WeightReductionControls;
 
+export function calcWeeksToLossWeight(BMRData, workoutDays) {
+    const FAT_IN_FAT_RATIO = 0.87;
+    const KCAL_IN_1_KG_OF_FAT = (9 * FAT_IN_FAT_RATIO) * 1000;
+
+    const totalKcalToLose = BMRData.goal * KCAL_IN_1_KG_OF_FAT;
+    const kcalLossWeekly = 500 * workoutDays;
+
+    return Math.ceil(totalKcalToLose / kcalLossWeekly);
+}
+
 export function getWeightReductionDataFrom(formData) {
     const BMRData = getBMRDataFrom(formData);
     const workoutDays = parseInt(formData.get('workoutDays'));
+    const weeksToLoseWeight = parseInt(formData.get('weeksToLoseWeight'));
     BMRData.activity = getActivityLevelBy(workoutDays);
+    BMRData.goal = -500;
 
-    return getFullBMRStatistics(BMRData);
+    return {
+        ...getFullBMRStatistics(BMRData),
+        weeksToLoseWeight,
+        dailyKcalReduction: -BMRData.goal
+    };
 }
