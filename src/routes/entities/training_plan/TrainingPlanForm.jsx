@@ -89,7 +89,7 @@ export default TrainingPlanForm;
 
 export async function loader({params}) {
     const data = await sendDefaultParallelRequests(
-        ['training/all', 'weekdays/read']
+        ['training/all', 'enum/weekdays/read']
     );
 
     try {
