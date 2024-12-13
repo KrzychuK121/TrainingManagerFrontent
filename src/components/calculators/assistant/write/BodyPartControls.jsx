@@ -1,4 +1,4 @@
-import CheckboxButton from "./CheckboxButton";
+import CheckboxButton from "../../CheckboxButton";
 import {Card, Col, Form} from "react-bootstrap";
 import {useState} from "react";
 

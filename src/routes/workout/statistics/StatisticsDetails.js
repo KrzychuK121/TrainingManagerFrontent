@@ -1,13 +1,13 @@
 import {useLoaderData, useNavigate} from "react-router-dom";
 import {Accordion, Col, Modal, Row} from "react-bootstrap";
-import {sendDefaultRequest} from "../../utils/CRUDUtils";
-import {getIdPath} from "../../utils/URLUtils";
-import {DONE_COLOR, UNDONE_COLOR} from "../../components/entities/workout_statistics/CustomAppointment";
-import StatisticComponent from "../../components/entities/workout_statistics/StatisticComponent";
-import ExerciseItem, {mapExerciseToExerciseItem} from "../../components/entities/training/train/ExerciseItem";
+import {sendDefaultRequest} from "../../../utils/CRUDUtils";
+import {getIdPath} from "../../../utils/URLUtils";
+import {DONE_COLOR, UNDONE_COLOR} from "../../../components/entities/workout_statistics/CustomAppointment";
+import StatisticComponent from "../../../components/entities/workout_statistics/StatisticComponent";
+import ExerciseItem, {mapExerciseToExerciseItem} from "../../../components/entities/training/train/ExerciseItem";
 import {rgbToHex} from "@mui/material";
-import {getStatusByFinishedRounds} from "../../components/entities/training/train/control_panel/ExerciseControls";
-import {EXERCISE_STATUS} from "../entities/training/TrainingTrainApp";
+import {getStatusByFinishedRounds} from "../../../components/entities/training/train/control_panel/ExerciseControls";
+import {EXERCISE_STATUS} from "../../entities/training/TrainingTrainApp";
 
 const { format } = require('date-fns');
 

@@ -1,6 +1,6 @@
 import SelectField from "../form/SelectField";
 import {Form} from 'react-bootstrap';
-import BasicBodyParameters from "./BasicBodyParameters";
+import BasicBodyParameters from "./assistant/write/BasicBodyParameters";
 
 const ACTIVITY_LEVEL = [
     {

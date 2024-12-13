@@ -1,19 +1,16 @@
 import {useRef, useState} from "react";
 import {Form as RouterForm, useLoaderData, useSubmit} from 'react-router-dom';
 import {ButtonGroup, Col, Form, Row} from "react-bootstrap";
-import RadioButton from "../../components/calculators/RadioButton";
-import MuscleGrowControls, {getMuscleGrowDataFrom} from "../../components/calculators/MuscleGrowControls";
-import WeightReductionControls, {
-    calcWeeksToLossWeight,
-    getWeightReductionDataFrom
-} from "../../components/calculators/WeightReductionControls";
-import SubmitButton from "../../components/form/SubmitButton";
-import ConfirmModal from "../../components/entities/crud/ConfirmModal";
-import {defaultHeaders, handleResponseUnauthorized, sendDefaultRequest} from "../../utils/CRUDUtils";
+import RadioButton from "../../RadioButton";
+import MuscleGrowControls, {getMuscleGrowDataFrom} from "./MuscleGrowControls";
+import WeightReductionControls, {calcWeeksToLossWeight, getWeightReductionDataFrom} from "./WeightReductionControls";
+import SubmitButton from "../../../form/SubmitButton";
+import ConfirmModal from "../../../entities/crud/ConfirmModal";
+import {defaultHeaders, handleResponseUnauthorized, sendDefaultRequest} from "../../../../utils/CRUDUtils";
 import {DesktopTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {pl} from "date-fns/locale";
-import {DOMAIN} from "../../utils/URLUtils";
+import {DOMAIN} from "../../../../utils/URLUtils";
 
 const TRAINING_AIM = {
     MUSCLE_GROW: 'MUSCLE_GROW',
@@ -248,10 +245,5 @@ export async function action({request}) {
     if(handled)
         return handled;
 
-    const retrievedData = await response.json();
-    console.log(retrievedData);
-
-    return retrievedData;
-
-    // return  formattedData;
+    return await response.json();
 }

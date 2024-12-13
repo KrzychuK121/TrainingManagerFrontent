@@ -1,8 +1,8 @@
 import {Form} from 'react-bootstrap';
 import {useState} from "react";
 import BasicBodyParameters from "./BasicBodyParameters";
-import {getBMRDataFrom, getFullBMRStatistics} from "../../routes/calculators/CalcBMR";
-import {getActivityLevelBy} from "./BMRFields";
+import {getBMRDataFrom, getFullBMRStatistics} from "../../../../routes/calculators/CalcBMR";
+import {getActivityLevelBy} from "../../BMRFields";
 
 function WeightReductionControls() {
     const JUSTIFY_CONTENT = 'start';

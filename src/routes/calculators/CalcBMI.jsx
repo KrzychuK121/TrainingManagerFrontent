@@ -3,7 +3,7 @@ import {Form as RouterForm, json, useActionData} from 'react-router-dom';
 import SubmitButton from '../../components/form/SubmitButton';
 import BMIFields from "../../components/calculators/BMIFields";
 import {getBasicBodyParametersFrom} from "../../utils/CalcUtils";
-import {SEXES} from "../../components/calculators/BasicBodyParameters";
+import {SEXES} from "../../components/calculators/assistant/write/BasicBodyParameters";
 
 const BMI_CATEGORIES = {
     UNDERWEIGHT: 'Niedowaga',

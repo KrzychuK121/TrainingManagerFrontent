@@ -12,8 +12,8 @@ import {
 } from "@devexpress/dx-react-scheduler-material-ui";
 import {ViewState} from "@devexpress/dx-react-scheduler";
 import {Paper} from "@mui/material";
-import {sendDefaultRequest} from "../../utils/CRUDUtils";
-import CustomAppointment from "../../components/entities/workout_statistics/CustomAppointment";
+import {sendDefaultRequest} from "../../../utils/CRUDUtils";
+import CustomAppointment from "../../../components/entities/workout_statistics/CustomAppointment";
 
 function StatisticsCalendar() {
     const doneTrainings = useLoaderData();

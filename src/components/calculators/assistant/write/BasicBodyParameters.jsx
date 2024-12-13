@@ -1,6 +1,6 @@
 import {useState} from "react";
-import RadioButton from "./RadioButton";
-import FormControls from "./FormControls";
+import RadioButton from "../../RadioButton";
+import FormControls from "../../FormControls";
 
 export const SEXES = {
     WOMEN: 'Kobieta',
