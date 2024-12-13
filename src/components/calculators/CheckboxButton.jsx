@@ -7,12 +7,15 @@ function CheckboxButton(
         label,
         value,
         defaultChecked = false,
-        setCheckedArr
+        setCheckedArr,
+        onChange = null
     }
 ) {
     const [checked, setChecked] = useState(defaultChecked);
 
     function handleCheck(event) {
+        if(onChange)
+            onChange(event);
         const checkbox = event.currentTarget;
         const checkboxValue = checkbox.value;
         const newChecked = !checked;
