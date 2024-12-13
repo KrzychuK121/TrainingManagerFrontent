@@ -1,6 +1,6 @@
 import {useRef, useState} from "react";
 import {Form as RouterForm, useLoaderData, useSubmit} from 'react-router-dom';
-import {ButtonGroup, Form} from "react-bootstrap";
+import {ButtonGroup, Col, Form, Row} from "react-bootstrap";
 import RadioButton from "../../components/calculators/RadioButton";
 import MuscleGrowControls, {getMuscleGrowDataFrom} from "../../components/calculators/MuscleGrowControls";
 import WeightReductionControls, {
@@ -10,6 +10,9 @@ import WeightReductionControls, {
 import SubmitButton from "../../components/form/SubmitButton";
 import ConfirmModal from "../../components/entities/crud/ConfirmModal";
 import {defaultHeaders, handleResponseUnauthorized, sendDefaultRequest} from "../../utils/CRUDUtils";
+import {DesktopTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import {pl} from "date-fns/locale";
 import {DOMAIN} from "../../utils/URLUtils";
 
 const TRAINING_AIM = {
@@ -22,9 +25,7 @@ function TrainingPlanerForm() {
     const submit = useSubmit();
     const loadedData = useLoaderData();
     const {bodyParts} = loadedData;
-
-
-    const [checkedValues, setCheckedValues] = useState([]);
+    
     const [chosenRadioValues, setChosenRadioValues] = useState(
         {
             trainingAim: TRAINING_AIM.MUSCLE_GROW
@@ -112,6 +113,42 @@ function TrainingPlanerForm() {
                     />
                 </Form.Label>
 
+                <hr/>
+                <h2>Preferowany czas treningu</h2>
+                <p>
+                    Podaj ramy czasowe, w których chciałbyś rozpoczynać swoje treningi.
+                </p>
+                <Row>
+                    <Col
+                        className='py-2 d-flex justify-content-center'
+                        style={{backgroundColor: 'white'}}
+                    >
+                        <LocalizationProvider
+                            dateAdapter={AdapterDateFns}
+                            adapterLocale={pl}
+                        >
+                            <DesktopTimePicker
+                                label='Najwcześniejszy:'
+                                name='earliestTrainingStart'
+                            />
+                        </LocalizationProvider>
+                    </Col>
+                    <Col
+                        className='py-2 d-flex justify-content-center'
+                        style={{backgroundColor: 'white'}}
+                    >
+                        <LocalizationProvider
+                            dateAdapter={AdapterDateFns}
+                            adapterLocale={pl}
+                        >
+                            <DesktopTimePicker
+                                label='Najpóźniejszy:'
+                                name='latestTrainingStart'
+                            />
+                        </LocalizationProvider>
+                    </Col>
+                </Row>
+
                 {
                     chosenRadioValues.trainingAim === 'MUSCLE_GROW'
                         ? (
@@ -163,8 +200,15 @@ export async function loader() {
     };
 }
 
+function calcMinutes(time) {
+    const split = time.split(':');
+    return parseInt(split[0]) * 60 + parseInt(split[1]);
+}
+
 export async function action({request}) {
     const data = await request.formData();
+    const earliestTrainingStart = data.get('earliestTrainingStart');
+    const latestTrainingStart = data.get('latestTrainingStart');
     const trainingAim = data.get('trainingAim');
     const workoutDays = parseInt(data.get('workoutDays'));
 
@@ -175,10 +219,18 @@ export async function action({request}) {
         ? getMuscleGrowDataFrom(data)
         : null;
 
+    const earliestTimeMinutes = calcMinutes(earliestTrainingStart);
+    const latestTimeMinutes = calcMinutes(latestTrainingStart);
     const formattedData = {
         muscleGrow: muscleGrowData,
         weightReduction: weightReductionData,
-        workoutDays
+        workoutDays,
+        earliestTrainingStart: earliestTimeMinutes < latestTimeMinutes
+            ? earliestTrainingStart
+            : latestTrainingStart,
+        latestTrainingStart: earliestTimeMinutes < latestTimeMinutes
+            ? latestTrainingStart
+            : earliestTrainingStart
     };
 
     console.log(formattedData);
@@ -192,11 +244,14 @@ export async function action({request}) {
         }
     );
 
-    const handled = handleResponseUnauthorized(response);
+    const handled = await handleResponseUnauthorized(response);
     if(handled)
         return handled;
 
-    return response;
+    const retrievedData = await response.json();
+    console.log(retrievedData);
+
+    return retrievedData;
 
     // return  formattedData;
 }
