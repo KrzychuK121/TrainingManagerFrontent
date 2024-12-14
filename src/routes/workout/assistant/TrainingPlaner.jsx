@@ -1,20 +1,17 @@
 import TrainingPlanerForm from "../../../components/calculators/assistant/write/TrainingPlanerForm";
 import {useActionData} from "react-router-dom";
+import TrainingPlanerDisplay from "../../../components/calculators/assistant/read/TrainingPlanerDisplay";
 
 function TrainingPlaner() {
     const actionData = useActionData();
-    const schedules = actionData.hasOwnProperty('schedules')
-        ? actionData['schedules']
+    const retrievedData = actionData && actionData.hasOwnProperty('schedules')
+        ? actionData
         : null;
-    console.log(actionData);
 
-    if(!schedules)
+    if(!retrievedData)
         return <TrainingPlanerForm />;
 
-    return (
-        <>
-        </>
-    );
+    return <TrainingPlanerDisplay retrievedData={retrievedData} />;
 }
 
 export default TrainingPlaner;
