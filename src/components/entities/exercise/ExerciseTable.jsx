@@ -38,9 +38,13 @@ function getExerciseList(
                     </td>
                     <td>{bodyPartDesc}</td>
                     <td>{defaultBurnedKcal} kcal</td>
-                    <td>
-                        {optionsMapper(exercise, setActionData)}
-                    </td>
+                    {
+                        optionsMapper && (
+                            <td>
+                                {optionsMapper(exercise, setActionData)}
+                            </td>
+                        )
+                    }
                 </tr>
             );
         }
@@ -89,6 +93,7 @@ function ExerciseTable(
             bordered
             striped
             hover
+            responsive
         >
             <thead>
             <tr>
@@ -140,9 +145,13 @@ function ExerciseTable(
                         field='defaultBurnedKcal'
                     />
                 </th>
-                <th>
-                    <SortAnchor display='Zresetuj widok'/>
-                </th>
+                {
+                    optionsMapper && (
+                        <th>
+                            <SortAnchor display='Zresetuj widok'/>
+                        </th>
+                    )
+                }
             </tr>
             </thead>
             <tbody>
