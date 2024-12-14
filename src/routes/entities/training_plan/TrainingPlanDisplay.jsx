@@ -63,20 +63,6 @@ function getTableRow(plan, weekdays, setActionData) {
                         </RouterForm>
                     )
                 }
-                {/*<fieldset>
-                    <form
-                            method="get"
-                            action="#"
-                            th:action="@{/exercise/edit/{id}(id=${exercise.id})}"
-                    >
-                        <button
-                                type="submit"
-                                class="btn btn-primary"
-                        >
-                            Edytuj
-                        </button> |
-                    </form>
-                </fieldset>*/}
             </td>
         </>
     );
