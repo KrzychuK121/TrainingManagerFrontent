@@ -233,7 +233,7 @@ export async function action({request}) {
     console.log(formattedData);
 
     const response = await fetch(
-        `${DOMAIN}/assistant`,
+        `${DOMAIN}/assistant/create-plan`,
         {
             method: request.method,
             headers: defaultHeaders(),
