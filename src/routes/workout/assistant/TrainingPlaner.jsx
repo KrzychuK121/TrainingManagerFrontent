@@ -1,6 +1,10 @@
-import TrainingPlanerForm from "../../../components/calculators/assistant/write/TrainingPlanerForm";
+import TrainingPlanerForm, {
+    action as trainingPlanerFormAction
+} from "../../../components/calculators/assistant/write/TrainingPlanerForm";
 import {useActionData} from "react-router-dom";
-import TrainingPlanerDisplay from "../../../components/calculators/assistant/read/TrainingPlanerDisplay";
+import TrainingPlanerDisplay, {
+    action as trainingPlanerDisplayAction
+} from "../../../components/calculators/assistant/read/TrainingPlanerDisplay";
 
 function TrainingPlaner() {
     const actionData = useActionData();
@@ -15,3 +19,17 @@ function TrainingPlaner() {
 }
 
 export default TrainingPlaner;
+
+export const ACTION_TYPE_NAME = 'action';
+
+export async function action({request}) {
+    const data = await request.formData();
+    const action = data.get(ACTION_TYPE_NAME);
+    data.delete(ACTION_TYPE_NAME);
+    switch (action) {
+        case 'plan':
+            return await trainingPlanerFormAction({data, request});
+        case 'create':
+            return await trainingPlanerDisplayAction({data, request});
+    }
+}

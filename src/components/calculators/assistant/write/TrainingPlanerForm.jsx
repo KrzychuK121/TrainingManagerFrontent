@@ -11,6 +11,7 @@ import {DesktopTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {pl} from "date-fns/locale";
 import {DOMAIN} from "../../../../utils/URLUtils";
+import {ACTION_TYPE_NAME} from "../../../../routes/workout/assistant/TrainingPlaner";
 
 const TRAINING_AIM = {
     MUSCLE_GROW: 'MUSCLE_GROW',
@@ -61,6 +62,7 @@ function TrainingPlanerForm() {
                 onSubmit={handleFormSubmit}
                 ref={formRef}
             >
+                <input type='hidden' name={ACTION_TYPE_NAME} value='plan' />
                 <h1>Formularz asystenta treningowego</h1>
                 <p>
                     Uzupełnij formularz a asystent treningowy automatycznie zaplanuje trening dostosowany do Twoich potrzeb
@@ -202,8 +204,7 @@ function calcMinutes(time) {
     return parseInt(split[0]) * 60 + parseInt(split[1]);
 }
 
-export async function action({request}) {
-    const data = await request.formData();
+export async function action({data, request}) {
     const earliestTrainingStart = data.get('earliestTrainingStart');
     const latestTrainingStart = data.get('latestTrainingStart');
     const trainingAim = data.get('trainingAim');
