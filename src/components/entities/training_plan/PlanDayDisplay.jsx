@@ -1,4 +1,4 @@
-import { Card } from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 
 function PlanDayDisplay({planToDisplay, weekdayDisplay}) {
     // TODO: Add ': planToDisplay.trainingTime' to view model
@@ -24,7 +24,6 @@ function PlanDayDisplay({planToDisplay, weekdayDisplay}) {
                                 <Card.Title>{planToDisplay.trainingTitle}</Card.Title>
                                 <b>Opis:</b>
                                 <Card.Text>{planToDisplay.trainingDescription}</Card.Text>
-                                <a href='#' className='btn btn-primary'>Zrób trening</a>
                             </>
                         )
                         : (
