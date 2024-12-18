@@ -60,7 +60,11 @@ function PlanWeekDisplay() {
                 {
                     weekdays.map(
                         ({weekday, weekdayDisplay}) => (
-                            <Col key={weekday} sm={3}>
+                            <Col
+                                key={weekday}
+                                sm={3}
+                                className='my-3'
+                            >
                                 <PlanDayDisplay
                                     planToDisplay={getScheduleBy(weekday)}
                                     weekdayDisplay={weekdayDisplay}

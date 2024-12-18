@@ -10,8 +10,8 @@ function PlanDayDisplay({planToDisplay, weekdayDisplay}) {
         : weekdayDisplay;
 
     return (
-        <Card className='card'>
-            <Card.Header className='card-header'>
+        <Card className='h-100'>
+            <Card.Header>
                     <span className='text-capitalize'>
                         {fullCardHeader}
                     </span>
