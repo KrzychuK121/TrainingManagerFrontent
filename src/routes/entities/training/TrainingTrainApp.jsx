@@ -19,6 +19,8 @@ export const EXERCISE_STATUS = {
     FINISHED: 3
 };
 
+export const TRAINING_FINISHED = 'training-finished';
+
 function TrainingTrainApp() {
     const navigate = useNavigate();
     const loadedData = useLoaderData();
@@ -60,7 +62,7 @@ function TrainingTrainApp() {
         );
 
         if (response.status === 204) {
-            navigate(`/main/plans/`);
+            navigate(`/main/workout/statistics?${TRAINING_FINISHED}`);
             return;
         }
 

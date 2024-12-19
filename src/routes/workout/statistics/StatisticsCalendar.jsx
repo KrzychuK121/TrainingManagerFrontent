@@ -14,9 +14,19 @@ import {ViewState} from "@devexpress/dx-react-scheduler";
 import {Paper} from "@mui/material";
 import {sendDefaultRequest} from "../../../utils/CRUDUtils";
 import CustomAppointment from "../../../components/entities/workout_statistics/CustomAppointment";
+import {useMessageParams} from "../../../hooks/UseMessageParam";
+import {TRAINING_FINISHED} from "../../entities/training/TrainingTrainApp";
 
 function StatisticsCalendar() {
     const doneTrainings = useLoaderData();
+    const {UrlAlertsList} = useMessageParams(
+        [
+            {
+                messageParam: TRAINING_FINISHED,
+                displayIfSuccess: 'Trening ukończony! Możesz wyszukać go w kalendarzu i podejrzeć jego statystyki.'
+            }
+        ]
+    );
 
     if(
         Array.isArray(doneTrainings)
@@ -36,6 +46,7 @@ function StatisticsCalendar() {
     return (
         <>
             <Outlet />
+            {UrlAlertsList}
             <Paper>
                 <Scheduler
                     data={doneTrainings}
