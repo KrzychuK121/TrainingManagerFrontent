@@ -8,6 +8,7 @@ import useFormValidation from '../../../hooks/UseFormValidation';
 import {useMessageParams} from '../../../hooks/UseMessageParam';
 import {defaultHeaders, deleteAction, handleResponseUnauthorized, sendDefaultRequest} from '../../../utils/CRUDUtils';
 import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getIdPath} from '../../../utils/URLUtils';
+import {NEW_ROUTINE_SAVED} from "../../../components/calculators/assistant/read/TrainingPlanerDisplay";
 
 const ROUTINE_NOT_OWNED_OR_ACTIVE = 'routine-not-owned-or-already-active';
 const ROUTINE_ACTIVATED = 'routine-activated';
@@ -104,7 +105,7 @@ function TrainingPlanDisplay() {
         ? loadedData.weekdays
         : null;
 
-    const {messages: successMessages} = useMessageParams(
+    const {messages: successMessages, UrlAlertsList: UrlAlertsSuccessList} = useMessageParams(
         [
             {
                 messageParam: EDIT_SUCCESS,
@@ -117,6 +118,10 @@ function TrainingPlanDisplay() {
             {
                 messageParam: DELETE_SUCCESS,
                 displayIfSuccess: 'Rutyna treningowa została usunięta pomyślnie.'
+            },
+            {
+                messageParam: NEW_ROUTINE_SAVED,
+                displayIfSuccess: 'Nowa rutyna treningowa została stworzona z pomocą asystenta treningowego.'
             }
         ]
     );
@@ -144,18 +149,7 @@ function TrainingPlanDisplay() {
                 closeDelay={5000}
                 scrollOnTrigger={true}
             />
-            {
-                successMessages && successMessages.map(
-                    message => (
-                        <AlertComponent
-                            key={message}
-                            message={message}
-                            showTrigger={null}
-                            closeDelay={4000}
-                        />
-                    )
-                )
-            }
+            {UrlAlertsSuccessList}
             {
                 errorMessages && errorMessages.map(
                     message => (

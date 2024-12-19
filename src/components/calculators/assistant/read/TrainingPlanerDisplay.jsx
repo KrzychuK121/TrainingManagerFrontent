@@ -7,6 +7,9 @@ import {defaultHeaders} from "../../../../utils/CRUDUtils";
 import AlertComponent from "../../../alerts/AlertComponent";
 import {useState} from "react";
 
+
+export const NEW_ROUTINE_SAVED = 'new-routine-saved';
+
 async function action(
     method,
     navigate,
@@ -20,7 +23,7 @@ async function action(
     );
 
     if(response.status === 204) {
-        navigate('/main/plans');
+        navigate(`/main/plans?${NEW_ROUTINE_SAVED}`);
         return {error: ''};
     }
 
