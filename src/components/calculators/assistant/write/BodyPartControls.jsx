@@ -12,6 +12,7 @@ function BodyPartControls(
 ) {
     const [showAdditionalControls, setShowAdditionalControls] = useState(defaultChecked);
     const [lastWorkout, setLastWorkout] = useState(1);
+    const [advanceLevel, setAdvanceLevel] = useState(3);
 
     function getLastWorkoutAnswer() {
         if(lastWorkout === 0)
@@ -19,6 +20,23 @@ function BodyPartControls(
         if(lastWorkout > 0 && lastWorkout < 5)
             return `${lastWorkout} tygodnii temu.`;
         return 'Dawniej nisz miesiąc temu.';
+    }
+
+    function getAdvanceLevelAnswer() {
+        switch(advanceLevel) {
+            case 1:
+                return 'zerowe (w ogóle nie ćwiczyłem)';
+            case 2:
+                return 'niewielkie (parę treningów)';
+            case 3:
+                return 'trudne do określenia (ćwiczyłem od czasu do czasu)';
+            case 4:
+                return 'regularne (częsty element mojego treningu)';
+            case 5:
+                return 'duże (skupiłem się głównie na tej partii ciała)';
+            default:
+                throw new Error('undefined advanceLevel value in getAdvanceLevelAnswer');
+        }
     }
 
     return (
@@ -36,6 +54,7 @@ function BodyPartControls(
                             label={bodyPartDisplay}
                             value={bodyPart}
                             defaultChecked={defaultChecked}
+                            className='text-capitalize'
                             setCheckedArr={setCheckedArr}
                             onChange={() => setShowAdditionalControls(!showAdditionalControls)}
                         />
@@ -45,12 +64,21 @@ function BodyPartControls(
                         <hr/>
 
                         <div className='my-2'>
-                            <span>Maksymalna ilość kg jaką jesteś w stanie udźwignąć ćwicząć tę partię mięśni:</span>
+                            <p>
+                                Jakie było Twoje zaangażowanie do trenowania tej partii mięśni do tej pory?<br />
+                                - Moje zaangażowanie określiłbym jako {getAdvanceLevelAnswer()}.
+                            </p>
                         </div>
-                        <Form.Control
-                            name={`maxKg-${bodyPart}`}
+                        <Form.Range
+                            name={`${bodyPart}-advanceLevel`}
+                            value={advanceLevel}
+                            min={1} max={5}
                             disabled={!showAdditionalControls}
-                            style={{backgroundColor: showAdditionalControls ? '#fff' : '#727C8E'}}
+                            onChange={
+                                (event) => setAdvanceLevel(
+                                    parseInt(event.currentTarget.value)
+                                )
+                            }
                         />
 
                         <div className='my-2'>
@@ -60,11 +88,15 @@ function BodyPartControls(
                             </p>
                         </div>
                         <Form.Range
-                            name={`lastTrained-${bodyPart}`}
+                            name={`${bodyPart}-lastTrained`}
                             value={lastWorkout}
-                            disabled={!showAdditionalControls}
                             min={0} max={5}
-                            onChange={(event) => setLastWorkout(parseInt(event.currentTarget.value))}
+                            disabled={!showAdditionalControls}
+                            onChange={
+                                (event) => setLastWorkout(
+                                    parseInt(event.currentTarget.value)
+                                )
+                            }
                         />
                     </Card.Body>
                 </Card>

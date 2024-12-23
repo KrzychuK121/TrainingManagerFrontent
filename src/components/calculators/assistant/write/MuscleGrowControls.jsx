@@ -1,14 +1,13 @@
 import BodyPartControls from "./BodyPartControls";
-import {useState} from "react";
 import {Row} from "react-bootstrap";
+import {filterAndCollectProps} from "../../../../utils/EntitiesUtils";
 
 function MuscleGrowControls(
     {
-        bodyParts
+        bodyParts,
+        setCheckedArr
     }
 ) {
-    const [checkedValues, setCheckedValues] = useState([]);
-
     return (
         <>
             <hr/>
@@ -24,7 +23,7 @@ function MuscleGrowControls(
                                 key={bodyPart}
                                 bodyPart={bodyPart}
                                 bodyPartDisplay={bodyPartDisplay}
-                                setCheckedArr={setCheckedValues}
+                                setCheckedArr={setCheckedArr}
                             />
                         )
                     )
@@ -38,5 +37,14 @@ function MuscleGrowControls(
 export default MuscleGrowControls;
 
 export function getMuscleGrowDataFrom(formData) {
-    return {};
+    let bodyParts = formData.getAll('bodyParts');
+    const formDataObj = Object.fromEntries(formData);
+    const toReturn = {
+        bodyPartWorkoutStatistics: {}
+    };
+
+    bodyParts.forEach(
+        bodyPart => toReturn.bodyPartWorkoutStatistics[bodyPart] = filterAndCollectProps(formDataObj, `${bodyPart}-`)
+    );
+    return toReturn;
 }
