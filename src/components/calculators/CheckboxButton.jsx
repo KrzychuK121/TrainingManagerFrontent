@@ -7,8 +7,10 @@ function CheckboxButton(
         label,
         value,
         defaultChecked = false,
+        className,
         setCheckedArr,
-        onChange = null
+        onChange = null,
+        ...rest
     }
 ) {
     const [checked, setChecked] = useState(defaultChecked);
@@ -36,13 +38,14 @@ function CheckboxButton(
     return (
         <>
             <ToggleButton
-                className='m-2'
+                className={`m-2 ${className}`}
                 id={id}
                 type='checkbox'
                 variant='primary'
                 checked={checked}
                 value={value}
                 onChange={handleCheck}
+                {...rest}
             >
                 {label}
             </ToggleButton>
