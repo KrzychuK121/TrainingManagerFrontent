@@ -36,6 +36,13 @@ function MuscleGrowControls(
 
 export default MuscleGrowControls;
 
+export function validation(formData) {
+    let bodyParts = formData.getAll('bodyParts');
+    if(bodyParts.length === 0)
+        return {error: 'Musisz wybrać przynajmniej jedną część ciała, którą chcesz ćwiczyć.'};
+    return null;
+}
+
 export function getMuscleGrowDataFrom(formData) {
     let bodyParts = formData.getAll('bodyParts');
     const formDataObj = Object.fromEntries(formData);

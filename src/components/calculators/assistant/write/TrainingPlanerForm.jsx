@@ -1,15 +1,17 @@
 import {useRef, useState} from "react";
-import {Form as RouterForm, useLoaderData, useSubmit} from 'react-router-dom';
+import {Form as RouterForm, useActionData, useLoaderData, useSubmit} from 'react-router-dom';
 import {ButtonGroup, Col, Form, Row} from "react-bootstrap";
 import RadioButton from "../../RadioButton";
-import MuscleGrowControls, {getMuscleGrowDataFrom} from "./MuscleGrowControls";
+import MuscleGrowControls, {getMuscleGrowDataFrom, validation as muscleGrowValidation} from "./MuscleGrowControls";
 import WeightReductionControls, {calcWeeksToLossWeight, getWeightReductionDataFrom} from "./WeightReductionControls";
 import SubmitButton from "../../../form/SubmitButton";
-import ConfirmModal from "../../../entities/crud/ConfirmModal";
 import {defaultHeaders, handleResponseUnauthorized, sendDefaultRequest} from "../../../../utils/CRUDUtils";
 import {DesktopTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {pl} from "date-fns/locale";
+import ConfirmModal from "../../../entities/crud/ConfirmModal";
+import useFormValidation from "../../../../hooks/UseFormValidation";
+import AlertComponent from "../../../alerts/AlertComponent";
 import {DOMAIN} from "../../../../utils/URLUtils";
 
 const TRAINING_AIM = {
@@ -21,13 +23,16 @@ function TrainingPlanerForm() {
     const FORM_METHOD = 'post';
     const submit = useSubmit();
     const loadedData = useLoaderData();
+    const actionData = useActionData();
     const {bodyParts} = loadedData;
+    const {globalMessage} = useFormValidation(actionData);
     
     const [chosenRadioValues, setChosenRadioValues] = useState(
         {
             trainingAim: TRAINING_AIM.MUSCLE_GROW
         }
     );
+    const [chosenBodyParts, setChosenBodyParts] = useState([]);
 
     const [workoutDays, setWorkoutDays] = useState(1);
     const [weeksToLoseWeight, setWeeksToLoseWeight] = useState(null);
@@ -35,10 +40,18 @@ function TrainingPlanerForm() {
 
     const formRef = useRef(null);
 
-    function handleFormSubmit(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
+    function handleMuscleGrowSubmit(formData) {
+        chosenBodyParts.forEach(
+            bodyPart => {
+                if(!formData.has('bodyParts'))
+                    formData.set('bodyParts', bodyPart);
+                else formData.append('bodyParts', bodyPart)
+            }
+        );
+        return true;
+    }
 
+    function handleWeightReductionSubmit(formData) {
         const newWeeksToLoseWeight = calcWeeksToLossWeight(
             {goal: formData.get('goal')},
             workoutDays
@@ -47,15 +60,41 @@ function TrainingPlanerForm() {
 
         if(workoutDays !== 7){
             setConfirmWorkoutDays(true);
-            return;
+            return false;
         }
 
         formData.append('weeksToLoseWeight', newWeeksToLoseWeight);
+        return true;
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+
+        switch(chosenRadioValues.trainingAim) {
+            case TRAINING_AIM.MUSCLE_GROW:
+                if(!handleMuscleGrowSubmit(formData))
+                    return;
+                break;
+            case TRAINING_AIM.WEIGHT_REDUCTION:
+                if(!handleWeightReductionSubmit(formData))
+                    return;
+                break;
+        }
+
+
         submit(formData, {method: FORM_METHOD});
     }
 
     return (
         <>
+            <AlertComponent
+                message={globalMessage}
+                showTrigger={actionData}
+                variant='danger'
+                closeDelay={5000}
+                scrollOnTrigger={true}
+            />
             <RouterForm
                 method={FORM_METHOD}
                 onSubmit={handleFormSubmit}
@@ -151,6 +190,7 @@ function TrainingPlanerForm() {
                         ? (
                             <MuscleGrowControls
                                 bodyParts={bodyParts}
+                                setCheckedArr={setChosenBodyParts}
                             />
                         )
                         : (
@@ -192,6 +232,8 @@ export async function loader() {
     const response = await sendDefaultRequest('enum/body-part/read');
     if(!response.hasOwnProperty('CARDIO'))
         return response;
+
+    delete response['CARDIO'];
     return {
         bodyParts: response
     };
@@ -208,6 +250,16 @@ export async function action({request}) {
     const latestTrainingStart = data.get('latestTrainingStart');
     const trainingAim = data.get('trainingAim');
     const workoutDays = parseInt(data.get('workoutDays'));
+
+    switch(trainingAim) {
+        case TRAINING_AIM.MUSCLE_GROW:{
+            const validationResponse = muscleGrowValidation(data);
+            if(validationResponse)
+                return validationResponse;
+        }
+    }
+
+    let bodyParts = data.getAll('bodyParts');
 
     const weightReductionData = trainingAim === TRAINING_AIM.WEIGHT_REDUCTION
         ? getWeightReductionDataFrom(data)
@@ -227,7 +279,10 @@ export async function action({request}) {
             : latestTrainingStart,
         latestTrainingStart: earliestTimeMinutes < latestTimeMinutes
             ? latestTrainingStart
-            : earliestTrainingStart
+            : earliestTrainingStart,
+        bodyParts: trainingAim === TRAINING_AIM.MUSCLE_GROW
+            ? bodyParts
+            : null
     };
 
     console.log(formattedData);
@@ -245,5 +300,8 @@ export async function action({request}) {
     if(handled)
         return handled;
 
-    return await response.json();
+    const responseData = await response.json();
+    console.log(responseData);
+    return responseData;
+    // return null;
 }
