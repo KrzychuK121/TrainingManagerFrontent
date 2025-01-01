@@ -1,6 +1,6 @@
-import { Col, Form, Pagination, Row } from 'react-bootstrap';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { getInjectedParamsUrl } from '../../../utils/URLUtils';
+import {Col, Form, Pagination, Row} from 'react-bootstrap';
+import {useLocation, useNavigate, useSearchParams} from 'react-router-dom';
+import {getInjectedParamsUrl} from '../../../utils/URLUtils';
 import classes from './PaginationEntity.module.css';
 
 function PaginationEntity({pages}) {
@@ -34,34 +34,43 @@ function PaginationEntity({pages}) {
 
     return (
         <>
-            <Row className='justify-content-center'>
-                <Col sm={4}>
-                    <Pagination className='justify-content-center'>
-                        <Pagination.First
-                            disabled={pages.first}
-                            onClick={() => changePageHandler(0)}
-                        />
-                        <Pagination.Prev
-                            disabled={pages.first}
-                            onClick={() => changePageHandler(pages.number - 1)}
-                        />
-                        <Form.Control
-                            id='page'
-                            name='page'
-                            className={classes.searchPage}
-                            placeholder='Strona..'
-                            onKeyDown={submittedPageHandler}
-                        />
-                        <Pagination.Next
-                            disabled={pages.last}
-                            onClick={() => changePageHandler(pages.number + 1)}
-                        />
-                        <Pagination.Last
-                            disabled={pages.last}
-                            onClick={() => changePageHandler(lastPageIndex)}
-                        />
-                    </Pagination>
-                </Col>
+            <Row>
+                <Row className='justify-content-center'>
+                    <Col sm={4}>
+                        <span className={classes.currentPage}>
+                            {pages.number + 1}/{pages.totalPages}
+                        </span>
+                    </Col>
+                </Row>
+                <Row className='justify-content-center'>
+                    <Col sm={4}>
+                        <Pagination className='justify-content-center'>
+                            <Pagination.First
+                                disabled={pages.first}
+                                onClick={() => changePageHandler(0)}
+                            />
+                            <Pagination.Prev
+                                disabled={pages.first}
+                                onClick={() => changePageHandler(pages.number - 1)}
+                            />
+                            <Form.Control
+                                id='page'
+                                name='page'
+                                className={classes.searchPage}
+                                placeholder='Strona..'
+                                onKeyDown={submittedPageHandler}
+                            />
+                            <Pagination.Next
+                                disabled={pages.last}
+                                onClick={() => changePageHandler(pages.number + 1)}
+                            />
+                            <Pagination.Last
+                                disabled={pages.last}
+                                onClick={() => changePageHandler(lastPageIndex)}
+                            />
+                        </Pagination>
+                    </Col>
+                </Row>
             </Row>
         </>
     );

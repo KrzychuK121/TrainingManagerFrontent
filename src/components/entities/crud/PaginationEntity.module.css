@@ -2,3 +2,10 @@
     border-radius: 0;
     width: 5em;
 }
+
+.currentPage {
+    font-size: 15px;
+    color: white;
+    display: flex;
+    justify-content: center;
+}

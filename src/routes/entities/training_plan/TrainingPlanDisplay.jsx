@@ -1,85 +1,19 @@
 import {useState} from 'react';
-import {Button, Table} from 'react-bootstrap';
-import {Form as RouterForm, Link, redirect, useLoaderData} from 'react-router-dom';
+import {Table} from 'react-bootstrap';
+import {redirect, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
-import DeleteModal from '../../../components/entities/crud/DeleteModal';
-import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {useMessageParams} from '../../../hooks/UseMessageParam';
 import {defaultHeaders, deleteAction, handleResponseUnauthorized, sendDefaultRequest} from '../../../utils/CRUDUtils';
-import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getIdPath} from '../../../utils/URLUtils';
+import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString, getIdPath} from '../../../utils/URLUtils';
 import {NEW_ROUTINE_SAVED} from "../../../components/calculators/assistant/read/TrainingPlanerDisplay";
+import {getEntityParamGetter} from "../../../utils/EntitiesUtils";
+import TrainingPlanTable from "../../../components/entities/training_plan/TrainingPlanTable";
+import PaginationEntity from "../../../components/entities/crud/PaginationEntity";
+import SortAnchor from "../../../components/entities/crud/SortAnchor";
 
 const ROUTINE_NOT_OWNED_OR_ACTIVE = 'routine-not-owned-or-already-active';
 const ROUTINE_ACTIVATED = 'routine-activated';
-
-function getColumnsByWeekdays(schedules, weekdays) {
-    return weekdays.map(
-        ({weekday, weekdayDisplay}) => (
-            <td key={weekday}>
-                <p>
-                    {
-                        schedules.hasOwnProperty(weekday)
-                            ? (
-                                <>
-                                    <span>{`Tytuł: ${schedules[weekday].trainingTitle}`}</span>
-                                    {'\n'}
-                                    <span>{`Opis: ${schedules[weekday].trainingDescription}`}</span>
-                                </>
-                            )
-                            : 'Dzień wolny'
-                    }
-                </p>
-            </td>
-        )
-    );
-}
-
-function getTableRow(plan, weekdays, setActionData) {
-    const {id, active, schedules} = plan;
-    return (
-        <>
-            {getColumnsByWeekdays(schedules, weekdays)}
-            <td>
-                {active ? 'Tak' : 'Nie'}
-            </td>
-            <td>
-                <Link to={`/main/plans/edit/${id}`}>
-                    <Button>Edytuj</Button>
-                </Link>
-                <DeleteModal
-                    action={`/main/plans/delete/${id}`}
-                    setActionData={setActionData}
-                />
-                {
-                    !active && (
-                        <RouterForm
-                            action={`/main/plans/${id}`}
-                            method='patch'
-                        >
-                            <SubmitButton
-                                display='Aktywuj'
-                                submittingDisplay='Aktywowanie rutyny'
-                            />
-                        </RouterForm>
-                    )
-                }
-            </td>
-        </>
-    );
-}
-
-function getTableContent(plans, weekdays, setActionData) {
-    const rows = [];
-    for (let i = 0; i < plans.length; i++) {
-        rows.push(
-            <tr key={`plansRow${i}`}>
-                {getTableRow(plans[i], weekdays, setActionData)}
-            </tr>
-        );
-    }
-    return rows;
-}
 
 function getTableWeekdaysHeaders(weekdays) {
     return weekdays.map(
@@ -98,12 +32,12 @@ function TrainingPlanDisplay() {
     const loadedData = useLoaderData();
     const [actionData, setActionData] = useState();
 
-    const plans = loadedData
-        ? loadedData.plans
+    const getFromLoadedData = getEntityParamGetter(loadedData);
+    const plansPaged = getFromLoadedData('plans');
+    const plans = plansPaged && plansPaged.hasOwnProperty('content')
+        ?plansPaged.content
         : null;
-    const weekdays = loadedData
-        ? loadedData.weekdays
-        : null;
+    const weekdays = getFromLoadedData('weekdays');
 
     const {messages: successMessages, UrlAlertsList: UrlAlertsSuccessList} = useMessageParams(
         [
@@ -174,23 +108,34 @@ function TrainingPlanDisplay() {
                 <tr>
                     {getTableWeekdaysHeaders(weekdays)}
                     <th>
-                        Aktywny?
+                        <SortAnchor
+                            display='Aktywny?'
+                            field='active'
+                        />
                     </th>
                     <th>Opcje</th>
                 </tr>
                 </thead>
                 <tbody>
-                {getTableContent(plans, weekdays, setActionData)}
+                    <TrainingPlanTable
+                        plans={plans}
+                        weekdays={weekdays}
+                        setActionData={setActionData}
+                    />
                 </tbody>
             </Table>
+            <PaginationEntity pages={plansPaged} />
         </>
     );
 }
 
 export default TrainingPlanDisplay;
 
-export async function loader() {
-    return await sendDefaultRequest('plans');
+export async function loader({request}) {
+    const url = new URL(request.url);
+    const searchParams = url.searchParams;
+    const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
+    return await sendDefaultRequest(`plans${filteredQueryString}`);
 }
 
 export async function switchActiveAction({request, params}) {
