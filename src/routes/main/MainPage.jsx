@@ -1,9 +1,9 @@
-import { Container } from 'react-bootstrap';
-import { Outlet } from 'react-router-dom';
+import {Container} from 'react-bootstrap';
+import {Outlet} from 'react-router-dom';
 
 import MainNavigation from '../../components/main_page/navigation/MainNavigation';
 import './MainPage.module.css';
-import { useWebsocket } from '../../contexts/ws/WebsocketContext';
+import {useWebsocket} from '../../contexts/ws/WebsocketContext';
 
 function MainPage() {
     const {reminderComponent} = useWebsocket();
@@ -12,7 +12,6 @@ function MainPage() {
             <MainNavigation/>
             <Container>
                 <main>
-                    {/*TODO: Fix this*/}
                     {reminderComponent}
                     <Outlet/>
                 </main>
