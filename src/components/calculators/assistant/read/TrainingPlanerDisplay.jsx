@@ -3,7 +3,7 @@ import TrainingDayDisplay from "./TrainingDayDisplay";
 import SubmitButton from "../../../form/SubmitButton";
 import {Row} from "react-bootstrap";
 import {DOMAIN} from "../../../../utils/URLUtils";
-import {defaultHeaders} from "../../../../utils/CRUDUtils";
+import {defaultHeaders, handleResponseUnauthorized} from "../../../../utils/CRUDUtils";
 import AlertComponent from "../../../alerts/AlertComponent";
 import {useState} from "react";
 
@@ -22,6 +22,11 @@ async function action(
         }
     );
 
+    const handledResponse = await handleResponseUnauthorized(response);
+
+    if(handledResponse)
+        return handledResponse;
+    
     if(response.status === 204) {
         navigate(`/main/plans?${NEW_ROUTINE_SAVED}`);
         return {error: ''};
