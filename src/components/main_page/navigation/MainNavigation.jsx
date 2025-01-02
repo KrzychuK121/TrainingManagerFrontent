@@ -7,9 +7,20 @@ import NavLink from './NavLink';
 import NonAuthNavigations from './NonAuthNavigations';
 import OperationsDropdown from './OperationsDropdown';
 import WorkoutAssistanceDropdown from "./WorkoutAssistanceDropdown";
+import {isAuthenticated} from "../../../utils/AuthUtils";
+import {useEffect, useState} from "react";
 
 function MainNavigation() {
-    const isAuthenticated = useRouteLoaderData('root');
+    const [userAuthenticated, setUserAuthenticated] = useState(useRouteLoaderData('root'));
+    useEffect(() => {
+        window.addEventListener(
+            'storage',
+            () => {
+                setUserAuthenticated(isAuthenticated());
+            }
+        );
+    }, []);
+
     return (
         <Container as='header' fluid id={classes.menuContainer}>
             <nav id='menu'>
@@ -46,7 +57,7 @@ function MainNavigation() {
                             <WorkoutAssistanceDropdown />
                             <OperationsDropdown/>
                             {
-                                isAuthenticated
+                                userAuthenticated
                                     ? <AuthNavigations classes={classes}/>
                                     : <NonAuthNavigations/>
                             }
