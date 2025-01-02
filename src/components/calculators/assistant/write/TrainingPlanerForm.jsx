@@ -300,8 +300,6 @@ export async function action({request}) {
     if(handled)
         return handled;
 
-    const responseData = await response.json();
-    console.log(responseData);
-    return responseData;
+    return await response.json();
     // return null;
 }
