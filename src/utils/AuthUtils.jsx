@@ -1,5 +1,6 @@
-import { json, redirect } from 'react-router-dom';
-import { defaultHeaders } from './CRUDUtils';
+import {json, redirect} from 'react-router-dom';
+import {defaultHeaders} from './CRUDUtils';
+import {setGoBackPath} from "./URLUtils";
 
 const AUTH_RESPONSE_KEYS = {
     token: 'token',
@@ -66,9 +67,10 @@ export function authenticatedLoader() {
 }
 
 export function nonAuthenticatedLoader() {
-    return !isAuthenticated()
-        ? redirect('/main/login')
-        : null;
+    if(isAuthenticated())
+        return null;
+    setGoBackPath();
+    return redirect('/main/login');
 }
 
 export async function login(userCredentials) {

@@ -1,20 +1,12 @@
 import classes from './MainWelcome.module.css';
-import AlertComponent from '../../components/alerts/AlertComponent';
-import useMessageParam from '../../hooks/UseMessageParam';
-import {LOGIN_SUCCESS} from '../navigations/authentication/Login';
 import {Link} from "react-router-dom";
 
 function MainWelcome() {
     // TODO: Maybe change content depending on auth status
-    const {message} = useMessageParam(
-        LOGIN_SUCCESS,
-        'Logowanie ukończone pomyślnie.'
-    );
 
     return (
         <>
             <div>
-                <AlertComponent message={message} showTrigger={null}/>
                 <h1>Witaj w aplikacji!</h1>
                 <p className={classes.description}>
                     "Training Manager" to miejsce, w którym znajdziesz potrzebną wiedzę aby postawić pierwsze kroki

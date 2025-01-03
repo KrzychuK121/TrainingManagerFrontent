@@ -1,11 +1,12 @@
-import { Col, Form, Row } from 'react-bootstrap';
-import { Form as RouterForm, redirect, useActionData } from 'react-router-dom';
+import {Col, Form, Row} from 'react-bootstrap';
+import {Form as RouterForm, redirect, useActionData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useMessageParam from '../../../hooks/UseMessageParam';
-import { login } from '../../../utils/AuthUtils';
+import {login} from '../../../utils/AuthUtils';
 import defaultClasses from '../../Default.module.css';
-import { REGISTER_SUCCESS } from './Register';
+import {REGISTER_SUCCESS} from './Register';
+import {getGoBackPath} from "../../../utils/URLUtils";
 
 function LoginPage() {
     const data = useActionData();
@@ -76,8 +77,6 @@ function LoginPage() {
 
 export default LoginPage;
 
-export const LOGIN_SUCCESS = 'login-success';
-
 export async function action({request}) {
     const formData = await request.formData();
 
@@ -87,8 +86,7 @@ export async function action({request}) {
     };
 
     const loginResponse = await login(userCredentials);
-
     return loginResponse !== null
         ? loginResponse
-        : redirect(`/main?${LOGIN_SUCCESS}`);
+        : redirect(getGoBackPath());
 }

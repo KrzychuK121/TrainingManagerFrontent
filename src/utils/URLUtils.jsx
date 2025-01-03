@@ -5,10 +5,31 @@ export const DELETE_SUCCESS = 'delete-success';
 
 export const EDIT_ACCESS_DENIED = 'edit-access-denied';
 
+const PREVIOUS_PATH_KEY = 'previousPathKey';
+
 export function getIdPath(params) {
     return params.id
         ? `/${params.id}`
         : '';
+}
+
+export function setGoBackPath() {
+    const location = window.location;
+    const fullPath = `${location.pathname}${location.search}${location.hash}`;
+    sessionStorage.setItem(PREVIOUS_PATH_KEY, fullPath);
+}
+
+export function getGoBackPath() {
+    let backPath = sessionStorage.getItem(PREVIOUS_PATH_KEY);
+    sessionStorage.removeItem(PREVIOUS_PATH_KEY);
+    if(
+        !backPath
+        || backPath.includes('login')
+        || backPath.includes('logout')
+        || backPath.includes('register')
+    )
+        backPath = '/main';
+    return backPath;
 }
 
 /**
