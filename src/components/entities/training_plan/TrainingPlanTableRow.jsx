@@ -1,7 +1,10 @@
-import {Form as RouterForm, Link} from "react-router-dom";
-import {Button} from "react-bootstrap";
+import {Form as RouterForm} from "react-router-dom";
 import DeleteModal from "../crud/DeleteModal";
-import SubmitButton from "../../form/SubmitButton";
+import EditButton from "../crud/EditButton";
+import SubmitButtonIcon from "../../form/SubmitButtonIcon";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faStar as faStarSolid} from "@fortawesome/free-solid-svg-icons";
+import {faStar} from "@fortawesome/free-regular-svg-icons";
 
 function getColumnsByWeekdays(schedules, weekdays) {
     return weekdays.map(
@@ -40,9 +43,7 @@ function TrainingPlanTableRow(
                 {active ? 'Tak' : 'Nie'}
             </td>
             <td>
-                <Link to={`/main/plans/edit/${id}`}>
-                    <Button>Edytuj</Button>
-                </Link>
+                <EditButton moveTo={`/main/plans/edit/${id}`}/>
                 <DeleteModal
                     action={`/main/plans/delete/${id}`}
                     setActionData={setActionData}
@@ -53,9 +54,11 @@ function TrainingPlanTableRow(
                             action={`/main/plans/${id}`}
                             method='patch'
                         >
-                            <SubmitButton
-                                display='Aktywuj'
-                                submittingDisplay='Aktywowanie rutyny'
+                            <SubmitButtonIcon
+                                tooltip='Aktywuj'
+                                display={<FontAwesomeIcon icon={faStar} />}
+                                hover={<FontAwesomeIcon icon={faStarSolid} />}
+                                className='m-1'
                             />
                         </RouterForm>
                     )

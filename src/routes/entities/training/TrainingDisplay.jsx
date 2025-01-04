@@ -1,21 +1,24 @@
 import {useState} from 'react';
-import {json, useLoaderData, useNavigate} from 'react-router-dom';
+import {json, Link, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
 import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
-import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {useMessageParams} from '../../../hooks/UseMessageParam';
 import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
 import {DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
+import EditButton from "../../../components/entities/crud/EditButton";
+import {Tooltip} from "@mui/material";
+import {Button} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faDumbbell} from "@fortawesome/free-solid-svg-icons";
 
 function TrainingDisplay() {
     const loadedData = useLoaderData();
     const [actionData, setActionData] = useState();
 
     const trainings = loadedData.content;
-    const navigate = useNavigate();
     const {messages: successMessages, UrlAlertsList} = useMessageParams(
         [
             {
@@ -30,10 +33,6 @@ function TrainingDisplay() {
     );
 
     const {globalMessage} = useFormValidation(actionData);
-
-    function actionButtonClickHandler(path) {
-        navigate(path);
-    }
 
     if (trainings && trainings.length === 0)
         return <div>Brak treningów do wyświetlenia</div>;
@@ -74,24 +73,26 @@ function TrainingDisplay() {
                                 <div
                                     style={{display: 'inline'}}
                                 >
-                                    <SubmitButton
-                                        display='Trenuj'
-                                        submittingDisplay='Ładowanie strony'
-                                        onClick={
-                                            () => actionButtonClickHandler(`/main/training/train/${id}`)
-                                        }
-                                    />
+                                    <Link to={`/main/training/train/${id}`}>
+                                        <Tooltip
+                                            title='Trenuj'
+                                            placement='top'
+                                            enterDelay={250}
+                                            leaveDelay={400}
+                                        >
+                                            <Button
+                                                variant='primary'
+                                                className='m-1'
+                                            >
+                                                <FontAwesomeIcon icon={faDumbbell} />
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
                                     {
                                         trainingPrivate &&
                                         <>
                                             {' | '}
-                                            <SubmitButton
-                                                display='Edytuj'
-                                                submittingDisplay='Ładowanie strony'
-                                                onClick={
-                                                    () => actionButtonClickHandler(`/main/training/edit/${id}`)
-                                                }
-                                            />
+                                            <EditButton moveTo={`/main/training/edit/${id}`} />
                                             {' | '}
                                             <DeleteModal
                                                 action={`/main/training/delete/${id}`}

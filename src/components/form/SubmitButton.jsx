@@ -7,6 +7,7 @@ function SubmitButton(
         display,
         submittingDisplay,
         variant = 'primary',
+        icon = null,
         onClick,
         ...rest
     }

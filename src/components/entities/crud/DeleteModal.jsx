@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-import { useFetcher } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {Button, Modal} from 'react-bootstrap';
+import {useFetcher} from 'react-router-dom';
 import classes from './DeleteModal.module.css';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTrashCanArrowUp} from "@fortawesome/free-solid-svg-icons";
+import {Tooltip} from "@mui/material";
 
 /**
  * This modal will ask user to confirm delete operation.
@@ -74,9 +77,20 @@ function DeleteModal(
                     </fetcher.Form>
                 </Modal.Footer>
             </Modal>
-            <Button variant='primary' onClick={deleteHandler}>
-                Usuń
-            </Button>
+            <Tooltip
+                title='Usuń'
+                placement='top'
+                enterDelay={250}
+                leaveDelay={400}
+            >
+                <Button
+                    variant='primary'
+                    className='m-1'
+                    onClick={deleteHandler}
+                >
+                    <FontAwesomeIcon icon={faTrashCanArrowUp} />
+                </Button>
+            </Tooltip>
         </>
     );
 }

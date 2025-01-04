@@ -1,7 +1,7 @@
-import {Button, Table} from 'react-bootstrap';
-import {Link} from 'react-router-dom';
+import {Table} from 'react-bootstrap';
 import DeleteModal from '../crud/DeleteModal';
 import SortAnchor from '../crud/SortAnchor';
+import EditButton from "../crud/EditButton";
 
 function getExerciseList(
     exercises,
@@ -61,14 +61,7 @@ function defaultOptionsMapper(exercise, setActionData) {
 
     return (
         <>
-            <Link to={`/main/exercise/edit/${id}`}>
-                <Button
-                    type='submit'
-                    variant='primary'
-                >
-                    Edytuj
-                </Button>
-            </Link>
+            <EditButton moveTo={`/main/exercise/edit/${id}`} />
             <DeleteModal
                 action={`/main/exercise/delete/${id}`}
                 setActionData={setActionData}
