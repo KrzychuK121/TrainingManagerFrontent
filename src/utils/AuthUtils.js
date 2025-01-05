@@ -5,8 +5,7 @@ import {setGoBackPath} from "./URLUtils";
 const AUTH_RESPONSE_KEYS = {
     token: 'token',
     firstName: 'firstName',
-    lastName: 'lastName',
-    role: 'role'
+    lastName: 'lastName'
 };
 
 function invokeStorageEvent() {
@@ -41,10 +40,6 @@ export function getFirstName() {
 
 export function getLastName() {
     return getAuthData(AUTH_RESPONSE_KEYS.lastName);
-}
-
-export function getRole() {
-    return getAuthData(AUTH_RESPONSE_KEYS.role);
 }
 
 export function injectToken(headers) {
