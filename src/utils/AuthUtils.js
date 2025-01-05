@@ -1,6 +1,6 @@
 import {json, redirect} from 'react-router-dom';
 import {defaultHeaders} from './CRUDUtils';
-import {setGoBackPath} from "./URLUtils";
+import {DOMAIN, setGoBackPath} from "./URLUtils";
 
 const AUTH_RESPONSE_KEYS = {
     token: 'token',
@@ -75,7 +75,7 @@ export function nonAuthenticatedLoader() {
 
 export async function login(userCredentials) {
     const response = await fetch(
-        'http://localhost:8080/api/auth/login',
+        `${DOMAIN}/auth/login`,
         {
             method: 'POST',
             headers: {
@@ -106,7 +106,7 @@ export async function logout() {
         return json({error: 'Nie można wylogować. Użytkownik niezalogowany.'});
 
     await fetch(
-        'http://localhost:8080/api/auth/logout',
+        `${DOMAIN}/auth/logout`,
         {
             method: 'POST',
             headers: defaultHeaders()

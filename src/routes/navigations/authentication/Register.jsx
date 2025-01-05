@@ -1,12 +1,13 @@
-import { Col, Row } from 'react-bootstrap';
-import { Form as RouterForm, redirect, useActionData } from 'react-router-dom';
+import {Col, Row} from 'react-bootstrap';
+import {Form as RouterForm, redirect, useActionData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useFormValidation from '../../../hooks/UseFormValidation';
-import { createObjFromEntries } from '../../../utils/EntitiesUtils';
+import {createObjFromEntries} from '../../../utils/EntitiesUtils';
 
 import defaultClasses from '../../Default.module.css';
+import {DOMAIN} from "../../../utils/URLUtils";
 
 function Register() {
     const actionData = useActionData();
@@ -85,7 +86,7 @@ export async function action({request}) {
     const userToCreate = createObjFromEntries(data);
 
     const response = await fetch(
-        'http://localhost:8080/api/auth/register',
+        `${DOMAIN}/auth/register`,
         {
             method: 'POST',
             headers: {

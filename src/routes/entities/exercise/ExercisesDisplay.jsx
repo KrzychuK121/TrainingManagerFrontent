@@ -6,7 +6,7 @@ import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {useMessageParams} from '../../../hooks/UseMessageParam';
 import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
-import {DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
+import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
 
 function ExercisesDisplay() {
     const loadedData = useLoaderData();
@@ -62,7 +62,7 @@ export async function loader({request}) {
 
 export async function action({request, params}) {
     const response =  await deleteAction(
-        'http://localhost:8080/api/exercise',
+        `${DOMAIN}/exercise`,
         '/main/exercise',
         request,
         params

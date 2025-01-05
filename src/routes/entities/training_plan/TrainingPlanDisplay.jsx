@@ -160,7 +160,7 @@ export async function switchActiveAction({request, params}) {
 
 export async function deleteTrainingRoutineAction({request, params}) {
     return await deleteAction(
-        'http://localhost:8080/api/routines',
+        `${DOMAIN}/routines`,
         '/main/plans',
         request,
         params

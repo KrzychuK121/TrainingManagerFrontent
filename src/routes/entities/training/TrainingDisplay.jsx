@@ -7,7 +7,7 @@ import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {useMessageParams} from '../../../hooks/UseMessageParam';
 import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
-import {DELETE_SUCCESS, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
+import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
 import EditButton from "../../../components/entities/crud/EditButton";
 import {Tooltip} from "@mui/material";
 import {Button} from "react-bootstrap";
@@ -125,7 +125,7 @@ export async function loader({request}) {
 
 export async function deleteTrainingAction({request, params}) {
     const response = await deleteAction(
-        'http://localhost:8080/api/training',
+        `${DOMAIN}/training`,
         '/main/training',
         request,
         params
