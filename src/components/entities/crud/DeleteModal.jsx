@@ -84,7 +84,7 @@ function DeleteModal(
                 leaveDelay={400}
             >
                 <Button
-                    variant='primary'
+                    variant='danger'
                     className='m-1'
                     onClick={deleteHandler}
                 >

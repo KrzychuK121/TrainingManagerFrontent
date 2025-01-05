@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigation, useSearchParams } from 'react-router-dom';
-import { getInjectedParamsUrl } from '../../../utils/URLUtils';
+import {useEffect, useState} from 'react';
+import {Link, useLocation, useNavigation, useSearchParams} from 'react-router-dom';
+import {getInjectedParamsUrl} from '../../../utils/URLUtils';
 import classes from './SortAnchor.module.css';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faArrowDownShortWide, faArrowUpShortWide} from "@fortawesome/free-solid-svg-icons";
 
 function getSort(field, ascending) {
     return ascending
@@ -18,8 +20,20 @@ function SortAnchor(
     const navigation = useNavigation();
     const location = useLocation();
     const [searchParams] = useSearchParams();
+    const [sortIcon, setSortIcon] = useState(<FontAwesomeIcon icon={faArrowUpShortWide} />);
     const [ascending, setAscending] = useState(initAscending());
+
     const [sort, setSort] = useState(getSort(field, ascending));
+
+    useEffect(() => {
+        setSortIcon(getSortIcon());
+    }, [ascending]);
+
+    function getSortIcon() {
+        return ascending
+            ? <FontAwesomeIcon icon={faArrowUpShortWide} />
+            : <FontAwesomeIcon icon={faArrowDownShortWide} />;
+    }
 
     function initAscending() {
         const initSort = searchParams.get('sort');
@@ -49,7 +63,7 @@ function SortAnchor(
             className={classes.sortAnchor}
             onClick={sortHandler}
         >
-            {display}
+            {display} {sortIcon}
         </Link>
     );
 }
