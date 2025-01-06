@@ -1,15 +1,15 @@
-import { Col, Container, Row } from 'react-bootstrap';
+import {Col, Container, Row} from 'react-bootstrap';
 import classes from './Welcome.module.css';
 
 function Welcome() {
     return (
         <Container fluid id={classes.welcomeContainer}>
-            <header className='row justify-content-center align-items-center fixed-top h-25'>
+            <header className='row py-4 justify-content-center align-items-center fixed-top h-25'>
                 <Col
                     id={classes.nag}
                     md={6}
                 >
-                    Witaj w aplikacji<br/>
+                    Witaj w aplikacji
                     TrainingManager
                 </Col>
             </header>
