@@ -1,5 +1,4 @@
-console.log(process.env.REACT_APP_BACKEND_URL);
-export const DOMAIN = process.env.REACT_APP_BACKEND_URL;
+export const DOMAIN = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const EDIT_SUCCESS = 'edit-success';
 export const DELETE_SUCCESS = 'delete-success';

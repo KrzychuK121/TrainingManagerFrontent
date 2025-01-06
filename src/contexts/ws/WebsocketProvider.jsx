@@ -1,10 +1,10 @@
-import { Stomp } from '@stomp/stompjs';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {Stomp} from '@stomp/stompjs';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import SockJS from 'sockjs-client';
 import NotificationAlert from '../../components/notification/NotificationAlert';
-import { isAuthenticated, logout } from '../../utils/AuthUtils';
-import { defaultHeaders } from '../../utils/CRUDUtils';
-import { WebsocketContext } from './WebsocketContext';
+import {isAuthenticated, logout} from '../../utils/AuthUtils';
+import {defaultHeaders} from '../../utils/CRUDUtils';
+import {WebsocketContext} from './WebsocketContext';
 
 export const WS_DOMAIN = '/topic';
 
@@ -55,7 +55,7 @@ function WebsocketProvider({children}) {
 
         console.log(`${injectTime()}No ws connection yet. Creating new one...`);
         stompClientRef.current = Stomp.over(
-            new SockJS('http://localhost:8080/ws')
+            new SockJS(`${process.env.REACT_APP_BACKEND_URL}/ws`)
         );
         const stompClient = stompClientRef.current;
 
