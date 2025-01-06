@@ -102,6 +102,7 @@ function TrainingPlanDisplay() {
             <Table
                 bordered
                 striped
+                responsive={true}
                 variant='success'
             >
                 <thead>
