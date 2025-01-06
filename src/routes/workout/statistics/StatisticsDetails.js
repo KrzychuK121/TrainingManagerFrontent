@@ -38,7 +38,10 @@ function mapExercises(training, doneExercises) {
             const foundStatistic = doneExercises.find(
                 doneExercise => doneExercise.exerciseId === mappedExercise.id
             );
-            mappedExercise.finishedRounds = foundStatistic.doneSeries;
+            let doneSeries = 0;
+            if(foundStatistic && foundStatistic.hasOwnProperty('doneSeries'))
+                doneSeries = foundStatistic.doneSeries;
+            mappedExercise.finishedRounds = doneSeries;
 
             return {
                 ...mappedExercise,
