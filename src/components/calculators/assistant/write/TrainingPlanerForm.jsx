@@ -13,6 +13,9 @@ import ConfirmModal from "../../../entities/crud/ConfirmModal";
 import useFormValidation from "../../../../hooks/UseFormValidation";
 import AlertComponent from "../../../alerts/AlertComponent";
 import {DOMAIN} from "../../../../utils/URLUtils";
+import {TextField} from "@mui/material";
+
+const { format} = require('date-fns');
 
 const TRAINING_AIM = {
     MUSCLE_GROW: 'MUSCLE_GROW',
@@ -26,7 +29,10 @@ function TrainingPlanerForm() {
     const actionData = useActionData();
     const {bodyParts} = loadedData;
     const {globalMessage} = useFormValidation(actionData);
-    
+
+    const [earliestTrainingStart, setEarliestTrainingStart] = useState(Date.now());
+    const [latestTrainingStart, setLatestTrainingStart] = useState(Date.now());
+
     const [chosenRadioValues, setChosenRadioValues] = useState(
         {
             trainingAim: TRAINING_AIM.MUSCLE_GROW
@@ -39,6 +45,12 @@ function TrainingPlanerForm() {
     const [confirmWorkoutDays, setConfirmWorkoutDays] = useState(false);
 
     const formRef = useRef(null);
+
+    function getFormattedDate(date) {
+        if(!date)
+            return null;
+        return format(date, 'HH:mm');
+    }
 
     function handleMuscleGrowSubmit(formData) {
         chosenBodyParts.forEach(
@@ -70,6 +82,8 @@ function TrainingPlanerForm() {
     function handleFormSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
+        formData.set('earliestTrainingStart', getFormattedDate(earliestTrainingStart));
+        formData.set('latestTrainingStart', getFormattedDate(latestTrainingStart));
 
         switch(chosenRadioValues.trainingAim) {
             case TRAINING_AIM.MUSCLE_GROW:
@@ -80,6 +94,8 @@ function TrainingPlanerForm() {
                 if(!handleWeightReductionSubmit(formData))
                     return;
                 break;
+            default:
+                throw Error('Something went wrong');
         }
 
 
@@ -166,6 +182,9 @@ function TrainingPlanerForm() {
                             <DesktopTimePicker
                                 label='Najwcześniejszy:'
                                 name='earliestTrainingStart'
+                                value={earliestTrainingStart}
+                                onChange={setEarliestTrainingStart}
+                                renderInput={params => <TextField {...params} />}
                             />
                         </LocalizationProvider>
                     </Col>
@@ -180,6 +199,9 @@ function TrainingPlanerForm() {
                             <DesktopTimePicker
                                 label='Najpóźniejszy:'
                                 name='latestTrainingStart'
+                                value={latestTrainingStart}
+                                onChange={setLatestTrainingStart}
+                                renderInput={params => <TextField {...params} />}
                             />
                         </LocalizationProvider>
                     </Col>
@@ -248,6 +270,7 @@ export async function action({request}) {
     const data = await request.formData();
     const earliestTrainingStart = data.get('earliestTrainingStart');
     const latestTrainingStart = data.get('latestTrainingStart');
+
     const trainingAim = data.get('trainingAim');
     const workoutDays = parseInt(data.get('workoutDays'));
 
