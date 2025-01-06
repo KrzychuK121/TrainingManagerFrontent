@@ -8,6 +8,12 @@ body {
     height: 100vh;
 }
 
+@media screen and (max-width: 768px) {
+    body {
+        background-image: url("../../public/img/index/background-mobile.jpg");
+    }
+}
+
 .authForms {
     font-size: 20px;
     font-family: Tungsten-Bold,arial,georgia, sans-serif;
