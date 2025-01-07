@@ -1,5 +1,5 @@
 import {Container, Nav, Navbar} from 'react-bootstrap';
-import {Link, useRouteLoaderData} from 'react-router-dom';
+import {Link, useNavigation, useRouteLoaderData} from 'react-router-dom';
 
 import AuthNavigations from './AuthNavigations';
 import classes from './MainNavigation.module.css';
@@ -11,7 +11,10 @@ import {isAuthenticated} from "../../../utils/AuthUtils";
 import {useEffect, useState} from "react";
 
 function MainNavigation() {
+    const navigation = useNavigation();
     const [userAuthenticated, setUserAuthenticated] = useState(useRouteLoaderData('root'));
+    const [expand, setExpand] = useState(false);
+
     useEffect(() => {
         window.addEventListener(
             'storage',
@@ -21,13 +24,23 @@ function MainNavigation() {
         );
     }, []);
 
+    useEffect(() => {
+        if(navigation.state === 'loading')
+            setExpand(false);
+    }, [navigation.state]);
+
     return (
-        <Container as='header' fluid id={classes.menuContainer}>
+        <Container
+            as='header'
+            id={classes.menuContainer}
+            fluid
+        >
             <nav id='menu'>
                 <Navbar
                     expand='lg'
                     data-bs-theme='dark'
                     style={{padding: 0}}
+                    expanded={expand}
                 >
                     <Navbar.Brand>
                         <article
@@ -44,7 +57,11 @@ function MainNavigation() {
                             </span>
                         </article>
                     </Navbar.Brand>
-                    <Navbar.Toggle aria-controls='navbar-links'/>
+                    <Navbar.Toggle
+                        aria-controls='navbar-links'
+                        onClick={() => {setExpand(prev => !prev)} }
+
+                    />
                     <Navbar.Collapse
                         id='navbar-links'
                         className='justify-content-center'
