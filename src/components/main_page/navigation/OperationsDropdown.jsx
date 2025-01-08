@@ -1,6 +1,7 @@
-import { NavDropdown } from 'react-bootstrap';
+import {NavDropdown} from 'react-bootstrap';
 import DropdownLink from './DropdownLink';
 import classes from './MainNavigation.module.css';
+import {isUser} from "../../../utils/RoleUtils";
 
 function OperationsDropdown() {
     return (
@@ -19,8 +20,14 @@ function OperationsDropdown() {
             <NavDropdown.Divider/>
             <NavDropdown.ItemText>Plany treningowe</NavDropdown.ItemText>
             <DropdownLink to='/main/plans'>Wyświetl wszystkie</DropdownLink>
-            <DropdownLink to='/main/plans/week'>Wyświetl aktywny</DropdownLink>
-            <DropdownLink to='/main/plans/create'>Stwórz</DropdownLink>
+            {
+                isUser() && (
+                    <>
+                        <DropdownLink to='/main/plans/week'>Wyświetl aktywny</DropdownLink>
+                        <DropdownLink to='/main/plans/create'>Stwórz</DropdownLink>
+                    </>
+                )
+            }
         </NavDropdown>
     );
 }
