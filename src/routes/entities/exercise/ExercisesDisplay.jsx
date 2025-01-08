@@ -2,11 +2,12 @@ import {useState} from 'react';
 import {json, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
-import ExerciseTable from '../../../components/entities/exercise/ExerciseTable';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {useMessageParams} from '../../../hooks/UseMessageParam';
 import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
 import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
+import ExerciseCard from "../../../components/entities/exercise/ExerciseCard";
+import {Row} from "react-bootstrap";
 
 function ExercisesDisplay() {
     const loadedData = useLoaderData();
@@ -41,10 +42,24 @@ function ExercisesDisplay() {
             />
             {UrlAlertsList}
             <h1>Lista wszystkich ćwiczeń</h1>
-            <ExerciseTable
+            <Row>
+                {
+                    exercises.map(
+                        exercise => (
+                            <ExerciseCard
+                                key={exercise.id}
+                                exercise={exercise}
+                                setActionData={setActionData}
+                            />
+                        )
+                    )
+                }
+            </Row>
+            {/*TODO: Remove below if cards are better*/}
+           {/* <ExerciseTable
                 exercises={exercises}
                 setActionData={setActionData}
-            />
+            />*/}
             <PaginationEntity pages={loadedData}/>
         </>
     );
