@@ -9,6 +9,8 @@ import OperationsDropdown from './OperationsDropdown';
 import WorkoutAssistanceDropdown from "./WorkoutAssistanceDropdown";
 import {isAuthenticated} from "../../../utils/AuthUtils";
 import {useEffect, useState} from "react";
+import {isAdmin, isAtLeastModerator, isUser} from "../../../utils/RoleUtils";
+import CalcDropdown from "./CalcDropdown";
 
 function MainNavigation() {
     const navigation = useNavigation();
@@ -67,11 +69,24 @@ function MainNavigation() {
                         className='justify-content-center'
                     >
                         <Nav className={classes.menuContainerComponent}>
-                            <NavLink
-                                label='Zacznij trening!'
-                                href='/main/training/train'
-                            />
-                            <WorkoutAssistanceDropdown />
+                            {
+                                isUser() && (
+                                    <NavLink
+                                        label='Zacznij trening!'
+                                        href='/main/training/train'
+                                    />
+                                )
+                            }
+                            {
+                                isAdmin() && (
+                                    <NavLink
+                                        label='Użytkownicy'
+                                        href='/main/admin/users/all'
+                                    />
+                                )
+                            }
+                            {isUser() && <WorkoutAssistanceDropdown />}
+                            {isAtLeastModerator() && <CalcDropdown />}
                             <OperationsDropdown/>
                             {
                                 userAuthenticated

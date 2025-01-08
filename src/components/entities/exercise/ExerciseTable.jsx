@@ -2,6 +2,7 @@ import {Table} from 'react-bootstrap';
 import DeleteModal from '../crud/DeleteModal';
 import SortAnchor from '../crud/SortAnchor';
 import EditButton from "../crud/EditButton";
+import {moderationRoleOrOwner} from "../../../utils/RoleUtils";
 
 function getExerciseList(
     exercises,
@@ -53,10 +54,10 @@ function getExerciseList(
 
 function defaultOptionsMapper(exercise, setActionData) {
     const id = exercise.id;
-    if(
-        exercise.hasOwnProperty('exercisePrivate')
-        && !exercise.exercisePrivate
-    )
+    const isPrivate = exercise.hasOwnProperty('exercisePrivate')
+        && exercise.exercisePrivate;
+
+    if(!moderationRoleOrOwner(isPrivate))
         return <></>;
 
     return (

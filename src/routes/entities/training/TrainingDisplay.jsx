@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {json, Link, useLoaderData} from 'react-router-dom';
+import {json, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
 import PaginationEntity from '../../../components/entities/crud/PaginationEntity';
@@ -9,10 +9,7 @@ import {useMessageParams} from '../../../hooks/UseMessageParam';
 import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
 import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
 import EditButton from "../../../components/entities/crud/EditButton";
-import {Tooltip} from "@mui/material";
-import {Button} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faDumbbell} from "@fortawesome/free-solid-svg-icons";
+import {moderationRoleOrOwner} from "../../../utils/RoleUtils";
 
 function TrainingDisplay() {
     const loadedData = useLoaderData();
@@ -47,7 +44,6 @@ function TrainingDisplay() {
                 scrollOnTrigger={true}
             />
             {UrlAlertsList}
-            {/*TODO: Make sorting by column*/}
             <h1>Lista wszystkich treningów</h1>
             {
                 trainings.map(
@@ -68,41 +64,26 @@ function TrainingDisplay() {
                                     {description}
                                 </p>
                             </div>
-                            <ExerciseTable exercises={exercises}/>
-                            <div>
-                                <div
-                                    style={{display: 'inline'}}
-                                >
-                                    <Link to={`/main/training/train/${id}`}>
-                                        <Tooltip
-                                            title='Trenuj'
-                                            placement='top'
-                                            enterDelay={250}
-                                            leaveDelay={400}
+                            <ExerciseTable
+                                exercises={exercises}
+                                optionsMapper={null}
+                            />
+                            {
+                                moderationRoleOrOwner(trainingPrivate) && (
+                                    <div>
+                                        <div
+                                            style={{display: 'inline'}}
                                         >
-                                            <Button
-                                                variant='primary'
-                                                className='m-1'
-                                            >
-                                                <FontAwesomeIcon icon={faDumbbell} />
-                                            </Button>
-                                        </Tooltip>
-                                    </Link>
-                                    {
-                                        trainingPrivate &&
-                                        <>
-                                            {' | '}
-                                            <EditButton moveTo={`/main/training/edit/${id}`} />
+                                            <EditButton moveTo={`/main/training/edit/${id}`}/>
                                             {' | '}
                                             <DeleteModal
                                                 action={`/main/training/delete/${id}`}
                                                 setActionData={setActionData}
                                             />
-                                            {' | '}
-                                        </>
-                                    }
-                                </div>
-                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            }
                             <hr/>
                         </div>
                     )

@@ -36,6 +36,7 @@ import {
     loader as trainingPlanerFormLoader
 } from "../components/calculators/assistant/write/TrainingPlanerForm";
 import TrainingPlaner from "../routes/workout/assistant/TrainingPlaner";
+import UsersDisplay, {loader as usersDisplayLoader} from "../routes/admin/users/UsersDisplay";
 
 const AuthorizedPaths = {
     path: '',
@@ -179,6 +180,16 @@ const AuthorizedPaths = {
                 {
                     path: 'delete/:id',
                     action: deleteTrainingRoutineAction
+                }
+            ]
+        },
+        {
+            path: 'admin',
+            children: [
+                {
+                    path: 'users/all',
+                    element: <UsersDisplay />,
+                    loader: usersDisplayLoader
                 }
             ]
         }
