@@ -24,6 +24,7 @@ import ToggleField from "../../../components/form/ToggleField";
 import {DOMAIN, EDIT_ACCESS_DENIED} from "../../../utils/URLUtils";
 import {useMessageParams} from "../../../hooks/UseMessageParam";
 import ConfirmModal from "../../../components/entities/crud/ConfirmModal";
+import {isUser} from "../../../utils/RoleUtils";
 
 const SELECT_VALUE_PROP = 'id';
 const SELECT_DESC_PROP = 'name';
@@ -268,12 +269,15 @@ function TrainingForm({method = 'post'}) {
                         setShow={setShowPublifyTrainingConfirmation}
                         onConfirm={handleConfirmPublifyingExercises}
                     />
-                    <ToggleField
-                        name='trainingPrivate'
-                        label='Prywatny'
-                        defaultValue={Boolean(getTrainingParam('trainingPrivate'))}
-                    />
-
+                    {
+                        isUser() && (
+                            <ToggleField
+                                name='trainingPrivate'
+                                label='Prywatny'
+                                defaultValue={Boolean(getTrainingParam('trainingPrivate'))}
+                            />
+                        )
+                    }
                     <DefaultFormField
                         name='title'
                         label='Tytuł'

@@ -23,6 +23,7 @@ import ExerciseParametersFields, {
 import ToggleField from "../../../components/form/ToggleField";
 import {EDIT_ACCESS_DENIED} from "../../../utils/URLUtils";
 import {useMessageParams} from "../../../hooks/UseMessageParam";
+import {isUser} from "../../../utils/RoleUtils";
 
 function ExerciseForm({method = 'post'}) {
     const actionData = useActionData();
@@ -83,17 +84,19 @@ function ExerciseForm({method = 'post'}) {
                 <fieldset className={defaultClasses.authForms}>
                     <legend>Stwórz nowe ćwiczenie</legend>
                     <Link to='/main/exercise'>Powrót do ćwiczeń</Link>
-
-                    <ToggleField
-                        name='exercisePrivate'
-                        label='Prywatny'
-                        defaultValue={Boolean(getExerciseParam('exercisePrivate'))}
-                        disabled={
-                            exercise
-                            && Boolean(getExerciseParam('exercisePrivate'))
-                        }
-                    />
-
+                    {
+                        isUser() && (
+                            <ToggleField
+                                name='exercisePrivate'
+                                label='Prywatny'
+                                defaultValue={Boolean(getExerciseParam('exercisePrivate'))}
+                                disabled={
+                                    exercise
+                                    && Boolean(getExerciseParam('exercisePrivate'))
+                                }
+                            />
+                        )
+                    }
                     <DefaultFormField
                         label='Nazwa'
                         name='name'
