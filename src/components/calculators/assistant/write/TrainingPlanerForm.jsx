@@ -52,6 +52,11 @@ function TrainingPlanerForm() {
         return format(date, 'HH:mm');
     }
 
+    function injectTimeData(formData){
+        formData.set('earliestTrainingStart', getFormattedDate(earliestTrainingStart));
+        formData.set('latestTrainingStart', getFormattedDate(latestTrainingStart));
+    }
+
     function handleMuscleGrowSubmit(formData) {
         chosenBodyParts.forEach(
             bodyPart => {
@@ -82,8 +87,7 @@ function TrainingPlanerForm() {
     function handleFormSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        formData.set('earliestTrainingStart', getFormattedDate(earliestTrainingStart));
-        formData.set('latestTrainingStart', getFormattedDate(latestTrainingStart));
+        injectTimeData(formData);
 
         switch(chosenRadioValues.trainingAim) {
             case TRAINING_AIM.MUSCLE_GROW:
@@ -227,6 +231,7 @@ function TrainingPlanerForm() {
                                     onConfirm={
                                         () => {
                                             const formData = new FormData(formRef.current);
+                                            injectTimeData(formData);
                                             formData.append('weeksToLoseWeight', weeksToLoseWeight);
                                             submit(formData, {method: FORM_METHOD});
                                         }
