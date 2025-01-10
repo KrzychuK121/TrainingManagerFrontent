@@ -1,5 +1,5 @@
 import {Col, Row} from 'react-bootstrap';
-import {Form as RouterForm, redirect, useActionData} from 'react-router-dom';
+import {Form as RouterForm, redirect, useActionData, useSubmit} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DefaultFormField from '../../../components/form/DefaultFormField';
 import SubmitButton from '../../../components/form/SubmitButton';
@@ -8,18 +8,36 @@ import {createObjFromEntries} from '../../../utils/EntitiesUtils';
 
 import defaultClasses from '../../Default.module.css';
 import {DOMAIN} from "../../../utils/URLUtils";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {useState} from "react";
 
 function Register() {
+    const METHOD = 'POST';
     const actionData = useActionData();
+    const submit = useSubmit();
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const [captchaError, setCaptchaError] = useState(null);
 
     const useFormValidationObj = useFormValidation(
         actionData,
         errors => {
-            if (errors.hasOwnProperty('error'))
+            if (errors.hasOwnProperty('error')) {
+                if(errors.error.includes('Captcha') && errors.error.includes('failed'))
+                    return 'Weryfikacja captcha nie powiodła się. Spróbuj ponownie później.';
                 return 'Użytkownik już istnieje. Może to Ty?';
+            }
             return null;
         }
     );
+
+    function handleRegisterSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        if(!captchaToken)
+            setCaptchaError('Kliknij w pole captcha aby przejść weryfikację.');
+        formData.set('captchaToken', captchaToken);
+        submit(formData, {method: METHOD});
+    }
 
     return (
         <Row className='justify-content-center'>
@@ -30,7 +48,19 @@ function Register() {
                     variant='danger'
                     closeDelay={5000}
                 />
-                <RouterForm noValidate validated='true' method='POST'>
+                <AlertComponent
+                    message={captchaError}
+                    showTrigger={captchaError}
+                    messageProperty='error'
+                    variant='danger'
+                    closeDelay={3000}
+                />
+                <RouterForm
+                    noValidate
+                    validated='true'
+                    method={METHOD}
+                    onSubmit={handleRegisterSubmit}
+                >
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Rejestracja</legend>
                         <DefaultFormField
@@ -64,6 +94,13 @@ function Register() {
                             name='lastName'
                             useFormValidationObj={useFormValidationObj}
                         />
+
+                        <div className='m-2'>
+                            <HCaptcha
+                                sitekey='77668068-9f9e-43b6-8e06-5f941a6c22b8'
+                                onVerify={(token) => setCaptchaToken(token)}
+                            />
+                        </div>
 
                         <SubmitButton
                             display='Zarejestruj się'

@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
 function defaultGlobalErrorMapper(errors) {
-    console.log('defaultGlobalErrorMapper invoked.');
     if (errors.hasOwnProperty('error'))
         return errors.error;
     return null;
@@ -71,7 +70,6 @@ export default function useFormValidation(
         if (errors.hasOwnProperty('status') && errors.status === 500)
             return 'Wystąpił błąd serwera.';
         if (globalErrorMapper) {
-            console.log('globalErrorMapper');
             return globalErrorMapper(errors);
         }
         return null;
