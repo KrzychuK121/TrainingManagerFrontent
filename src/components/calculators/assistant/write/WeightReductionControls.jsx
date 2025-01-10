@@ -3,6 +3,8 @@ import {useState} from "react";
 import BasicBodyParameters from "./BasicBodyParameters";
 import {getBMRDataFrom, getFullBMRStatistics} from "../../../../routes/calculators/CalcBMR";
 import {getActivityLevelBy} from "../../BMRFields";
+import {BMI_CATEGORIES, getBMICategoryBy} from "../../../../routes/calculators/CalcBMI";
+import {getBasicBodyParametersFrom} from "../../../../utils/CalcUtils";
 
 function WeightReductionControls() {
     const JUSTIFY_CONTENT = 'start';
@@ -58,4 +60,14 @@ export function getWeightReductionDataFrom(formData) {
         weeksToLoseWeight,
         dailyKcalReduction: -BMRData.goal
     };
+}
+
+export function validation(formData) {
+    const BMIData = getBasicBodyParametersFrom(formData);
+    BMIData.weight = BMIData.weight - parseFloat(BMIData.goal);
+
+    const bmiCategory = getBMICategoryBy(BMIData);
+    if(bmiCategory === BMI_CATEGORIES.UNDERWEIGHT)
+        return {error: 'Spadek wagi do określonego celu spowoduje u Ciebie niedowagę. Rutyna nie zostanie zaprojektowana.'};
+    return null;
 }

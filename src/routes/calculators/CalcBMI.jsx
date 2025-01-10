@@ -5,7 +5,7 @@ import BMIFields from "../../components/calculators/BMIFields";
 import {getBasicBodyParametersFrom} from "../../utils/CalcUtils";
 import {SEXES} from "../../components/calculators/assistant/write/BasicBodyParameters";
 
-const BMI_CATEGORIES = {
+export const BMI_CATEGORIES = {
     UNDERWEIGHT: 'Niedowaga',
     NORMAL_WEIGHT: 'waga prawidłowa',
     OVERWEIGHT: 'nadwaga',

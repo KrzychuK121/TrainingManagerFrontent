@@ -3,7 +3,11 @@ import {Form as RouterForm, useActionData, useLoaderData, useSubmit} from 'react
 import {ButtonGroup, Col, Form, Row} from "react-bootstrap";
 import RadioButton from "../../RadioButton";
 import MuscleGrowControls, {getMuscleGrowDataFrom, validation as muscleGrowValidation} from "./MuscleGrowControls";
-import WeightReductionControls, {calcWeeksToLossWeight, getWeightReductionDataFrom} from "./WeightReductionControls";
+import WeightReductionControls, {
+    calcWeeksToLossWeight,
+    getWeightReductionDataFrom,
+    validation as weightReductionValidation
+} from "./WeightReductionControls";
 import SubmitButton from "../../../form/SubmitButton";
 import {defaultHeaders, handleResponseUnauthorized, sendDefaultRequest} from "../../../../utils/CRUDUtils";
 import {DesktopTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
@@ -279,13 +283,20 @@ export async function action({request}) {
     const trainingAim = data.get('trainingAim');
     const workoutDays = parseInt(data.get('workoutDays'));
 
+    let validationResponse = null;
     switch(trainingAim) {
-        case TRAINING_AIM.MUSCLE_GROW:{
-            const validationResponse = muscleGrowValidation(data);
-            if(validationResponse)
-                return validationResponse;
+        case TRAINING_AIM.MUSCLE_GROW: {
+            validationResponse = muscleGrowValidation(data);
+            break;
+        }
+        case TRAINING_AIM.WEIGHT_REDUCTION: {
+            validationResponse = weightReductionValidation(data);
+            break;
         }
     }
+
+    if(validationResponse)
+        return validationResponse;
 
     let bodyParts = data.getAll('bodyParts');
 
@@ -313,8 +324,6 @@ export async function action({request}) {
             : null
     };
 
-    console.log(formattedData);
-
     const response = await fetch(
         `${DOMAIN}/assistant/create-plan`,
         {
@@ -329,5 +338,4 @@ export async function action({request}) {
         return handled;
 
     return await response.json();
-    // return null;
 }
