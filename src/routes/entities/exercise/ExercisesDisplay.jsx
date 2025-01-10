@@ -42,7 +42,7 @@ function ExercisesDisplay() {
             />
             {UrlAlertsList}
             <h1>Lista wszystkich ćwiczeń</h1>
-            <Row>
+            <Row className='justify-content-center'>
                 {
                     exercises.map(
                         exercise => (
@@ -55,11 +55,6 @@ function ExercisesDisplay() {
                     )
                 }
             </Row>
-            {/*TODO: Remove below if cards are better*/}
-           {/* <ExerciseTable
-                exercises={exercises}
-                setActionData={setActionData}
-            />*/}
             <PaginationEntity pages={loadedData}/>
         </>
     );
