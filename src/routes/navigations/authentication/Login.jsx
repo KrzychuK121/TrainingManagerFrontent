@@ -1,5 +1,5 @@
 import {Col, Form, Row} from 'react-bootstrap';
-import {Form as RouterForm, redirect, useActionData} from 'react-router-dom';
+import {Form as RouterForm, redirect, useActionData, useSubmit} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import SubmitButton from '../../../components/form/SubmitButton';
 import useMessageParam from '../../../hooks/UseMessageParam';
@@ -7,13 +7,28 @@ import {login} from '../../../utils/AuthUtils';
 import defaultClasses from '../../Default.module.css';
 import {REGISTER_SUCCESS} from './Register';
 import {getGoBackPath} from "../../../utils/URLUtils";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {useState} from "react";
 
 function LoginPage() {
+    const METHOD = 'POST';
     const data = useActionData();
+    const submit = useSubmit();
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const [captchaError, setCaptchaError] = useState(null);
     const {message: registerSuccessMessage} = useMessageParam(
         REGISTER_SUCCESS,
         'Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.'
     );
+
+    function handleLoginSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        if(!captchaToken)
+            setCaptchaError('Kliknij w pole captcha aby przejść weryfikację.');
+        formData.set('captchaToken', captchaToken);
+        submit(formData, {method: METHOD});
+    }
 
     return (
         <Row className='justify-content-center'>
@@ -22,11 +37,21 @@ function LoginPage() {
                     message={data}
                     showTrigger={data}
                     messageProperty='error'
-                    variant={'danger'}
+                    variant='danger'
+                    closeDelay={3000}
+                />
+                <AlertComponent
+                    message={captchaError}
+                    showTrigger={captchaError}
+                    messageProperty='error'
+                    variant='danger'
                     closeDelay={3000}
                 />
                 <AlertComponent message={registerSuccessMessage} showTrigger={null}/>
-                <RouterForm method='POST'>
+                <RouterForm
+                    method={METHOD}
+                    onSubmit={handleLoginSubmit}
+                >
                     <fieldset className={defaultClasses.authForms}>
                         <legend>Logowanie</legend>
                         <Form.Group>
@@ -59,10 +84,19 @@ function LoginPage() {
                                 id='password'
                             />
                         </Form.Group>
+
+                        <div className='m-2'>
+                            <HCaptcha
+                                sitekey='77668068-9f9e-43b6-8e06-5f941a6c22b8'
+                                onVerify={(token) => setCaptchaToken(token)}
+                            />
+                        </div>
+
                         <SubmitButton
                             display='Zaloguj'
                             submittingDisplay='Loguję'
                         />
+
                         <Form.Check
                             id='remember-me'
                             name='remember-me'
@@ -82,7 +116,8 @@ export async function action({request}) {
 
     const userCredentials = {
         'username': formData.get('username'),
-        'password': formData.get('password')
+        'password': formData.get('password'),
+        'captchaToken': formData.get('captchaToken')
     };
 
     const loginResponse = await login(userCredentials);

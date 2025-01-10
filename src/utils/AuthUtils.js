@@ -90,15 +90,22 @@ export async function login(userCredentials) {
         }
     );
 
+    const TRY_LATER_OR_CALL_ADMIN_MESS = 'Spróbuj ponownie później bądź skontaktuj się z administratorem';
+
+    // Captcha not verified
+    if (response.status === 400)
+        return json({error: `Wystąpił problem z weryfikacją captcha. ${TRY_LATER_OR_CALL_ADMIN_MESS}.`});
+
     // Wrong password
-    if (response.status === 401) {
+    if (response.status === 401)
         return json({error: 'Hasło jest nieprawidłowe.'});
-    }
 
     // User does not exist
-    if (response.status === 404) {
+    if (response.status === 404)
         return json({error: `Użytkownik ${userCredentials.username} nie istnieje.`});
-    }
+
+    if(response.status === 500)
+        return json({error: `Wystąpił problem po stronie serwera. ${TRY_LATER_OR_CALL_ADMIN_MESS}.`});
 
     const data = await response.json();
     saveResponse(data);
