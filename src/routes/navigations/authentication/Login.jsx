@@ -7,8 +7,8 @@ import {login} from '../../../utils/AuthUtils';
 import defaultClasses from '../../Default.module.css';
 import {REGISTER_SUCCESS} from './Register';
 import {getGoBackPath} from "../../../utils/URLUtils";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {useState} from "react";
+import Captcha from "../../../components/Captcha";
 
 function LoginPage() {
     const METHOD = 'POST';
@@ -86,10 +86,7 @@ function LoginPage() {
                         </Form.Group>
 
                         <div className='m-2'>
-                            <HCaptcha
-                                sitekey='77668068-9f9e-43b6-8e06-5f941a6c22b8'
-                                onVerify={(token) => setCaptchaToken(token)}
-                            />
+                            <Captcha setCaptchaToken={setCaptchaToken}/>
                         </div>
 
                         <SubmitButton

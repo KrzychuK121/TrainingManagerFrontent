@@ -8,8 +8,8 @@ import {createObjFromEntries} from '../../../utils/EntitiesUtils';
 
 import defaultClasses from '../../Default.module.css';
 import {DOMAIN} from "../../../utils/URLUtils";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {useState} from "react";
+import Captcha from "../../../components/Captcha";
 
 function Register() {
     const METHOD = 'POST';
@@ -96,10 +96,7 @@ function Register() {
                         />
 
                         <div className='m-2'>
-                            <HCaptcha
-                                sitekey='77668068-9f9e-43b6-8e06-5f941a6c22b8'
-                                onVerify={(token) => setCaptchaToken(token)}
-                            />
+                            <Captcha setCaptchaToken={setCaptchaToken} />
                         </div>
 
                         <SubmitButton
