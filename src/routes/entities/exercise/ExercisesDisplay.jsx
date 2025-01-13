@@ -8,11 +8,14 @@ import {deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
 import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString} from '../../../utils/URLUtils';
 import ExerciseCard from "../../../components/entities/exercise/ExerciseCard";
 import {Row} from "react-bootstrap";
+import ExerciseSortFilterPanel from "../../../components/entities/exercise/ExerciseSortFilterPanel";
 
 function ExercisesDisplay() {
-    const loadedData = useLoaderData();
+    const exercisesPaged = useLoaderData();
     const [actionData, setActionData] = useState();
-    const exercises = loadedData.content;
+    const exercises = exercisesPaged.content;
+    const [filteredName, setFilteredName] = useState(null);
+
     const {messages: successMessages, UrlAlertsList} = useMessageParams(
         [
             {
@@ -28,8 +31,18 @@ function ExercisesDisplay() {
 
     const {globalMessage} = useFormValidation(actionData);
 
-    if (exercises && exercises.length === 0)
-        return <div>Brak ćwiczeń do wyświetlenia</div>;
+    if (exercises && exercises.length === 0) {
+        return (
+            <>
+                <ExerciseSortFilterPanel
+                    filteredName={filteredName}
+                    setFilteredName={setFilteredName}
+                />
+                <hr/>
+                <div>Brak ćwiczeń do wyświetlenia</div>
+            </>
+        );
+    }
 
     return (
         <>
@@ -42,6 +55,13 @@ function ExercisesDisplay() {
             />
             {UrlAlertsList}
             <h1>Lista wszystkich ćwiczeń</h1>
+
+            <ExerciseSortFilterPanel
+                filteredName={filteredName}
+                setFilteredName={setFilteredName}
+            />
+            <hr/>
+
             <Row className='justify-content-center'>
                 {
                     exercises.map(
@@ -55,7 +75,7 @@ function ExercisesDisplay() {
                     )
                 }
             </Row>
-            <PaginationEntity pages={loadedData}/>
+            <PaginationEntity pages={exercisesPaged}/>
         </>
     );
 }
@@ -65,7 +85,7 @@ export default ExercisesDisplay;
 export async function loader({request}) {
     const url = new URL(request.url);
     const searchParams = url.searchParams;
-    const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size']);
+    const filteredQueryString = getFilteredQueryString(searchParams, ['page', 'sort', 'size', 'filter']);
 
     return await sendDefaultRequest(`exercise/paged${filteredQueryString}`);
 }

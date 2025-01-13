@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Form } from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 import FormField from './FormField';
 
 function DefaultFormField(
@@ -17,7 +17,6 @@ function DefaultFormField(
             errorMessages={useFormValidationObj.getValidationMessages(name)}
         >
             <Form.Control
-                className='form-control'
                 id={name}
                 name={name}
                 type={type}

@@ -28,6 +28,14 @@ function OperationsDropdown() {
                     </>
                 )
             }
+            <NavDropdown.Divider/>
+            <NavDropdown.ItemText>Zapytania do administracji</NavDropdown.ItemText>
+            <DropdownLink to='/main/request'>Wyświetl</DropdownLink>
+            {
+                isUser() && (
+                    <DropdownLink to='/main/request/create'>Zgłoś</DropdownLink>
+                )
+            }
         </NavDropdown>
     );
 }

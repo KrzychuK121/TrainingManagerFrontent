@@ -37,6 +37,9 @@ import {
 } from "../components/calculators/assistant/write/TrainingPlanerForm";
 import TrainingPlaner from "../routes/workout/assistant/TrainingPlaner";
 import UsersDisplay, {loader as usersDisplayLoader} from "../routes/admin/users/UsersDisplay";
+import RequestDisplay, {loader as requestDisplayLoader} from "../routes/entities/request/RequestDisplay";
+import RequestForm, {action as requestFormAction} from "../routes/entities/request/RequestForm";
+import {closeAction as closeRequestAction, deleteRequestAction} from '../components/entities/request/RequestCard';
 
 const AuthorizedPaths = {
     path: '',
@@ -115,16 +118,10 @@ const AuthorizedPaths = {
                     loader: trainingLoader
                 },
                 {
-                    // TODO: Remove this ID, it will fetch training for special endpoint in API
                     path: 'train',
                     children: [
                         {
                             index: true,
-                            element: <TrainingTrainApp/>,
-                            loader: trainingTrainAppLoader
-                        },
-                        {
-                            path: ':id',
                             element: <TrainingTrainApp/>,
                             loader: trainingTrainAppLoader
                         }
@@ -180,6 +177,29 @@ const AuthorizedPaths = {
                 {
                     path: 'delete/:id',
                     action: deleteTrainingRoutineAction
+                }
+            ]
+        },
+        {
+            path: 'request',
+            children: [
+                {
+                    index: true,
+                    element: <RequestDisplay/>,
+                    loader: requestDisplayLoader,
+                },
+                {
+                    path: 'create',
+                    element: <RequestForm />,
+                    action: requestFormAction
+                },
+                {
+                    path: 'close/:id',
+                    action: closeRequestAction
+                },
+                {
+                    path: 'delete/:id',
+                    action: deleteRequestAction
                 }
             ]
         },

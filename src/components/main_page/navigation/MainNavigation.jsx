@@ -87,7 +87,7 @@ function MainNavigation() {
                             }
                             {isUser() && <WorkoutAssistanceDropdown />}
                             {isAtLeastModerator() && <CalcDropdown />}
-                            <OperationsDropdown/>
+                            {isAuthenticated() && <OperationsDropdown/>}
                             {
                                 userAuthenticated
                                     ? <AuthNavigations classes={classes}/>
