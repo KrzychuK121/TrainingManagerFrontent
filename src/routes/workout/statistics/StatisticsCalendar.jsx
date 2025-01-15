@@ -30,6 +30,7 @@ function StatisticsCalendar() {
 
     if(
         Array.isArray(doneTrainings)
+        && doneTrainings.length > 0
         && doneTrainings[0].hasOwnProperty('title')
     )
         doneTrainings.forEach(
