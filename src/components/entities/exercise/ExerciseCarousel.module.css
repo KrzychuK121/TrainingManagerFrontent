@@ -1,0 +1,18 @@
+@media screen and (max-width: 768px) {
+    .scrollableContainer {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .scrollableContainer::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollableContainer {
+        scrollbar-width: none;
+    }
+
+    .scrollableContainer {
+        -ms-overflow-style: none;
+    }
+}

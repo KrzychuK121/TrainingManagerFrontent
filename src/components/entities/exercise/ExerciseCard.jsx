@@ -49,7 +49,7 @@ function ExerciseCard(
                 <Card.Header className='d-flex justify-content-between text-uppercase align-items-center'>
                     <span>{name}</span>
                     <div className='d-inline-block'>
-                        {optionsMapper(exercise, setActionData)}
+                        {optionsMapper && optionsMapper(exercise, setActionData)}
                     </div>
                 </Card.Header>
                 <Card.Body>

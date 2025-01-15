@@ -44,11 +44,6 @@ function TrainingPlanTableRow(
                 {active ? 'Tak' : 'Nie'}
             </td>
             <td>
-                <EditButton moveTo={`/main/plans/edit/${id}`}/>
-                <DeleteModal
-                    action={`/main/plans/delete/${id}`}
-                    setActionData={setActionData}
-                />
                 {
                     isUser() && !active && (
                         <RouterForm
@@ -64,6 +59,11 @@ function TrainingPlanTableRow(
                         </RouterForm>
                     )
                 }
+                <EditButton moveTo={`/main/plans/edit/${id}`}/>
+                <DeleteModal
+                    action={`/main/plans/delete/${id}`}
+                    setActionData={setActionData}
+                />
             </td>
         </>
     );
