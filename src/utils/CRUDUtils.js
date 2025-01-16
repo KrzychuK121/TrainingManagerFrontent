@@ -10,12 +10,16 @@ export function defaultHeaders(headers) {
 }
 
 export async function handleResponseUnauthorized(response) {
-    if (!tokenExpired(response))
-        return null;
+    if(response.status === 423)
+        throw new Error('Twoje konto zostało zablokowane.');
 
-    setGoBackPath();
-    const logoutResponse = await logout();
-    return redirect('/main/login');
+    if (tokenExpired(response)) {
+        setGoBackPath();
+        const logoutResponse = await logout();
+        return redirect('/main/login');
+    }
+
+    return null;
 }
 
 export async function sendDefaultRequest(

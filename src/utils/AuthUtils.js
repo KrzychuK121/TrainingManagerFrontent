@@ -59,6 +59,12 @@ export function tokenExpired(response) {
     return response.status === 401 && isAuthenticated();
 }
 
+export function getSiteKey() {
+    const siteKey = process.env.REACT_APP_SITE_KEY;
+    return siteKey === 'disabled'
+        ? false
+        : siteKey;
+}
 
 /**
  * This function should be used as loader in paths where
@@ -103,6 +109,9 @@ export async function login(userCredentials) {
     // User does not exist
     if (response.status === 404)
         return json({error: `Użytkownik ${userCredentials.username} nie istnieje.`});
+
+    if(response.status === 423)
+        return json({error: 'Twoje konto zostało zablokowane.'});
 
     if(response.status === 500)
         return json({error: `Wystąpił problem po stronie serwera. ${TRY_LATER_OR_CALL_ADMIN_MESS}.`});

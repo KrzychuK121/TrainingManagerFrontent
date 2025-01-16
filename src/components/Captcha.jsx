@@ -1,9 +1,10 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import {getSiteKey} from "../utils/AuthUtils";
 
 function Captcha({setCaptchaToken}) {
-    const siteKey = process.env.REACT_APP_SITE_KEY;
+    const siteKey = getSiteKey();
 
-    if(siteKey === 'disabled')
+    if(!siteKey)
         return <span className='text-success'>Captcha została wyłączona</span>;
 
     return (
