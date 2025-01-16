@@ -36,7 +36,10 @@ import {
     loader as trainingPlanerFormLoader
 } from "../components/calculators/assistant/write/TrainingPlanerForm";
 import TrainingPlaner from "../routes/workout/assistant/TrainingPlaner";
-import UsersDisplay, {loader as usersDisplayLoader} from "../routes/admin/users/UsersDisplay";
+import UsersDisplay, {
+    action as userDisplayAction,
+    loader as usersDisplayLoader
+} from "../routes/admin/users/UsersDisplay";
 import RequestDisplay, {loader as requestDisplayLoader} from "../routes/entities/request/RequestDisplay";
 import RequestForm, {action as requestFormAction} from "../routes/entities/request/RequestForm";
 import {closeAction as closeRequestAction, deleteRequestAction} from '../components/entities/request/RequestCard';
@@ -209,7 +212,8 @@ const AuthorizedPaths = {
                 {
                     path: 'users/all',
                     element: <UsersDisplay />,
-                    loader: usersDisplayLoader
+                    loader: usersDisplayLoader,
+                    action: userDisplayAction
                 }
             ]
         }

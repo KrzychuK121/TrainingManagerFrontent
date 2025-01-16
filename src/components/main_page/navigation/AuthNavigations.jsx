@@ -2,9 +2,7 @@ import {Button, Navbar} from 'react-bootstrap';
 import {Form} from 'react-router-dom';
 import {getFirstName, getLastName} from '../../../utils/AuthUtils';
 import {isAdmin, isAtLeastModerator} from "../../../utils/RoleUtils";
-import {Tooltip} from "@mui/material";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faShield} from "@fortawesome/free-solid-svg-icons";
+import AdministrationIcon from "../../admin/AdministrationIcon";
 
 function AuthNavigations({classes}) {
     const firstName = getFirstName();
@@ -17,17 +15,10 @@ function AuthNavigations({classes}) {
                 {welcomeInfo} {' '}
                 {
                     isAtLeastModerator() && (
-                        <Tooltip
+                        <AdministrationIcon
                             title={isAdmin() ? 'Administrator' : 'Moderator'}
-                            placement='bottom'
-                            enterDelay={250}
-                            leaveDelay={400}
-                        >
-                            <FontAwesomeIcon
-                                icon={faShield}
-                                style={{color: isAdmin() ? 'wheat' : 'lightblue'}}
-                            />
-                        </Tooltip>
+                            iconColor={isAdmin() ? 'wheat' : 'lightblue'}
+                        />
                     )
                 }
             </Navbar.Text>
