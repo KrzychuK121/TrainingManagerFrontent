@@ -1,15 +1,16 @@
 import {Col, Row} from 'react-bootstrap';
 import {Form as RouterForm, redirect, useActionData, useSubmit} from 'react-router-dom';
-import AlertComponent from '../../../components/alerts/AlertComponent';
-import DefaultFormField from '../../../components/form/DefaultFormField';
-import SubmitButton from '../../../components/form/SubmitButton';
-import useFormValidation from '../../../hooks/UseFormValidation';
-import {createObjFromEntries} from '../../../utils/EntitiesUtils';
+import AlertComponent from '../../components/alerts/AlertComponent';
+import DefaultFormField from '../../components/form/DefaultFormField';
+import SubmitButton from '../../components/form/SubmitButton';
+import useFormValidation from '../../hooks/UseFormValidation';
+import {createObjFromEntries} from '../../utils/EntitiesUtils';
 
-import defaultClasses from '../../Default.module.css';
-import {DOMAIN} from "../../../utils/URLUtils";
+import defaultClasses from '../Default.module.css';
+import {DOMAIN} from "../../utils/URLUtils";
 import {useState} from "react";
-import Captcha from "../../../components/Captcha";
+import Captcha from "../../components/Captcha";
+import {getSiteKey} from "../../utils/AuthUtils";
 
 function Register() {
     const METHOD = 'POST';
@@ -33,7 +34,7 @@ function Register() {
     function handleRegisterSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        if(!captchaToken)
+        if(getSiteKey() && !captchaToken)
             setCaptchaError('Kliknij w pole captcha aby przejść weryfikację.');
         formData.set('captchaToken', captchaToken);
         submit(formData, {method: METHOD});

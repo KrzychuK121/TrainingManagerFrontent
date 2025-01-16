@@ -1,14 +1,14 @@
 import {Col, Form, Row} from 'react-bootstrap';
 import {Form as RouterForm, redirect, useActionData, useSubmit} from 'react-router-dom';
-import AlertComponent from '../../../components/alerts/AlertComponent';
-import SubmitButton from '../../../components/form/SubmitButton';
-import useMessageParam from '../../../hooks/UseMessageParam';
-import {login} from '../../../utils/AuthUtils';
-import defaultClasses from '../../Default.module.css';
+import AlertComponent from '../../components/alerts/AlertComponent';
+import SubmitButton from '../../components/form/SubmitButton';
+import useMessageParam from '../../hooks/UseMessageParam';
+import {getSiteKey, login} from '../../utils/AuthUtils';
+import defaultClasses from '../Default.module.css';
 import {REGISTER_SUCCESS} from './Register';
-import {getGoBackPath} from "../../../utils/URLUtils";
+import {getGoBackPath} from "../../utils/URLUtils";
 import {useState} from "react";
-import Captcha from "../../../components/Captcha";
+import Captcha from "../../components/Captcha";
 
 function LoginPage() {
     const METHOD = 'POST';
@@ -24,7 +24,7 @@ function LoginPage() {
     function handleLoginSubmit(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        if(!captchaToken)
+        if(getSiteKey() && !captchaToken)
             setCaptchaError('Kliknij w pole captcha aby przejść weryfikację.');
         formData.set('captchaToken', captchaToken);
         submit(formData, {method: METHOD});

@@ -1,6 +1,6 @@
-import { Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { logout } from '../../../utils/AuthUtils';
+import {Row} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
+import {logout} from '../../utils/AuthUtils';
 
 // TODO: Might be deleted later
 
