@@ -9,9 +9,14 @@ export function defaultHeaders(headers) {
     });
 }
 
-export async function handleResponseUnauthorized(response) {
-    if(response.status === 423)
-        throw new Error('Twoje konto zostało zablokowane.');
+export async function defaultAuthHandler(response) {
+    if(response.status === 423) {
+        const logoutResponse = await logout();
+        throw json({message: 'Twoje konto zostało zablokowane.'}, {status: 423});
+    }
+
+    if(response.status === 403)
+        throw json({message: 'Nie masz uprawnień by wyświetlić zawartość strony.'}, {status: 403});
 
     if (tokenExpired(response)) {
         setGoBackPath();
@@ -34,7 +39,7 @@ export async function sendDefaultRequest(
         }
     );
 
-    const handledResponse = await handleResponseUnauthorized(response);
+    const handledResponse = await defaultAuthHandler(response);
     if (handledResponse)
         return handledResponse;
 
@@ -57,7 +62,7 @@ export async function sendDefaultParallelRequests(
 
     const responses = await Promise.all(promises);
 
-    const handledResponse = await handleResponseUnauthorized(responses[0]);
+    const handledResponse = await defaultAuthHandler(responses[0]);
     if (handledResponse)
         return handledResponse;
 
@@ -142,7 +147,7 @@ export async function deleteAction(
         }
     );
 
-    const handledResponse = await handleResponseUnauthorized(response);
+    const handledResponse = await defaultAuthHandler(response);
     if (handledResponse)
         return handledResponse;
 

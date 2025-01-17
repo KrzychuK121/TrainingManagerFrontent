@@ -4,7 +4,7 @@ import UserOptionButton from "./UserOptionButton";
 import UserOption from "./UserOption";
 
 function userIsInRole(user, role) {
-    return user.role.toLowerCase() === role.toLowerCase();
+    return user.role.role.toLowerCase() === role.toLowerCase();
 }
 
 function UserElement(
@@ -70,11 +70,11 @@ function UserElement(
                     <Card.Body>
                         <div>
                             <span style={{fontWeight: 'bold'}}>Imię i nazwisko: </span>
-                            <span>{user.firstName} {user.lastName}</span>
+                            <span className='text-capitalize'>{user.firstName} {user.lastName}</span>
                         </div>
                         <div>
                             <span style={{fontWeight: 'bold'}}>Rola: </span>
-                            <span>{user.role}</span>
+                            <span className='text-capitalize'>{user.role.roleDisplay}</span>
                         </div>
                         <div>
                             <span style={{fontWeight: 'bold'}}>Zablokowany? </span>

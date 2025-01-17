@@ -3,7 +3,7 @@ import TrainingDayDisplay from "./TrainingDayDisplay";
 import SubmitButton from "../../../form/SubmitButton";
 import {Row} from "react-bootstrap";
 import {DOMAIN} from "../../../../utils/URLUtils";
-import {defaultHeaders, handleResponseUnauthorized} from "../../../../utils/CRUDUtils";
+import {defaultAuthHandler, defaultHeaders} from "../../../../utils/CRUDUtils";
 import AlertComponent from "../../../alerts/AlertComponent";
 import {useState} from "react";
 
@@ -22,7 +22,7 @@ async function action(
         }
     );
 
-    const handledResponse = await handleResponseUnauthorized(response);
+    const handledResponse = await defaultAuthHandler(response);
 
     if(handledResponse)
         return handledResponse;

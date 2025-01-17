@@ -51,7 +51,7 @@ function UsersDisplay() {
                 scrollOnTrigger={true}
             />
             <Row>
-                {users.map(user => (<UserElement key={user.id} user={user} />))}
+                {users.map(user => <UserElement key={user.id} user={user} />)}
             </Row>
             <PaginationEntity pages={page} />
         </>

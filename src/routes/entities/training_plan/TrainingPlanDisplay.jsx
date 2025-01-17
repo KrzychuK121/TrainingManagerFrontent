@@ -4,7 +4,7 @@ import {redirect, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import useFormValidation from '../../../hooks/UseFormValidation';
 import {useMessageParams} from '../../../hooks/UseMessageParam';
-import {defaultHeaders, deleteAction, handleResponseUnauthorized, sendDefaultRequest} from '../../../utils/CRUDUtils';
+import {defaultAuthHandler, defaultHeaders, deleteAction, sendDefaultRequest} from '../../../utils/CRUDUtils';
 import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString, getIdPath} from '../../../utils/URLUtils';
 import {NEW_ROUTINE_SAVED} from "../../../components/calculators/assistant/read/TrainingPlanerDisplay";
 import {getEntityParamGetter} from "../../../utils/EntitiesUtils";
@@ -149,7 +149,7 @@ export async function switchActiveAction({request, params}) {
         }
     );
 
-    const handledResponse = await handleResponseUnauthorized(response);
+    const handledResponse = await defaultAuthHandler(response);
     if (handledResponse)
         return handledResponse;
 

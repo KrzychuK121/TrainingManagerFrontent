@@ -11,6 +11,7 @@ import {useMessageParams} from "../../../hooks/UseMessageParam";
 import {useState} from "react";
 import useFormValidation from "../../../hooks/UseFormValidation";
 import AlertComponent from "../../../components/alerts/AlertComponent";
+import {Col, Row} from "react-bootstrap";
 
 function RequestDisplay() {
     const [actionData, setActionData] = useState();
@@ -79,15 +80,21 @@ function RequestDisplay() {
             />
             {UrlAlertsErrorList}
             {UrlAlertsSuccessList}
-            {
-                requests.map(
-                    request => <RequestCard
-                        key={request.id}
-                        request={request}
-                        setActionData={setActionData}
-                    />
-                )
-            }
+            <Row className='justify-content-center align-items-center'>
+                {
+                    requests.map(
+                        request => (
+                            <Col sm={5} className='mx-2'>
+                                <RequestCard
+                                    key={request.id}
+                                    request={request}
+                                    setActionData={setActionData}
+                                />
+                            </Col>
+                        )
+                    )
+                }
+            </Row>
             <PaginationEntity pages={pagedRequests} />
         </>
     );

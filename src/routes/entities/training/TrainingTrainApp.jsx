@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {Button, Col, Row} from 'react-bootstrap';
 import {redirect, useLoaderData, useNavigate} from 'react-router-dom';
-import {defaultHeaders, handleResponseUnauthorized} from '../../../utils/CRUDUtils';
+import {defaultAuthHandler, defaultHeaders} from '../../../utils/CRUDUtils';
 import {DOMAIN, getIdPath} from '../../../utils/URLUtils';
 import AlertComponent from "../../../components/alerts/AlertComponent";
 import TrainingPanel from "../../../components/entities/training/train/TrainingPanel";
@@ -139,7 +139,7 @@ export async function loader({params}) {
             }
         );
 
-    const handledResponse = await handleResponseUnauthorized(response);
+    const handledResponse = await defaultAuthHandler(response);
     if (handledResponse)
         return handledResponse;
 

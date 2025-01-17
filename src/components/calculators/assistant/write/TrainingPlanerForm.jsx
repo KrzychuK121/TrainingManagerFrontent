@@ -9,7 +9,7 @@ import WeightReductionControls, {
     validation as weightReductionValidation
 } from "./WeightReductionControls";
 import SubmitButton from "../../../form/SubmitButton";
-import {defaultHeaders, handleResponseUnauthorized, sendDefaultRequest} from "../../../../utils/CRUDUtils";
+import {defaultAuthHandler, defaultHeaders, sendDefaultRequest} from "../../../../utils/CRUDUtils";
 import {DesktopTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {pl} from "date-fns/locale";
@@ -333,7 +333,7 @@ export async function action({request}) {
         }
     );
 
-    const handled = await handleResponseUnauthorized(response);
+    const handled = await defaultAuthHandler(response);
     if(handled)
         return handled;
 
