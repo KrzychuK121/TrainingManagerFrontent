@@ -1,7 +1,12 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {getSiteKey} from "../utils/AuthUtils";
 
-function Captcha({setCaptchaToken}) {
+function Captcha(
+    {
+        setCaptchaToken,
+        captchaRef
+    }
+) {
     const siteKey = getSiteKey();
 
     if(!siteKey)
@@ -12,6 +17,7 @@ function Captcha({setCaptchaToken}) {
             <HCaptcha
                 sitekey={siteKey}
                 onVerify={token => setCaptchaToken(token)}
+                ref={captchaRef}
             />
         </>
     );

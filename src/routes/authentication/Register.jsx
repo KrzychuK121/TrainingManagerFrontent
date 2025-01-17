@@ -8,7 +8,7 @@ import {createObjFromEntries} from '../../utils/EntitiesUtils';
 
 import defaultClasses from '../Default.module.css';
 import {DOMAIN} from "../../utils/URLUtils";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import Captcha from "../../components/Captcha";
 import {getSiteKey} from "../../utils/AuthUtils";
 
@@ -18,6 +18,7 @@ function Register() {
     const submit = useSubmit();
     const [captchaToken, setCaptchaToken] = useState(null);
     const [captchaError, setCaptchaError] = useState(null);
+    const captchaRef = useRef(null);
 
     const useFormValidationObj = useFormValidation(
         actionData,
@@ -33,6 +34,7 @@ function Register() {
 
     function handleRegisterSubmit(event) {
         event.preventDefault();
+        captchaRef.current.resetCaptcha();
         const formData = new FormData(event.target);
         if(getSiteKey() && !captchaToken)
             setCaptchaError('Kliknij w pole captcha aby przejść weryfikację.');
@@ -97,7 +99,10 @@ function Register() {
                         />
 
                         <div className='m-2'>
-                            <Captcha setCaptchaToken={setCaptchaToken} />
+                            <Captcha
+                                setCaptchaToken={setCaptchaToken}
+                                captchaRef={captchaRef}
+                            />
                         </div>
 
                         <SubmitButton

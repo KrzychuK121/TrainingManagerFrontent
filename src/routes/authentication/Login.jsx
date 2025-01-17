@@ -7,7 +7,7 @@ import {getSiteKey, login} from '../../utils/AuthUtils';
 import defaultClasses from '../Default.module.css';
 import {REGISTER_SUCCESS} from './Register';
 import {getGoBackPath} from "../../utils/URLUtils";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import Captcha from "../../components/Captcha";
 
 function LoginPage() {
@@ -16,6 +16,7 @@ function LoginPage() {
     const submit = useSubmit();
     const [captchaToken, setCaptchaToken] = useState(null);
     const [captchaError, setCaptchaError] = useState(null);
+    const captchaRef = useRef(null);
     const {message: registerSuccessMessage} = useMessageParam(
         REGISTER_SUCCESS,
         'Rejestracja pomyślna. Możesz zalogować się na nowo utworzone konto.'
@@ -23,6 +24,7 @@ function LoginPage() {
 
     function handleLoginSubmit(event) {
         event.preventDefault();
+        captchaRef.current.resetCaptcha();
         const formData = new FormData(event.target);
         if(getSiteKey() && !captchaToken)
             setCaptchaError('Kliknij w pole captcha aby przejść weryfikację.');
@@ -86,7 +88,10 @@ function LoginPage() {
                         </Form.Group>
 
                         <div className='m-2'>
-                            <Captcha setCaptchaToken={setCaptchaToken}/>
+                            <Captcha
+                                setCaptchaToken={setCaptchaToken}
+                                captchaRef={captchaRef}
+                            />
                         </div>
 
                         <SubmitButton
