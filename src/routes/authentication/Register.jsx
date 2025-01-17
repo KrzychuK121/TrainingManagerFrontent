@@ -34,7 +34,8 @@ function Register() {
 
     function handleRegisterSubmit(event) {
         event.preventDefault();
-        captchaRef.current.resetCaptcha();
+        if(getSiteKey())
+            captchaRef.current.resetCaptcha();
         const formData = new FormData(event.target);
         if(getSiteKey() && !captchaToken)
             setCaptchaError('Kliknij w pole captcha aby przejść weryfikację.');
