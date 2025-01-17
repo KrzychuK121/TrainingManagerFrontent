@@ -12,6 +12,8 @@
 .errorMessage {
     width: 50vw;
     padding: 50px;
+    font-size: 20px;
+    color: rgba(35, 35, 35, 0.5);
+    background-color: rgba(255, 255, 255, 0.9);
     border-radius: 15px;
-    background-color: rgba(255, 0, 0, 0.5);
 }
