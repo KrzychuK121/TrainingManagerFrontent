@@ -22,7 +22,6 @@ export const router = createBrowserRouter(
             loader: isAuthLoader,
             children: [
                 {
-                    path: '/',
                     index: true,
                     element: <Welcome/>
                 },
