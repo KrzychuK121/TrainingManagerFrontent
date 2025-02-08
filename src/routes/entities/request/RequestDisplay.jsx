@@ -84,9 +84,12 @@ function RequestDisplay() {
                 {
                     requests.map(
                         request => (
-                            <Col sm={5} className='mx-2'>
+                            <Col
+                                key={request.id}
+                                sm={5}
+                                className='mx-2'
+                            >
                                 <RequestCard
-                                    key={request.id}
                                     request={request}
                                     setActionData={setActionData}
                                 />
