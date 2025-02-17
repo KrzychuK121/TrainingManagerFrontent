@@ -88,7 +88,7 @@ function TrainingTrainApp() {
                     <h2>{`Tytuł: ${title}`}</h2>
                     <div className='m-0 p-0'>
                         <h3 className='m-0'>Opis</h3>
-                        <p className='py-0'>{description}</p>
+                        <p className='py-0' style={{fontSize: '16px'}}>{description}</p>
                     </div>
                     <h2>Twój trening zawiera:</h2>
                     <br/>

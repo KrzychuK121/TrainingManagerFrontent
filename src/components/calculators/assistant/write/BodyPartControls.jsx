@@ -1,6 +1,7 @@
 import CheckboxButton from "../../CheckboxButton";
 import {Card, Col, Form} from "react-bootstrap";
 import {useState} from "react";
+import styles from './BodyPartControls.module.css';
 
 function BodyPartControls(
     {
@@ -60,44 +61,45 @@ function BodyPartControls(
                         />
                     </Card.Title>
                     <Card.Body>
-                        <h3>Dodatkowe dane</h3>
+                        <h3 style={{fontSize: '22px'}}>Dodatkowe dane</h3>
                         <hr/>
+                        <div className={styles.questionsContainer}>
+                            <div className='my-2'>
+                                <p>
+                                    Jakie było Twoje zaangażowanie do trenowania tej partii mięśni do tej pory?<br />
+                                    - Moje zaangażowanie określiłbym jako {getAdvanceLevelAnswer()}.
+                                </p>
+                            </div>
+                            <Form.Range
+                                name={`${bodyPart}-advanceLevel`}
+                                value={advanceLevel}
+                                min={1} max={5}
+                                disabled={!showAdditionalControls}
+                                onChange={
+                                    (event) => setAdvanceLevel(
+                                        parseInt(event.currentTarget.value)
+                                    )
+                                }
+                            />
 
-                        <div className='my-2'>
-                            <p>
-                                Jakie było Twoje zaangażowanie do trenowania tej partii mięśni do tej pory?<br />
-                                - Moje zaangażowanie określiłbym jako {getAdvanceLevelAnswer()}.
-                            </p>
+                            <div className='my-2'>
+                                <p>
+                                    Kiedy był ostatni trening tej partii mięśni?<br />
+                                    - {getLastWorkoutAnswer()}
+                                </p>
+                            </div>
+                            <Form.Range
+                                name={`${bodyPart}-lastTrained`}
+                                value={lastWorkout}
+                                min={0} max={5}
+                                disabled={!showAdditionalControls}
+                                onChange={
+                                    (event) => setLastWorkout(
+                                        parseInt(event.currentTarget.value)
+                                    )
+                                }
+                            />
                         </div>
-                        <Form.Range
-                            name={`${bodyPart}-advanceLevel`}
-                            value={advanceLevel}
-                            min={1} max={5}
-                            disabled={!showAdditionalControls}
-                            onChange={
-                                (event) => setAdvanceLevel(
-                                    parseInt(event.currentTarget.value)
-                                )
-                            }
-                        />
-
-                        <div className='my-2'>
-                            <p>
-                                Kiedy był ostatni trening tej partii mięśni?<br />
-                                - {getLastWorkoutAnswer()}
-                            </p>
-                        </div>
-                        <Form.Range
-                            name={`${bodyPart}-lastTrained`}
-                            value={lastWorkout}
-                            min={0} max={5}
-                            disabled={!showAdditionalControls}
-                            onChange={
-                                (event) => setLastWorkout(
-                                    parseInt(event.currentTarget.value)
-                                )
-                            }
-                        />
                     </Card.Body>
                 </Card>
             </Col>

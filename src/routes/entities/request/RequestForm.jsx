@@ -36,9 +36,8 @@ function RequestForm() {
                 closeDelay={3000}
             />
             <h1>Zgłoszenie do administracji</h1>
-            <p>
-                Masz jakąś ważną prośbę do administracji?
-                Napisz zgłoszenie by mogli zająć się Twoją sprawą.
+            <p style={{fontSize: '20px'}}>
+                Masz jakąś ważną prośbę do administracji? Napisz zgłoszenie by mogli zająć się Twoją sprawą.
             </p>
             <hr/>
             <RouterForm method='POST'>
