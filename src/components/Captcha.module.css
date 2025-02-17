@@ -1,0 +1,6 @@
+.captchaOffBlock {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+    text-align: center;
+}

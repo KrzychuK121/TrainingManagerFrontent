@@ -1,5 +1,6 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {getSiteKey} from "../utils/AuthUtils";
+import styles from './Captcha.module.css';
 
 function Captcha(
     {
@@ -10,7 +11,11 @@ function Captcha(
     const siteKey = getSiteKey();
 
     if(!siteKey)
-        return <span className='text-success'>Captcha została wyłączona</span>;
+        return (
+            <div className={styles.captchaOffBlock}>
+                <span className='text-success'>Captcha została wyłączona</span>
+            </div>
+        );
 
     return (
         <>

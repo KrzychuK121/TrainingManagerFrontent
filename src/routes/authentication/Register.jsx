@@ -99,7 +99,7 @@ function Register() {
                             useFormValidationObj={useFormValidationObj}
                         />
 
-                        <div className='m-2'>
+                        <div className='my-3'>
                             <Captcha
                                 setCaptchaToken={setCaptchaToken}
                                 captchaRef={captchaRef}
