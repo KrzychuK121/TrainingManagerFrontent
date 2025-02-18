@@ -1,5 +1,5 @@
-import { Alert } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import {Alert} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 
 function calculateMinutesDifference(timeString) {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
@@ -33,34 +33,30 @@ function NotificationAlert(
         switch (type) {
             case 'NOW':
                 return (
-                    <div>
-                        <p>
-                            Trening właśnie się zaczął. Możesz do niego przejść klikając {' '}
-                            <Link
-                                to='/main/training/train'
-                                style={{ textDecoration: 'none' }}
-                            >
-                                ten link
-                            </Link>
-                        </p>
-                    </div>
+                    <>
+                        Trening właśnie się zaczął. Możesz do niego przejść klikając {' '}
+                        <Link
+                            to='/main/training/train'
+                            style={{ textDecoration: 'none' }}
+                        >
+                            ten link
+                        </Link>
+                    </>
                 );
             case 'LATE':
                 return (
-                    <div>
-                        <p>
-                            Pominąłeś trening zaplanowany na godzinę {time}. Możesz do niego przejść klikając {' '}
-                            <Link
-                                to='/main/training/train'
-                                style={{ textDecoration: 'none' }}
-                            >
-                                ten link
-                            </Link>
-                        </p>
-                    </div>
+                    <>
+                        Pominąłeś trening zaplanowany na godzinę {time}. Możesz do niego przejść klikając {' '}
+                        <Link
+                            to='/main/training/train'
+                            style={{ textDecoration: 'none' }}
+                        >
+                            ten link
+                        </Link>
+                    </>
                 );
             default:
-                return <p>{`Trening rozpocznie się o godzinie ${time}. Nie przegap treningu!`}</p>;
+                return `Trening rozpocznie się o godzinie ${time}. Nie przegap treningu!`;
         }
     }
 
@@ -70,7 +66,11 @@ function NotificationAlert(
                 {header}
             </Alert.Heading>
             <hr/>
-            {getContent()}
+            <div>
+                <p style={{fontSize: '18px'}}>
+                    {getContent()}
+                </p>
+            </div>
         </Alert>
     );
 }
