@@ -102,7 +102,12 @@ const AuthorizedPaths = {
                 },
                 {
                     path: 'edit/:id',
-                    element: <ExerciseForm method='put'/>,
+                    element: (
+                        <ExerciseForm
+                            method='put'
+                            legendTitle='Edytuj ćwiczenie'
+                        />
+                    ),
                     loader: exerciseFormLoader,
                     action: exerciseSaveAction
                 },
@@ -138,7 +143,12 @@ const AuthorizedPaths = {
                 },
                 {
                     path: 'edit/:id',
-                    element: <TrainingForm method='put'/>,
+                    element: (
+                        <TrainingForm
+                            method='put'
+                            legendTitle='Edytuj trening'
+                        />
+                    ),
                     loader: trainingFormLoader,
                     action: trainingSaveAction
                 },
