@@ -25,7 +25,12 @@ import {EDIT_ACCESS_DENIED} from "../../../utils/URLUtils";
 import {useMessageParams} from "../../../hooks/UseMessageParam";
 import {isUser} from "../../../utils/RoleUtils";
 
-function ExerciseForm({method = 'post'}) {
+function ExerciseForm(
+    {
+        method = 'post',
+        legendTitle = 'Stwórz nowe ćwiczenie'
+    }
+) {
     const actionData = useActionData();
     const loaderData = useLoaderData();
 
@@ -89,7 +94,7 @@ function ExerciseForm({method = 'post'}) {
                 ref={formRef}
             >
                 <fieldset className={defaultClasses.authForms}>
-                    <legend>Stwórz nowe ćwiczenie</legend>
+                    <legend>{legendTitle}</legend>
                     <Link to='/main/exercise'>Powrót do ćwiczeń</Link>
                     {
                         isUser() && (

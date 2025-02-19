@@ -54,7 +54,12 @@ function initSelectedExercises(
     return null;
 }
 
-function TrainingForm({method = 'post'}) {
+function TrainingForm(
+    {
+        method = 'post',
+        legendTitle = 'Stwórz nowy trening'
+    }
+) {
     const {id} = useParams();
     const submit = useSubmit();
     const actionData = useActionData();
@@ -261,7 +266,7 @@ function TrainingForm({method = 'post'}) {
                 onSubmit={handleFormSubmit}
             >
                 <fieldset className={defaultClasses.authForms}>
-                    <legend>Stwórz nowy trening</legend>
+                    <legend>{legendTitle}</legend>
                     <Link to='/main/training'>Powrót do treningów</Link>
                     <ConfirmModal
                         body={'Ten trening posiada prywatne ćwiczenia. Czy chcesz upublicznić trening wraz z ćwiczeniami?'}
