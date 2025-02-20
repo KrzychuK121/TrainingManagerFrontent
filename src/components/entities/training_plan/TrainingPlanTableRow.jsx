@@ -5,7 +5,7 @@ import SubmitButtonIcon from "../../form/SubmitButtonIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faStar as faStarSolid} from "@fortawesome/free-solid-svg-icons";
 import {faStar} from "@fortawesome/free-regular-svg-icons";
-import {isUser} from "../../../utils/RoleUtils";
+import {isAtLeastModerator, isUser} from "../../../utils/RoleUtils";
 
 function getColumnsByWeekdays(schedules, weekdays) {
     return weekdays.map(
@@ -36,16 +36,28 @@ function TrainingPlanTableRow(
         setActionData
     }
 ) {
-    const {id, active, schedules} = plan;
+    const {
+        id,
+        active,
+        owner,
+        schedules
+    } = plan;
     return (
         <>
             {getColumnsByWeekdays(schedules, weekdays)}
             <td>
                 {active ? 'Tak' : 'Nie'}
             </td>
+            {
+                isAtLeastModerator() && (
+                    <td>
+                        {owner.username}
+                    </td>
+                )
+            }
             <td>
                 {
-                    isUser() && !active && (
+                isUser() && !active && (
                         <RouterForm
                             action={`/main/plans/${id}`}
                             method='patch'

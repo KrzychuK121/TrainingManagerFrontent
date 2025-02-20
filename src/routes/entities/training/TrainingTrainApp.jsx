@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {Button, Col, Row} from 'react-bootstrap';
 import {redirect, useLoaderData, useNavigate} from 'react-router-dom';
 import {defaultAuthHandler, defaultHeaders} from '../../../utils/CRUDUtils';
-import {DOMAIN, getIdPath} from '../../../utils/URLUtils';
+import {DOMAIN} from '../../../utils/URLUtils';
 import AlertComponent from "../../../components/alerts/AlertComponent";
 import TrainingPanel from "../../../components/entities/training/train/TrainingPanel";
 import {mapExerciseToExerciseItem} from "../../../components/entities/training/train/ExerciseItem";
@@ -123,16 +123,8 @@ export default TrainingTrainApp;
 export const NO_TRAINING_DAY = 'no-training-day';
 export const TRAINING_DONE = 'training-done';
 
-export async function loader({params}) {
-    const trainingId = getIdPath(params);
-    const response = trainingId
-        ? await fetch(
-            `${DOMAIN}/training${trainingId}`,
-            {
-                headers: defaultHeaders()
-            }
-        )
-        : await fetch(
+export async function loader() {
+    const response = await fetch(
             `${DOMAIN}/plans/today-training`,
             {
                 headers: defaultHeaders()

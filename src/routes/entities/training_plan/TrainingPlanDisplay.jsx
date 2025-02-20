@@ -11,6 +11,7 @@ import {getEntityParamGetter} from "../../../utils/EntitiesUtils";
 import TrainingPlanTable from "../../../components/entities/training_plan/TrainingPlanTable";
 import PaginationEntity from "../../../components/entities/crud/PaginationEntity";
 import SortAnchor from "../../../components/entities/crud/SortAnchor";
+import {isAtLeastModerator} from "../../../utils/RoleUtils";
 
 const ROUTINE_NOT_OWNED_OR_ACTIVE = 'routine-not-owned-or-already-active';
 const ROUTINE_ACTIVATED = 'routine-activated';
@@ -35,7 +36,7 @@ function TrainingPlanDisplay() {
     const getFromLoadedData = getEntityParamGetter(loadedData);
     const plansPaged = getFromLoadedData('plans');
     const plans = plansPaged && plansPaged.hasOwnProperty('content')
-        ?plansPaged.content
+        ? plansPaged.content
         : null;
     const weekdays = getFromLoadedData('weekdays');
 
@@ -71,8 +72,13 @@ function TrainingPlanDisplay() {
 
     const {globalMessage} = useFormValidation(actionData);
 
-    if (!plans)
-        return <span>Brak rutyn treningowych do wyświetlenia</span>;
+    if (!plans || (Array.isArray(plans) && plans.length === 0))
+        return (
+            <>
+                <span className='h2'>Brak rutyn treningowych do wyświetlenia</span>
+                <hr />
+            </>
+        );
 
     return (
         <>
@@ -97,7 +103,13 @@ function TrainingPlanDisplay() {
                     )
                 )
             }
-            <h1>Lista wszystkich planów treningowych</h1>
+            <h1>
+                {
+                    isAtLeastModerator()
+                        ? 'Lista wszystkich planów treningowych użytkowników'
+                        : 'Twoje plany treningowe'
+                }
+            </h1>
 
             <Table
                 bordered
@@ -106,16 +118,17 @@ function TrainingPlanDisplay() {
                 variant='success'
             >
                 <thead>
-                <tr>
-                    {getTableWeekdaysHeaders(weekdays)}
-                    <th>
-                        <SortAnchor
-                            display='Aktywny?'
-                            field='active'
-                        />
-                    </th>
-                    <th>Opcje</th>
-                </tr>
+                    <tr>
+                        {getTableWeekdaysHeaders(weekdays)}
+                        <th>
+                            <SortAnchor
+                                display='Aktywny?'
+                                field='active'
+                            />
+                        </th>
+                        {isAtLeastModerator() && <th>Właściciel rutyny</th>}
+                        <th>Opcje</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <TrainingPlanTable
