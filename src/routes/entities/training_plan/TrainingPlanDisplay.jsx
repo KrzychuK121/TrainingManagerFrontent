@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import {Table} from 'react-bootstrap';
 import {redirect, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import useFormValidation from '../../../hooks/UseFormValidation';
@@ -10,28 +9,18 @@ import {NEW_ROUTINE_SAVED} from "../../../components/calculators/assistant/read/
 import {getEntityParamGetter} from "../../../utils/EntitiesUtils";
 import TrainingPlanTable from "../../../components/entities/training_plan/TrainingPlanTable";
 import PaginationEntity from "../../../components/entities/crud/PaginationEntity";
-import SortAnchor from "../../../components/entities/crud/SortAnchor";
 import {isAtLeastModerator} from "../../../utils/RoleUtils";
+import useMobileChecker from "../../../hooks/UseMobileChecker";
+import TrainingPlanCarousel from "../../../components/entities/training_plan/TrainingPlanCarousel";
 
 const ROUTINE_NOT_OWNED_OR_ACTIVE = 'routine-not-owned-or-already-active';
 const ROUTINE_ACTIVATED = 'routine-activated';
 
-function getTableWeekdaysHeaders(weekdays) {
-    return weekdays.map(
-        ({weekday, weekdayDisplay}) => (
-            <th
-                key={weekday}
-                className='text-capitalize'
-            >
-                {weekdayDisplay}
-            </th>
-        )
-    );
-}
-
 function TrainingPlanDisplay() {
     const loadedData = useLoaderData();
     const [actionData, setActionData] = useState();
+
+    const isMobile = useMobileChecker();
 
     const getFromLoadedData = getEntityParamGetter(loadedData);
     const plansPaged = getFromLoadedData('plans');
@@ -103,42 +92,31 @@ function TrainingPlanDisplay() {
                     )
                 )
             }
-            <h1>
+            <h1 className='p-0'>
                 {
                     isAtLeastModerator()
                         ? 'Lista wszystkich planów treningowych użytkowników'
                         : 'Twoje plany treningowe'
                 }
             </h1>
+            <hr className='mb-5'/>
 
-            <Table
-                bordered
-                striped
-                responsive={true}
-                variant='success'
-            >
-                <thead>
-                    <tr>
-                        {getTableWeekdaysHeaders(weekdays)}
-                        <th>
-                            <SortAnchor
-                                display='Aktywny?'
-                                field='active'
-                            />
-                        </th>
-                        {isAtLeastModerator() && <th>Właściciel rutyny</th>}
-                        <th>Opcje</th>
-                    </tr>
-                </thead>
-                <tbody>
+            {
+                isMobile ? (
+                    <TrainingPlanCarousel
+                        plans={plans}
+                        weekdays={weekdays}
+                        setActionData={setActionData}
+                    />
+                ) : (
                     <TrainingPlanTable
                         plans={plans}
                         weekdays={weekdays}
                         setActionData={setActionData}
                     />
-                </tbody>
-            </Table>
-            <PaginationEntity pages={plansPaged} />
+                )
+            }
+            <PaginationEntity pages={plansPaged}/>
         </>
     );
 }
