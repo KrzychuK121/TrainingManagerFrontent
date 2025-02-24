@@ -1,5 +1,5 @@
 import ExerciseCard from "./ExerciseCard";
-import classes from './ExerciseCarousel.module.css';
+import MobileCarousel from "../../MobileCarousel";
 
 function ExerciseCarousel(
     {
@@ -9,22 +9,20 @@ function ExerciseCarousel(
 ) {
     return (
         <>
-            <div className={classes.scrollableContainer}>
-                <div className='d-inline-flex'>
-                    {
-                        exercises.map(
-                            exercise => (
-                                <ExerciseCard
-                                    key={exercise.id}
-                                    exercise={exercise}
-                                    optionsMapper={null}
-                                    setActionData={setActionData}
-                                />
-                           )
+            <MobileCarousel>
+                {
+                    exercises.map(
+                        exercise => (
+                            <ExerciseCard
+                                key={exercise.id}
+                                exercise={exercise}
+                                optionsMapper={null}
+                                setActionData={setActionData}
+                            />
                         )
-                    }
-                </div>
-            </div>
+                    )
+                }
+            </MobileCarousel>
         </>
     );
 }
