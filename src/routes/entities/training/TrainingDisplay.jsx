@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {json, useLoaderData} from 'react-router-dom';
 import AlertComponent from '../../../components/alerts/AlertComponent';
 import DeleteModal from '../../../components/entities/crud/DeleteModal';
@@ -11,6 +11,7 @@ import {DELETE_SUCCESS, DOMAIN, EDIT_SUCCESS, getFilteredQueryString} from '../.
 import EditButton from "../../../components/entities/crud/EditButton";
 import {moderationRoleOrOwner} from "../../../utils/RoleUtils";
 import ExerciseCarousel from "../../../components/entities/exercise/ExerciseCarousel";
+import useMobileChecker from "../../../hooks/UseMobileChecker";
 
 function TrainingDisplay() {
     const loadedData = useLoaderData();
@@ -32,17 +33,7 @@ function TrainingDisplay() {
 
     const {globalMessage} = useFormValidation(actionData);
 
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const mediaQuery = window.matchMedia('(max-width: 768px)');
-        setIsMobile(mediaQuery.matches);
-
-        const handleChange = () => setIsMobile(mediaQuery.matches);
-        mediaQuery.addEventListener('change', handleChange);
-
-        return () => mediaQuery.removeEventListener('change', handleChange);
-    }, []);
+    const isMobile = useMobileChecker();
 
     if (trainings && trainings.length === 0)
         return <div>Brak treningów do wyświetlenia</div>;
