@@ -2,6 +2,8 @@ import MobileCarousel from "../../MobileCarousel";
 import TrainingPlanOptions from "./TrainingPlanOptions";
 import TrainingScheduleCard from "./TrainingScheduleCard";
 import {isAtLeastModerator} from "../../../utils/RoleUtils";
+import {Col, Row} from "react-bootstrap";
+import classes from "./TrainingPlanCarousel.module.css";
 
 function TrainingPlanCarousel(
     {
@@ -24,8 +26,11 @@ function TrainingPlanCarousel(
 
                         return (
                             <div key={`card-plan-${id}`}>
-                                <div style={{fontSize: '18px'}}>
-                                    <div>
+                                <Row
+                                    className={`justify-content-between ${classes.wholePlanInfoPanel}`}
+                                    style={{fontSize: '18px'}}
+                                >
+                                    <Col sm={8}>
                                         {
                                             isAtLeastModerator() && (
                                                 <div>
@@ -38,16 +43,15 @@ function TrainingPlanCarousel(
                                             <span className='fw-bold'>Aktywny?: </span>
                                             <span>{active ? 'Tak' : 'Nie'}</span>
                                         </div>
-                                    </div>
+                                    </Col>
 
-                                    <div className='mt-3'>
-                                        <span className='fw-bold'>Opcje: </span>
+                                    <Col sm={4} className='d-inline-flex flex-wrap align-content-center'>
                                         <TrainingPlanOptions
                                             plan={plan}
                                             setActionData={setActionData}
                                         />
-                                    </div>
-                                </div>
+                                    </Col>
+                                </Row>
                                 <MobileCarousel>
                                     {
                                         weekdays.map(

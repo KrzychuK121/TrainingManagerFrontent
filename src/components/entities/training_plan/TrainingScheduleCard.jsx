@@ -19,13 +19,17 @@ function TrainingScheduleCard(
                     <Card.Body>
                         <span className='h5'>Dane treningu</span>
                         <hr/>
-                        <div>
-                            <span style={{fontWeight: 'bold'}}>Tytuł: </span>
-                            <span>{title}</span>
-                        </div>
-                        <div>
-                            <span style={{fontWeight: 'bold'}}>Opis: </span>
-                            <span>{description}</span>
+                        <div style={{fontSize: '17px'}}>
+                            <div>
+                                <span style={{fontWeight: 'bold'}}>Tytuł: </span>
+                                <span>{title}</span>
+                            </div>
+                            <div>
+                                <span style={{fontWeight: 'bold'}}>Opis: </span>
+                                <div>
+                                    <span>{description}</span>
+                                </div>
+                            </div>
                         </div>
                     </Card.Body>
                 </Card>

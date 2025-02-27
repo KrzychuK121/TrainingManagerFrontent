@@ -42,7 +42,7 @@ function RequestForm() {
             <hr/>
             <RouterForm method='POST'>
                 <Row>
-                    <Col sm={4}>
+                    <Col sm={4} style={{fontSize: '18px'}}>
                         <DefaultFormField
                             label='Tytuł'
                             name='title'
@@ -52,7 +52,7 @@ function RequestForm() {
                     </Col>
                 </Row>
                 <Row>
-                    <Col sm={4}>
+                    <Col sm={4} style={{fontSize: '18px'}}>
                         <FormField
                             label='Opis'
                             errorMessages={getValidationMessages('description')}
