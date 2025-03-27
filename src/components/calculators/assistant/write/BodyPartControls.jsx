@@ -20,7 +20,7 @@ function BodyPartControls(
             return 'W tym tygodniu.';
         if(lastWorkout > 0 && lastWorkout < 5)
             return `${lastWorkout} tygodnii temu.`;
-        return 'Dawniej nisz miesiąc temu.';
+        return 'Dawniej niż miesiąc temu.';
     }
 
     function getAdvanceLevelAnswer() {
